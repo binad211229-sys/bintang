@@ -1,271 +1,228 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GemStore</title>
-
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:#f3f6fb;
-}
-
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 8%;
-background:#ffffff;
-box-shadow:0 5px 15px rgba(0,0,0,.08);
-position:sticky;
-top:0;
-z-index:100;
-}
-
-.logo{
-font-size:28px;
-font-weight:bold;
-color:#2563eb;
-}
-
-.search{
-display:flex;
-width:40%;
-}
-
-.search input{
-width:100%;
-padding:12px;
-border:1px solid #ddd;
-border-radius:30px 0 0 30px;
-outline:none;
-}
-
-.search button{
-padding:12px 18px;
-border:none;
-background:#2563eb;
-color:white;
-border-radius:0 30px 30px 0;
-cursor:pointer;
-}
-
-.menu a{
-margin-left:20px;
-text-decoration:none;
-color:#333;
-font-weight:bold;
-}
-
-.hero{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:70px 8%;
-background:linear-gradient(135deg,#2563eb,#4f46e5);
-color:white;
-}
-
-.hero h1{
-font-size:50px;
-margin-bottom:15px;
-}
-
-.hero p{
-margin-bottom:20px;
-}
-
-.hero button{
-padding:14px 30px;
-border:none;
-border-radius:30px;
-background:white;
-color:#2563eb;
-font-weight:bold;
-cursor:pointer;
-}
-
-.hero img{
-width:420px;
-height:280px;
-object-fit:cover;
-border-radius:20px;
-box-shadow:0 20px 40px rgba(0,0,0,.3);
-}
-
-.title{
-padding:40px 8% 20px;
-font-size:30px;
-}
-
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:25px;
-padding:0 8% 60px;
-}
-
-.card{
-background:white;
-border-radius:18px;
-overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,.08);
-transition:.3s;
-}
-
-.card:hover{
-transform:translateY(-10px);
-}
-
-.card img{
-width:100%;
-height:220px;
-object-fit:cover;
-}
-
-.info{
-padding:18px;
-}
-
-.badge{
-display:inline-block;
-background:red;
-color:white;
-padding:4px 10px;
-border-radius:20px;
-font-size:12px;
-margin-bottom:10px;
-}
-
-.price{
-font-size:24px;
-font-weight:bold;
-color:#2563eb;
-margin:10px 0;
-}
-
-.rating{
-color:orange;
-margin-bottom:15px;
-}
-
-.buy{
-width:100%;
-padding:12px;
-background:#2563eb;
-color:white;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
-
-footer{
-background:#111827;
-color:white;
-padding:40px;
-text-align:center;
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mokup E-Commerce Index</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-50 font-sans text-gray-800">
 
-<header>
+  <!-- 1. TOP BAR -->
+  <div class="bg-indigo-900 text-white text-xs py-2 px-4 flex justify-between items-center">
+    <span>🔥 Gratis Ongkir Minimal Belanja Rp100.000!</span>
+    <div class="space-x-4">
+      <a href="#" class="hover:underline">Bantuan</a>
+      <a href="#" class="hover:underline">Lacak Pesanan</a>
+    </div>
+  </div>
 
-<div class="logo">💎 GemStore</div>
+  <!-- 2. MAIN HEADER -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <!-- Logo -->
+      <a href="#" class="text-2xl font-bold text-indigo-600 tracking-tight">TokoSaya</a>
+      
+      <!-- Search Bar -->
+      <div class="flex-1 max-w-2xl relative">
+        <input type="text" placeholder="Cari produk, kategori, atau merek..." class="w-full border border-gray-300 rounded-full py-2 pl-4 pr-10 focus:outline-none focus:border-indigo-500 text-sm">
+        <button class="absolute right-3 top-2.5 text-gray-400 hover:text-indigo-600">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
 
-<div class="search">
-<input type="text" placeholder="Cari produk...">
-<button>🔍</button>
-</div>
+      <!-- User Actions -->
+      <div class="flex items-center space-x-6">
+        <a href="#" class="flex flex-col items-center text-gray-600 hover:text-indigo-600 text-xs">
+          <i class="fa-regular fa-heart text-lg"></i>
+          <span>Wishlist</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-600 hover:text-indigo-600 text-xs relative">
+          <i class="fa-solid fa-cart-shopping text-lg"></i>
+          <span class="absolute -top-1 -right-2 bg-red-500 text-white rounded-full text-[10px] w-4 h-4 flex items-center justify-center">3</span>
+          <span>Keranjang</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-600 hover:text-indigo-600 text-xs">
+          <i class="fa-regular fa-user text-lg"></i>
+          <span>Masuk</span>
+        </a>
+      </div>
+    </div>
 
-<div class="menu">
-<a href="#">Home</a>
-<a href="#">Kategori</a>
-<a href="#">Promo</a>
-<a href="#">Keranjang</a>
-</div>
+    <!-- Category Nav -->
+    <nav class="border-t border-gray-100 bg-white px-4">
+      <div class="max-w-7xl mx-auto flex space-x-8 text-sm font-medium text-gray-600 py-2 overflow-x-auto">
+        <a href="#" class="text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-1">Semua Kategori</a>
+        <a href="#" class="hover:text-indigo-600 pb-1">Elektronik</a>
+        <a href="#" class="hover:text-indigo-600 pb-1">Pakaian Pria</a>
+        <a href="#" class="hover:text-indigo-600 pb-1">Pakaian Wanita</a>
+        <a href="#" class="hover:text-indigo-600 pb-1">Kecantikan</a>
+        <a href="#" class="hover:text-indigo-600 pb-1">Peralatan Rumah</a>
+        <a href="#" class="text-red-500 font-semibold hover:text-red-600 pb-1">Promo Spesial</a>
+      </div>
+    </nav>
+  </header>
 
-</header>
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-10">
 
-<section class="hero">
+    <!-- 3. HERO BANNER -->
+    <section class="relative bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl overflow-hidden text-white p-8 md:p-12 flex flex-col justify-center min-h-[300px]">
+      <div class="max-w-md space-y-4">
+        <span class="bg-yellow-400 text-indigo-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider">Mega Sale 8.8</span>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Diskon Hingga 70% Hari Ini</h1>
+        <p class="text-indigo-100 text-sm">Dapatkan koleksi terbaru dan promo terbatas untuk semua produk elektronik & fashion.</p>
+        <a href="#" class="inline-block bg-white text-indigo-600 font-bold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition w-fit">Belanja Sekarang</a>
+      </div>
+    </section>
 
-<div>
-<h1>Belanja Lebih Mudah</h1>
-<p>Promo hingga 70% untuk produk pilihan.</p>
-<button>Belanja Sekarang</button>
-</div>
+    <!-- 4. TRUST BADGES -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center text-xs md:text-sm">
+      <div class="flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-truck-fast text-indigo-600 text-xl"></i>
+        <div class="text-left">
+          <p class="font-bold">Gratis Ongkir</p>
+          <p class="text-gray-400 text-xs">Ke seluruh Indonesia</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-shield-halved text-indigo-600 text-xl"></i>
+        <div class="text-left">
+          <p class="font-bold">Pembayaran Aman</p>
+          <p class="text-gray-400 text-xs">100% terproteksi</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-rotate-left text-indigo-600 text-xl"></i>
+        <div class="text-left">
+          <p class="font-bold">Jaminan Retur</p>
+          <p class="text-gray-400 text-xs">Pengembalian 30 hari</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-headset text-indigo-600 text-xl"></i>
+        <div class="text-left">
+          <p class="font-bold">Dukungan 24/7</p>
+          <p class="text-gray-400 text-xs">CS siap membantu</p>
+        </div>
+      </div>
+    </section>
 
-<!-- Gambar Hero: Shopping Mall / Gadgets -->
-<img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80" alt="Belanja Promo">
+    <!-- 5. FLASH SALE SECTION -->
+    <section class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b pb-4">
+        <div class="flex items-center space-x-3">
+          <h2 class="text-xl font-bold text-red-600 flex items-center gap-2">
+            <i class="fa-solid fa-bolt"></i> FLASH SALE
+          </h2>
+          <div class="flex items-center space-x-1 text-xs text-white">
+            <span class="bg-red-600 px-2 py-1 rounded font-bold">02</span>
+            <span class="text-gray-800 font-bold">:</span>
+            <span class="bg-red-600 px-2 py-1 rounded font-bold">45</span>
+            <span class="text-gray-800 font-bold">:</span>
+            <span class="bg-red-600 px-2 py-1 rounded font-bold">12</span>
+          </div>
+        </div>
+        <a href="#" class="text-xs text-indigo-600 font-semibold hover:underline">Lihat Semua →</a>
+      </div>
 
-</section>
+      <!-- Product Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- Item Produk -->
+        <div class="border border-gray-100 rounded-lg p-3 hover:shadow-md transition bg-white relative group">
+          <span class="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">-50%</span>
+          <img src="https://via.placeholder.com/200" alt="Produk" class="w-full h-36 object-cover rounded mb-3">
+          <h3 class="text-xs font-semibold text-gray-700 line-clamp-2">Smartwatch Wireless Bluetooth Waterproof</h3>
+          <div class="mt-2">
+            <p class="text-sm font-bold text-red-600">Rp249.000</p>
+            <p class="text-[11px] text-gray-400 line-through">Rp499.000</p>
+          </div>
+          <button class="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-1.5 rounded transition">
+            + Keranjang
+          </button>
+        </div>
 
-<h2 class="title">🔥 Produk Populer</h2>
+        <!-- Repeat Produk (Demo Dummy) -->
+        <div class="border border-gray-100 rounded-lg p-3 hover:shadow-md transition bg-white relative group">
+          <span class="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">-35%</span>
+          <img src="https://via.placeholder.com/200" alt="Produk" class="w-full h-36 object-cover rounded mb-3">
+          <h3 class="text-xs font-semibold text-gray-700 line-clamp-2">Headphone TWS Noise Cancelling</h3>
+          <div class="mt-2">
+            <p class="text-sm font-bold text-red-600">Rp325.000</p>
+            <p class="text-[11px] text-gray-400 line-through">Rp500.000</p>
+          </div>
+          <button class="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-1.5 rounded transition">
+            + Keranjang
+          </button>
+        </div>
 
-<div class="products">
+        <div class="border border-gray-100 rounded-lg p-3 hover:shadow-md transition bg-white relative group">
+          <span class="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">-20%</span>
+          <img src="https://via.placeholder.com/200" alt="Produk" class="w-full h-36 object-cover rounded mb-3">
+          <h3 class="text-xs font-semibold text-gray-700 line-clamp-2">Sepatu Sneakers Casual Pria Modern</h3>
+          <div class="mt-2">
+            <p class="text-sm font-bold text-red-600">Rp199.000</p>
+            <p class="text-[11px] text-gray-400 line-through">Rp250.000</p>
+          </div>
+          <button class="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-1.5 rounded transition">
+            + Keranjang
+          </button>
+        </div>
 
-<div class="card">
-<!-- Gambar Laptop Gaming -->
-<img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80" alt="Laptop Gaming">
-<div class="info">
-<div class="badge">-30%</div>
-<h3>Laptop Gaming</h3>
-<div class="price">Rp12.999.000</div>
-<div class="rating">⭐⭐⭐⭐⭐ (256)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
+        <div class="border border-gray-100 rounded-lg p-3 hover:shadow-md transition bg-white relative group">
+          <span class="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">-15%</span>
+          <img src="https://via.placeholder.com/200" alt="Produk" class="w-full h-36 object-cover rounded mb-3">
+          <h3 class="text-xs font-semibold text-gray-700 line-clamp-2">Tas Ransel Laptop Anti Air</h3>
+          <div class="mt-2">
+            <p class="text-sm font-bold text-red-600">Rp170.000</p>
+            <p class="text-[11px] text-gray-400 line-through">Rp200.000</p>
+          </div>
+          <button class="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-1.5 rounded transition">
+            + Keranjang
+          </button>
+        </div>
+      </div>
+    </section>
 
-<div class="card">
-<!-- Gambar iPhone -->
-<img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&w=500&q=80" alt="iPhone">
-<div class="info">
-<div class="badge">Best Seller</div>
-<h3>iPhone</h3>
-<div class="price">Rp16.999.000</div>
-<div class="rating">⭐⭐⭐⭐⭐ (520)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
+  </main>
 
-<div class="card">
-<!-- Gambar Headset -->
-<img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headset">
-<div class="info">
-<div class="badge">Baru</div>
-<h3>Headset</h3>
-<div class="price">Rp799.000</div>
-<div class="rating">⭐⭐⭐⭐ (180)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
-
-<div class="card">
-<!-- Gambar Smartwatch -->
-<img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Smartwatch">
-<div class="info">
-<div class="badge">Hot</div>
-<h3>Smartwatch</h3>
-<div class="price">Rp1.499.000</div>
-<div class="rating">⭐⭐⭐⭐⭐ (310)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
-
-</div>
-
-<footer>
-<h2>GemStore</h2>
-<p>Belanja Aman • Cepat • Terpercaya</p>
-</footer>
+  <!-- 6. FOOTER -->
+  <footer class="bg-gray-900 text-gray-400 mt-12 text-xs py-10">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="space-y-3">
+        <h4 class="text-white text-base font-bold">TokoSaya</h4>
+        <p>Platform e-commerce terpercaya untuk memenuhi seluruh kebutuhan harian Anda.</p>
+      </div>
+      <div class="space-y-2">
+        <h5 class="text-white font-semibold">Layanan Pelanggan</h5>
+        <ul class="space-y-1">
+          <li><a href="#" class="hover:underline">Pusat Bantuan</a></li>
+          <li><a href="#" class="hover:underline">Cara Pembelian</a></li>
+          <li><a href="#" class="hover:underline">Pengiriman & Pengembalian</a></li>
+        </ul>
+      </div>
+      <div class="space-y-2">
+        <h5 class="text-white font-semibold">Tentang Kami</h5>
+        <ul class="space-y-1">
+          <li><a href="#" class="hover:underline">Profil Perusahaan</a></li>
+          <li><a href="#" class="hover:underline">Karir</a></li>
+          <li><a href="#" class="hover:underline">Kebijakan Privasi</a></li>
+        </ul>
+      </div>
+      <div class="space-y-3">
+        <h5 class="text-white font-semibold">Langganan Newsletter</h5>
+        <div class="flex">
+          <input type="email" placeholder="Email Anda" class="p-2 rounded-l w-full text-gray-800 outline-none">
+          <button class="bg-indigo-600 text-white px-3 py-2 rounded-r font-semibold">Kirim</button>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 border-t border-gray-800 mt-8 pt-4 text-center">
+      <p>&copy; 2026 TokoSaya. All rights reserved.</p>
+    </div>
+  </footer>
 
 </body>
 </html>
