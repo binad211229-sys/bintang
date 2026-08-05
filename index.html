@@ -1,58 +1,115 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Utama Saya</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Center - Dashboard Penjual</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { display: flex; background-color: #f4f6f8; color: #333; }
     
-    <!-- Bagian CSS untuk mempercantik tampilan -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 50px;
-            text-align: center;
-        }
-        .container {
-            background-color: #ffffff;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333333;
-        }
-        p {
-            color: #666666;
-            line-height: 1.6;
-        }
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    /* Sidebar Navigation */
+    .sidebar { width: 240px; height: 100vh; background: #1e293b; color: #fff; padding: 20px; position: fixed; }
+    .sidebar h2 { color: #38bdf8; margin-bottom: 30px; font-size: 20px; }
+    .sidebar ul { list-style: none; }
+    .sidebar li { margin-bottom: 15px; }
+    .sidebar a { color: #cbd5e1; text-decoration: none; font-weight: bold; display: block; padding: 8px; border-radius: 4px; }
+    .sidebar a.active, .sidebar a:hover { background: #0f172a; color: #38bdf8; }
+
+    /* Main Content */
+    .main-content { margin-left: 240px; padding: 30px; width: calc(100% - 240px); }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    
+    /* Metric Cards */
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+    .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .card h3 { font-size: 14px; color: #64748b; margin-bottom: 8px; }
+    .card p { font-size: 22px; font-weight: bold; color: #0f172a; }
+
+    /* Orders Table */
+    .section-title { margin-bottom: 15px; font-size: 18px; }
+    .table-container { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+    th { background-color: #f8fafc; color: #64748b; }
+    .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    .pending { background: #fef3c7; color: #d97706; }
+    .process { background: #e0f2fe; color: #0284c7; }
+  </style>
 </head>
 <body>
 
-    <!-- Bagian konten yang akan terlihat di browser -->
-    <div class="container">
-        <h1>Selamat Datang di Website Saya!</h1>
-        <p>Ini adalah contoh halaman index HTML sederhana. Anda dapat menggunakan ini sebagai kerangka awal untuk membangun website Anda.</p>
-        <p>Silakan edit teks ini dan tambahkan elemen lain seperti gambar, tabel, atau formulir sesuai kebutuhan.</p>
-        
-        <a href="#" class="btn">Pelajari Lebih Lanjut</a>
+  <!-- Navigation Sidebar -->
+  <aside class="sidebar">
+    <h2>TokoSaya Center</h2>
+    <ul>
+      <li><a href="#" class="active">Dashboard</a></li>
+      <li><a href="#">Pesanan (12)</a></li>
+      <li><a href="#">Katalog Produk</a></li>
+      <li><a href="#">Analisis Penjualan</a></li>
+      <li><a href="#">Pengaturan Toko</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Area -->
+  <main class="main-content">
+    <div class="header">
+      <h1>Selamat Datang, Batik Nusantara!</h1>
+      <button style="background: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">+ Tambah Produk Baru</button>
     </div>
+
+    <!-- Ringkasan Performa -->
+    <div class="metrics-grid">
+      <div class="card">
+        <h3>Pesanan Baru</h3>
+        <p>12 Pesanan</p>
+      </div>
+      <div class="card">
+        <h3>Pendapatan Hari Ini</h3>
+        <p>Rp 1.450.000</p>
+      </div>
+      <div class="card">
+        <h3>Siap Dikirim</h3>
+        <p>5 Produk</p>
+      </div>
+      <div class="card">
+        <h3>Ulasan Perlu Balas</h3>
+        <p>3 Ulasan</p>
+      </div>
+    </div>
+
+    <!-- Tabel Pesanan Terbaru -->
+    <h2 class="section-title">Pesanan Perlu Diproses</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Pesanan</th>
+            <th>Nama Pembeli</th>
+            <th>Produk</th>
+            <th>Total Pembayaran</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#ORD-9081</td>
+            <td>Budi Santoso</td>
+            <td>Kemeja Batik Keris (L)</td>
+            <td>Rp 250.000</td>
+            <td><span class="status pending">Perlu Dikemas</span></td>
+          </tr>
+          <tr>
+            <td>#ORD-9082</td>
+            <td>Siti Rahma</td>
+            <td>Gamis Batik Premium</td>
+            <td>Rp 420.000</td>
+            <td><span class="status process">Siap Kirim</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
 
 </body>
 </html>
