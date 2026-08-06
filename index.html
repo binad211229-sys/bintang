@@ -93,10 +93,24 @@ header {
 /* Card Login Modal */
 .auth-card {
   background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1);
-  padding: 32px; border-radius: 20px; width: 380px; text-align: center; position: relative;
+  padding: 32px; border-radius: 20px; width: 400px; text-align: center; position: relative;
 }
-.auth-card h2 { margin-bottom: 8px; }
-.auth-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+.auth-card h2 { margin-bottom: 4px; }
+.auth-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+
+/* Tab Switch Role Login */
+.role-switch {
+  display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 4px; margin-bottom: 20px; gap: 4px;
+}
+.role-btn {
+  flex: 1; padding: 8px; border: none; background: transparent; color: var(--text-muted);
+  font-weight: 600; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+}
+.role-btn.active {
+  background: var(--primary); color: white;
+}
+
 .form-group { margin-bottom: 16px; text-align: left; }
 .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
 .form-group input { 
@@ -128,7 +142,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
 </header>
 
 <main>
-  <!-- TAB HOME (DITAMBAHKAN BANYAK ITEM) -->
+  <!-- TAB HOME -->
   <div id="home" class="page-section active">
     <section class="hero-banner">
       <div class="hero-text">
@@ -140,7 +154,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
 
     <div class="section-title">⚡ Barang Pilihan Popular</div>
     <section class="product-grid">
-      <!-- Item 1 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headphone Studio">
         <div class="card-body">
@@ -153,7 +166,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
-      <!-- Item 2 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Smartwatch">
         <div class="card-body">
@@ -166,7 +178,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
-      <!-- Item 3 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="Sepatu Sport">
         <div class="card-body">
@@ -179,7 +190,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
-      <!-- Item 4 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80" alt="Kamera Vintage">
         <div class="card-body">
@@ -192,7 +202,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
-      <!-- Item 5 (Baru) -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1507764923504-cd90bf7da772?auto=format&fit=crop&w=500&q=80" alt="Laptop Sleek">
         <div class="card-body">
@@ -205,7 +214,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
-      <!-- Item 6 (Baru) -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" alt="Kacamata Sun">
         <div class="card-body">
@@ -218,7 +226,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
-      <!-- Item 7 (Baru) -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=500&q=80" alt="Smart Glasses">
         <div class="card-body">
@@ -231,7 +238,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
-      <!-- Item 8 (Baru) -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=500&q=80" alt="Wireless TWS">
         <div class="card-body">
@@ -325,22 +331,29 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
   </div>
 </div>
 
-<!-- Modal Login Halaman / Overlay -->
+<!-- Modal Login Halaman dengan Pemilih Kategori (Admin & Pelanggan) -->
 <div id="loginModal" class="auth-modal">
   <div class="auth-card">
     <button class="close-btn" style="position: absolute; right: 20px; top: 16px;" onclick="toggleLoginModal(false)">&times;</button>
     <h2>Selamat Datang</h2>
-    <p>Masuk ke akun NexaStore Anda</p>
+    <p>Silakan pilih kategori akses akun Anda</p>
+    
+    <!-- Tab Pilih Kategori User -->
+    <div class="role-switch">
+      <button class="role-btn active" id="btn-role-user" onclick="setRole('pelanggan')">Pelanggan</button>
+      <button class="role-btn" id="btn-role-admin" onclick="setRole('admin')">Admin Store</button>
+    </div>
+
     <form onsubmit="handleLogin(event)">
       <div class="form-group">
-        <label>Alamat Email</label>
-        <input type="email" placeholder="nama@email.com" required>
+        <label id="email-label">Alamat Email Pelanggan</label>
+        <input type="email" id="login-email" placeholder="nama@email.com" required>
       </div>
       <div class="form-group">
         <label>Kata Sandi</label>
         <input type="password" placeholder="••••••••" required>
       </div>
-      <button type="submit" class="btn-buy" style="margin-top: 10px;">Masuk Sekarang</button>
+      <button type="submit" id="submit-btn" class="btn-buy" style="margin-top: 10px;">Masuk Sebagai Pelanggan</button>
     </form>
   </div>
 </div>
@@ -351,6 +364,33 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
 
 <script>
 let cart = [];
+let currentRole = 'pelanggan';
+
+// Handler Role Switch Login
+function setRole(role) {
+  currentRole = role;
+  const userBtn = document.getElementById('btn-role-user');
+  const adminBtn = document.getElementById('btn-role-admin');
+  const emailLabel = document.getElementById('email-label');
+  const submitBtn = document.getElementById('submit-btn');
+  const emailInput = document.getElementById('login-email');
+
+  if (role === 'admin') {
+    adminBtn.classList.add('active');
+    userBtn.classList.remove('active');
+    emailLabel.textContent = 'ID Admin / Email Staf';
+    emailInput.placeholder = 'admin@nexastore.com';
+    submitBtn.textContent = 'Masuk Portal Admin';
+    submitBtn.style.background = 'var(--accent)';
+  } else {
+    userBtn.classList.add('active');
+    adminBtn.classList.remove('active');
+    emailLabel.textContent = 'Alamat Email Pelanggan';
+    emailInput.placeholder = 'nama@email.com';
+    submitBtn.textContent = 'Masuk Sebagai Pelanggan';
+    submitBtn.style.background = 'var(--primary)';
+  }
+}
 
 // Navigation Handler
 function switchTab(tabId) {
@@ -375,7 +415,11 @@ function toggleLoginModal(show) {
 
 function handleLogin(e) {
   e.preventDefault();
-  alert('Berhasil masuk ke akun Anda!');
+  if (currentRole === 'admin') {
+    alert('Berhasil masuk ke Dashboard Admin!');
+  } else {
+    alert('Berhasil masuk sebagai Pelanggan!');
+  }
   toggleLoginModal(false);
 }
 
