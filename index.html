@@ -37,7 +37,7 @@ header {
 
 .search-bar { width: 35%; display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
 .search-bar input { width: 100%; padding: 10px 16px; background: transparent; border: none; color: white; outline: none; }
-.search-bar button { padding: 10px 20px; background: var(--primary); border: none; color: white; cursor: pointer; }
+.search-bar button { padding: 10px 20px; background: var(--primary); border: none; color: white; cursor: pointer; font-weight: 600; }
 
 .nav-actions { display: flex; gap: 16px; align-items: center; }
 .btn-action { 
@@ -118,6 +118,18 @@ header {
 .detail-info { width: 55%; display: flex; flex-direction: column; justify-content: space-between; }
 .detail-desc { color: var(--text-muted); font-size: 14px; margin: 12px 0 20px; line-height: 1.5; }
 
+/* Form Checkout */
+.checkout-container {
+  max-width: 800px; margin: 32px auto; padding: 32px; background: var(--bg-card);
+  border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-muted); }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 12px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; color: white; outline: none;
+}
+
 footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); text-align: center; color: var(--text-muted); font-size: 14px; border-top: 1px solid rgba(255,255,255,0.05); }
 </style>
 </head>
@@ -131,8 +143,8 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
     <li><a class="nav-link" onclick="switchTab('promo')">Promo</a></li>
   </ul>
   <div class="search-bar">
-    <input type="text" placeholder="Cari item eksklusif...">
-    <button>Cari</button>
+    <input type="text" id="search-input" placeholder="Cari item eksklusif..." oninput="handleSearch()">
+    <button onclick="handleSearch()">Cari</button>
   </div>
   <div class="nav-actions">
     <a href="login.html" class="btn-action btn-login">Masuk</a>
@@ -165,6 +177,49 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
   <div id="promo" class="page-section">
     <div class="section-title">🔥 Diskon & Penawaran Terbatas</div>
     <section class="product-grid" id="grid-promo"></section>
+  </div>
+
+  <!-- TAB HASIL PENCARIAN -->
+  <div id="search-results" class="page-section">
+    <div class="section-title" id="search-title">🔍 Hasil Pencarian</div>
+    <section class="product-grid" id="grid-search"></section>
+  </div>
+
+  <!-- TAB CHECKOUT -->
+  <div id="checkout" class="page-section">
+    <div class="checkout-container">
+      <h2 style="margin-bottom: 24px;">💳 Halaman Pembayaran (Checkout)</h2>
+      
+      <div style="margin-bottom: 24px; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 12px;">
+        <h3>Rincian Pesanan</h3>
+        <div id="checkout-summary" style="margin-top: 12px; color: var(--text-muted);"></div>
+        <div style="display: flex; justify-content: space-between; font-weight: 700; margin-top: 16px; font-size: 18px;">
+          <span>Total Pembayaran:</span>
+          <span id="checkout-total" style="color: var(--primary);">Rp 0</span>
+        </div>
+      </div>
+
+      <form onsubmit="processOrder(event)">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" required placeholder="Masukkan nama lengkap">
+        </div>
+        <div class="form-group">
+          <label>Alamat Pengiriman</label>
+          <textarea rows="3" required placeholder="Masukkan alamat pengiriman lengkap"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Metode Pembayaran</label>
+          <select required>
+            <option value="">-- Pilih Pembayaran --</option>
+            <option value="qris">QRIS / E-Wallet</option>
+            <option value="tf">Transfer Bank</option>
+            <option value="cod">Bayar di Tempat (COD)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-buy" style="background: var(--accent); padding: 14px; font-size: 16px;">Konfirmasi & Bayar Sekarang</button>
+      </form>
+    </div>
   </div>
 </main>
 
@@ -200,7 +255,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         <span>Total:</span>
         <span id="cart-total">Rp 0</span>
       </div>
-      <button class="btn-buy" style="background: var(--accent);" onclick="alert('Lanjut ke Pembayaran!')">Checkout</button>
+      <button class="btn-buy" style="background: var(--accent);" onclick="goToCheckout()">Checkout</button>
     </div>
   </div>
 </div>
@@ -237,6 +292,26 @@ const products = [
 
 let cart = [];
 
+// Template Card HTML
+function createCardHtml(p) {
+  return `
+    <div class="card" onclick="openDetailModal(${p.id})">
+      <img src="${p.img}" alt="${p.title}">
+      <div class="card-body">
+        <div>
+          <span class="tag">${p.tag}</span>
+          <h3>${p.title}</h3>
+          <div class="price">
+            Rp ${p.price.toLocaleString('id-ID')}
+            ${p.oldPrice ? `<span class="old-price">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
+          </div>
+        </div>
+        <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Keranjang</button>
+      </div>
+    </div>
+  `;
+}
+
 // Render Produk ke Grid HTML
 function renderProducts() {
   const homeGrid = document.getElementById('grid-home');
@@ -248,27 +323,39 @@ function renderProducts() {
   promoGrid.innerHTML = '';
 
   products.forEach(p => {
-    const cardHtml = `
-      <div class="card" onclick="openDetailModal(${p.id})">
-        <img src="${p.img}" alt="${p.title}">
-        <div class="card-body">
-          <div>
-            <span class="tag">${p.tag}</span>
-            <h3>${p.title}</h3>
-            <div class="price">
-              Rp ${p.price.toLocaleString('id-ID')}
-              ${p.oldPrice ? `<span class="old-price">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
-            </div>
-          </div>
-          <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Keranjang</button>
-        </div>
-      </div>
-    `;
-
+    const cardHtml = createCardHtml(p);
     if (p.category === 'home') homeGrid.innerHTML += cardHtml;
     else if (p.category === 'kategori') kategoriGrid.innerHTML += cardHtml;
     else if (p.category === 'promo') promoGrid.innerHTML += cardHtml;
   });
+}
+
+// Fungsi Pencarian Produk
+function handleSearch() {
+  const keyword = document.getElementById('search-input').value.toLowerCase().trim();
+  const searchGrid = document.getElementById('grid-search');
+  const searchTitle = document.getElementById('search-title');
+
+  if (keyword === '') {
+    switchTab('home');
+    return;
+  }
+
+  const results = products.filter(p => 
+    p.title.toLowerCase().includes(keyword) || 
+    p.tag.toLowerCase().includes(keyword) || 
+    p.desc.toLowerCase().includes(keyword)
+  );
+
+  searchTitle.textContent = `🔍 Hasil Pencarian: "${keyword}"`;
+  
+  if (results.length === 0) {
+    searchGrid.innerHTML = `<p style="grid-column: 1/-1; color: var(--text-muted);">Tidak ada barang yang ditemukan.</p>`;
+  } else {
+    searchGrid.innerHTML = results.map(p => createCardHtml(p)).join('');
+  }
+
+  switchTab('search-results');
 }
 
 // Fungsi Navigasi Tab
@@ -276,126 +363,5 @@ function switchTab(tabId) {
   document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
 
-  document.getElementById(tabId).classList.add('active');
-  const activeLink = Array.from(document.querySelectorAll('.nav-link')).find(link => link.getAttribute('onclick').includes(tabId));
-  if (activeLink) activeLink.classList.add('active');
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Modal Detail Produk
-function openDetailModal(id) {
-  const p = products.find(item => item.id === id);
-  if (!p) return;
-
-  document.getElementById('detail-img').src = p.img;
-  document.getElementById('detail-tag').textContent = p.tag;
-  document.getElementById('detail-title').textContent = p.title;
-  document.getElementById('detail-price').textContent = 'Rp ' + p.price.toLocaleString('id-ID');
-  document.getElementById('detail-desc').textContent = p.desc;
-  
-  const addBtn = document.getElementById('detail-add-btn');
-  addBtn.onclick = () => {
-    addToCart(p.id);
-    closeDetailModal();
-  };
-
-  document.getElementById('detailModal').style.display = 'flex';
-}
-
-function closeDetailModal() {
-  document.getElementById('detailModal').style.display = 'none';
-}
-
-function closeDetailOnOuterClick(e) {
-  if (e.target.id === 'detailModal') closeDetailModal();
-}
-
-// Logika Keranjang & Pengaturan Jumlah Barang (+/-)
-function addToCart(id) {
-  const product = products.find(p => p.id === id);
-  if (!product) return;
-
-  const existingItem = cart.find(item => item.id === id);
-  if (existingItem) {
-    existingItem.qty += 1;
-  } else {
-    cart.push({ ...product, qty: 1 });
-  }
-  updateCartUI();
-  toggleCart(true);
-}
-
-function updateQuantity(id, change) {
-  const item = cart.find(item => item.id === id);
-  if (!item) return;
-
-  item.qty += change;
-  if (item.qty <= 0) {
-    removeFromCart(id);
-  } else {
-    updateCartUI();
-  }
-}
-
-function removeFromCart(id) {
-  cart = cart.filter(item => item.id !== id);
-  updateCartUI();
-}
-
-function updateCartUI() {
-  const cartCount = document.getElementById('cart-count');
-  const cartItemsContainer = document.getElementById('cart-items');
-  const cartTotal = document.getElementById('cart-total');
-
-  const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
-  const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-
-  cartCount.textContent = totalQty;
-  cartTotal.textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
-
-  if (cart.length === 0) {
-    cartItemsContainer.innerHTML = '<p style="color: var(--text-muted);">Keranjang Anda masih kosong.</p>';
-  } else {
-    cartItemsContainer.innerHTML = cart.map(item => `
-      <div class="cart-item">
-        <div class="cart-item-info">
-          <div style="font-weight:600; font-size: 14px;">${item.title}</div>
-          <div style="font-size:12px; color: var(--text-muted);">Rp ${item.price.toLocaleString('id-ID')} / unit</div>
-          <div style="font-size:13px; font-weight:700; color: var(--primary); margin-top:2px;">
-            Subtotal: Rp ${(item.price * item.qty).toLocaleString('id-ID')}
-          </div>
-        </div>
-        <div class="cart-controls">
-          <button class="btn-qty" onclick="updateQuantity(${item.id}, -1)">-</button>
-          <span class="qty-count">${item.qty}</span>
-          <button class="btn-qty" onclick="updateQuantity(${item.id}, 1)">+</button>
-        </div>
-        <button class="close-btn" style="font-size: 14px; margin-left: 4px;" onclick="removeFromCart(${item.id})">✕</button>
-      </div>
-    `).join('');
-  }
-}
-
-function toggleCart(forceOpen = false) {
-  const modal = document.getElementById('cartModal');
-  if (forceOpen) {
-    modal.style.display = 'flex';
-  } else {
-    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-  }
-}
-
-// Fungsi penutup luar modal keranjang yang ditambahkan
-function closeCartOnOuterClick(e) {
-  if (e.target.id === 'cartModal') toggleCart(false);
-}
-
-// Inisialisasi saat pertama dibuka
-document.addEventListener('DOMContentLoaded', () => {
-  renderProducts();
-});
-</script>
-
-</body>
-</html>
+  const targetSection = document.getElementById(tabId);
+  if (targetSection) targetSecti
