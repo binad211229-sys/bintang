@@ -1,49 +1,146 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NexaStore | E-Commerce Next-Gen</title>
 <style>
-:root { --primary: #6366f1; --bg-main: #0f172a; --bg-card: rgba(30, 41, 59, 0.7); --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #ec4899; --success: #10b981; --danger: #ef4444; }
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --bg-main: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #ec4899;
+  --success: #10b981;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-header { position: sticky; top: 0; z-index: 100; background: rgba(15,23,42,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-.brand { font-size: 20px; font-weight: 800; color: var(--primary); cursor: pointer; }
-.main-nav { display: flex; gap: 12px; list-style: none; }
-.nav-link { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 13px; cursor: pointer; }
-.nav-link.active { color: var(--text-main); border-bottom: 2px solid var(--primary); }
-.search-bar { flex: 1; max-width: 250px; display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; }
-.search-bar input { width: 100%; padding: 6px 10px; background: transparent; border: none; color: #fff; font-size: 13px; outline: none; }
-.search-bar button { padding: 6px 12px; background: var(--primary); border: none; color: #fff; cursor: pointer; font-weight: 600; }
-.nav-actions { display: flex; gap: 8px; align-items: center; }
-.btn-action { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 12px; }
+
+/* Header Navigasi */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 16px 5%; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.brand { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; cursor: pointer; }
+
+/* Navigasi Utama */
+.main-nav { display: flex; gap: 16px; list-style: none; }
+.nav-link { 
+  color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px; 
+  cursor: pointer; transition: color 0.2s; padding: 6px 0; display: inline-block;
+}
+.nav-link:hover, .nav-link.active { color: var(--text-main); border-bottom: 2px solid var(--primary); }
+
+.search-bar { flex: 1; min-width: 200px; max-width: 350px; display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
+.search-bar input { width: 100%; padding: 8px 12px; background: transparent; border: none; color: white; outline: none; font-size: 14px; }
+.search-bar button { padding: 8px 16px; background: var(--primary); border: none; color: white; cursor: pointer; font-weight: 600; }
+
+.nav-actions { display: flex; gap: 10px; align-items: center; }
+.btn-action { 
+  padding: 8px 14px; 
+  border-radius: 8px; 
+  border: none; 
+  font-weight: 600; 
+  cursor: pointer; 
+  text-decoration: none;
+  font-size: 13px;
+}
 .btn-login { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); }
-.btn-cart { background: var(--primary); color: #fff; }
-.btn-danger { background: var(--danger); color: #fff; }
-.page-section { display: none; } .page-section.active { display: block; }
-.hero-banner { margin: 16px 5%; padding: 24px; border-radius: 16px; background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2)); border: 1px solid rgba(255,255,255,0.1); }
-.section-title { padding: 16px 5% 8px; font-size: 16px; font-weight: 700; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 0 5% 32px; }
-@media (min-width: 600px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }
-.card { background: var(--bg-card); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; }
-.card img { width: 100%; height: 130px; object-fit: cover; }
-.card-body { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
-.tag { font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 4px; background: rgba(236,72,153,0.2); color: var(--accent); width: max-content; }
-.price { font-size: 14px; font-weight: 800; margin: 4px 0; }
-.btn-buy { width: 100%; padding: 6px; border-radius: 6px; border: none; background: var(--primary); color: #fff; font-weight: 600; cursor: pointer; font-size: 12px; }
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 200; align-items: center; justify-content: center; padding: 16px; }
-.modal-card { background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; width: 100%; max-width: 400px; padding: 16px; position: relative; }
-.cart-content { width: 100%; max-width: 360px; background: var(--bg-main); height: 100%; padding: 16px; display: flex; flex-direction: column; position: absolute; right: 0; top: 0; border-left: 1px solid rgba(255,255,255,0.1); }
-.cart-items { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
-.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: var(--bg-card); border-radius: 6px; font-size: 12px; }
-.btn-qty { background: var(--primary); color: #fff; border: none; width: 20px; height: 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-.checkout-container, .admin-container { max-width: 600px; margin: 16px auto; padding: 16px; background: var(--bg-card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
-.form-group { margin-bottom: 10px; }
-.form-group label { display: block; margin-bottom: 4px; font-size: 12px; color: var(--text-muted); }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; outline: none; font-size: 13px; }
-footer { margin-top: auto; padding: 12px; text-align: center; color: var(--text-muted); font-size: 11px; }
-.admin-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
-.admin-table th, .admin-table td { border: 1px solid rgba(255,255,255,0.1); padding: 8px; text-align: left; }
+.btn-cart { background: var(--primary); color: white; }
+
+/* Section Management */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* Hero Section */
+.hero-banner {
+  margin: 16px 5%; padding: 32px 24px; border-radius: 20px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2));
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.hero-text h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+.hero-text p { color: var(--text-muted); margin-bottom: 16px; font-size: 14px; }
+
+/* Grid & Card Produk */
+.section-title { padding: 16px 5% 12px; font-size: 18px; font-weight: 700; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; padding: 0 5% 48px; }
+
+@media (min-width: 600px) {
+  .product-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .hero-text h1 { font-size: 36px; }
+}
+
+.card {
+  background: var(--bg-card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden; transition: transform 0.2s; display: flex; flex-direction: column; cursor: pointer;
+}
+.card:hover { transform: translateY(-4px); border-color: rgba(99,102,241,0.4); }
+.card img { width: 100%; height: 150px; object-fit: cover; background: #1e293b; }
+.card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+.card-body h3 { font-size: 14px; margin-top: 4px; color: #fff; }
+.tag { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 3px 6px; border-radius: 4px; background: rgba(236,72,153,0.2); color: var(--accent); width: max-content; }
+.price { font-size: 15px; font-weight: 800; color: #fff; margin: 6px 0; }
+.old-price { font-size: 11px; text-decoration: line-through; color: var(--text-muted); display: block; }
+.btn-buy { width: 100%; padding: 8px; border-radius: 6px; border: none; background: var(--primary); color: white; font-weight: 600; cursor: pointer; font-size: 13px; }
+
+/* Modal Styles */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); 
+  backdrop-filter: blur(6px); z-index: 200; align-items: center; justify-content: center; padding: 16px;
+}
+
+.cart-content {
+  width: 100%; max-width: 400px; background: var(--bg-main); height: 100%; padding: 20px; 
+  display: flex; flex-direction: column; position: absolute; right: 0; top: 0;
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cart-items { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-card); border-radius: 8px; font-size: 13px; }
+
+.cart-controls { display: flex; align-items: center; gap: 6px; }
+.btn-qty { background: var(--primary); color: white; border: none; width: 22px; height: 22px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+.close-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
+
+.detail-modal-card {
+  background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+  width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; padding: 20px; position: relative;
+  max-height: 90vh; overflow-y: auto;
+}
+.detail-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+.detail-desc { color: var(--text-muted); font-size: 13px; margin: 8px 0; line-height: 1.4; }
+
+/* Modal Konfirmasi Pembayaran Berhasil */
+.success-card {
+  background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+  width: 100%; max-width: 420px; padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center;
+}
+.success-icon {
+  width: 60px; height: 60px; background: rgba(16, 185, 129, 0.2); color: var(--success);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin-bottom: 12px;
+}
+.success-details {
+  width: 100%; background: var(--bg-card); padding: 12px; border-radius: 8px; margin: 16px 0;
+  text-align: left; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 6px;
+}
+
+.checkout-container {
+  max-width: 600px; margin: 16px auto; padding: 20px; background: var(--bg-card);
+  border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+}
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 10px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; color: white; outline: none; font-size: 14px;
+}
+
+footer { margin-top: auto; padding: 16px; background: rgba(15,23,42,0.95); text-align: center; color: var(--text-muted); font-size: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
 </style>
 </head>
 <body>
@@ -51,387 +148,379 @@ footer { margin-top: auto; padding: 12px; text-align: center; color: var(--text-
 <header>
   <div class="brand" onclick="switchTab('home')">NEXA</div>
   <ul class="main-nav">
-    <li><a class="nav-link active" id="nav-home" onclick="switchTab('home')">Home</a></li>
-    <li><a class="nav-link" id="nav-kategori" onclick="switchTab('kategori')">Kategori</a></li>
-    <li><a class="nav-link" id="nav-promo" onclick="switchTab('promo')">Promo</a></li>
-    <li id="nav-admin-wrapper" style="display:none;"><a class="nav-link" id="nav-admin" onclick="switchTab('admin')">Panel Admin</a></li>
+    <li><a href="javascript:void(0)" class="nav-link active" id="nav-home" onclick="switchTab('home')">Home</a></li>
+    <li><a href="javascript:void(0)" class="nav-link" id="nav-kategori" onclick="switchTab('kategori')">Kategori</a></li>
+    <li><a href="javascript:void(0)" class="nav-link" id="nav-promo" onclick="switchTab('promo')">Promo</a></li>
   </ul>
   <div class="search-bar">
-    <input type="text" id="search-input" placeholder="Cari..." oninput="handleSearch()">
+    <input type="text" id="search-input" placeholder="Cari item..." oninput="handleSearch()">
     <button onclick="handleSearch()">Cari</button>
   </div>
   <div class="nav-actions">
-    <button id="btn-user-action" class="btn-action btn-login" onclick="openLoginModal()">Masuk</button>
+    <a href="login.html" class="btn-action btn-login">Masuk</a>
     <button class="btn-action btn-cart" onclick="toggleCart()">Keranjang (<span id="cart-count">0</span>)</button>
   </div>
 </header>
 
 <main>
+  <!-- TAB HOME -->
   <div id="home" class="page-section active">
     <section class="hero-banner">
-      <h2>Koleksi Masa Depan</h2>
-      <p style="font-size:12px; color:var(--text-muted); margin:4px 0 12px;">Diskon hingga 50% produk pilihan.</p>
-      <button class="btn-action btn-cart" onclick="switchTab('promo')">Jelajahi Promo</button>
+      <div class="hero-text">
+        <h1>Koleksi Masa Depan</h1>
+        <p>Dapatkan diskon terbatas hingga 50% untuk lini produk audio terkurasi.</p>
+        <button class="btn-action btn-cart" onclick="switchTab('promo')">Jelajahi Promo</button>
+      </div>
     </section>
+
     <div class="section-title">⚡ Barang Pilihan</div>
     <section class="product-grid" id="grid-home"></section>
   </div>
 
+  <!-- TAB KATEGORI -->
   <div id="kategori" class="page-section">
-    <div class="section-title">📦 Semua Kategori</div>
+    <div class="section-title">📦 Semua Kategori Produk</div>
     <section class="product-grid" id="grid-kategori"></section>
   </div>
 
+  <!-- TAB PROMO -->
   <div id="promo" class="page-section">
-    <div class="section-title">🔥 Diskon Spesial</div>
+    <div class="section-title">🔥 Diskon & Penawaran Terbatas</div>
     <section class="product-grid" id="grid-promo"></section>
   </div>
 
+  <!-- TAB HASIL PENCARIAN -->
   <div id="search-results" class="page-section">
     <div class="section-title" id="search-title">🔍 Hasil Pencarian</div>
     <section class="product-grid" id="grid-search"></section>
   </div>
 
-  <!-- Panel Admin -->
-  <div id="admin" class="page-section">
-    <div class="admin-container">
-      <h3>⚙️ Dashboard Kelola Barang (Admin)</h3>
-      <form id="add-product-form" onsubmit="addNewProduct(event)" style="margin-top: 12px;">
-        <div class="form-group"><label>Nama Produk</label><input type="text" id="p-title" required></div>
-        <div class="form-group">
-          <label>Kategori Menu</label>
-          <select id="p-category" required>
-            <option value="home">Home (Pilihan)</option>
-            <option value="kategori">Kategori</option>
-            <option value="promo">Promo</option>
-          </select>
-        </div>
-        <div class="form-group"><label>Tag (cth: Audio / Diskon 20%)</label><input type="text" id="p-tag" required></div>
-        <div class="form-group"><label>Harga (Rp)</label><input type="number" id="p-price" required></div>
-        <div class="form-group"><label>URL Gambar</label><input type="url" id="p-img" required placeholder="https://images.unsplash.com/..."></div>
-        <div class="form-group"><label>Deskripsi</label><textarea id="p-desc" rows="2" required></textarea></div>
-        <button type="submit" class="btn-buy" style="background:var(--success); margin-bottom:16px;">+ Tambah Produk Baru</button>
-      </form>
-      
-      <h4>Daftar Produk Aktif</h4>
-      <table class="admin-table">
-        <thead>
-          <tr><th>ID</th><th>Produk</th><th>Menu</th><th>Harga</th><th>Aksi</th></tr>
-        </thead>
-        <tbody id="admin-product-list"></tbody>
-      </table>
-    </div>
-  </div>
-
+  <!-- TAB CHECKOUT -->
   <div id="checkout" class="page-section">
     <div class="checkout-container">
-      <h3>💳 Checkout</h3>
-      <div id="checkout-summary" style="font-size:12px; color:var(--text-muted); margin:10px 0;"></div>
-      <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:12px;">
-        <span>Total:</span><span id="checkout-total" style="color:var(--primary);">Rp 0</span>
+      <h2 style="margin-bottom: 16px;">💳 Form Checkout</h2>
+      <div style="margin-bottom: 16px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+        <div id="checkout-summary" style="font-size: 13px; color: var(--text-muted);"></div>
+        <div style="display: flex; justify-content: space-between; font-weight: 700; margin-top: 12px; font-size: 16px;">
+          <span>Total:</span>
+          <span id="checkout-total" style="color: var(--primary);">Rp 0</span>
+        </div>
       </div>
+
       <form id="checkout-form" onsubmit="processOrder(event)">
-        <div class="form-group"><label>Nama Lengkap</label><input type="text" id="cust-name" required placeholder="Nama Anda"></div>
-        <div class="form-group"><label>Nomor Telepon / WhatsApp</label><input type="tel" id="cust-phone" required placeholder="081234567890"></div>
-        <div class="form-group"><label>Alamat Pengiriman</label><textarea id="cust-address" rows="2" required placeholder="Alamat lengkap"></textarea></div>
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="cust-name" required placeholder="Nama Anda">
+        </div>
+        <div class="form-group">
+          <label>Nomor Telepon / WhatsApp</label>
+          <input type="tel" id="cust-phone" required placeholder="Contoh: 081234567890">
+        </div>
+        <div class="form-group">
+          <label>Alamat Pengiriman</label>
+          <textarea id="cust-address" rows="3" required placeholder="Alamat lengkap"></textarea>
+        </div>
         <div class="form-group">
           <label>Metode Pembayaran</label>
           <select id="payment-method" required>
-            <option value="">-- Pilih --</option>
+            <option value="">-- Pilih Pembayaran --</option>
             <option value="QRIS / E-Wallet">QRIS / E-Wallet</option>
             <option value="Transfer Bank">Transfer Bank</option>
-            <option value="COD">COD (Bayar Tempat)</option>
+            <option value="COD (Bayar di Tempat)">COD</option>
           </select>
         </div>
-        <button type="submit" class="btn-buy" style="background:var(--accent); padding:10px;">Konfirmasi & Bayar</button>
+        <button type="submit" class="btn-buy" style="background: var(--accent); padding: 12px; font-size: 15px;">Konfirmasi & Bayar</button>
       </form>
     </div>
   </div>
 </main>
 
-<!-- Modal Login -->
-<div id="loginModal" class="modal-overlay" onclick="if(event.target.id==='loginModal') closeLoginModal()">
-  <div class="modal-card">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h3>Masuk Ke Akun</h3>
-      <button onclick="closeLoginModal()" style="background:none; border:none; color:#fff; cursor:pointer;">✕</button>
+<!-- Modal Detail Produk -->
+<div id="detailModal" class="modal-overlay" onclick="closeDetailOnOuterClick(event)">
+  <div class="detail-modal-card">
+    <button class="close-btn" style="position: absolute; right: 12px; top: 8px;" onclick="closeDetailModal()">&times;</button>
+    <img id="detail-img" class="detail-img" src="" alt="Detail Produk">
+    <div>
+      <span id="detail-tag" class="tag">TAG</span>
+      <h2 id="detail-title" style="margin-top: 4px; font-size: 18px;">Judul Produk</h2>
+      <div id="detail-price" class="price">Rp 0</div>
+      <p id="detail-desc" class="detail-desc">Deskripsi produk...</p>
     </div>
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label>Peran (Role)</label>
-        <select id="login-role" onchange="toggleLoginHint()">
-          <option value="pelanggan">Pelanggan / User</option>
-          <option value="admin">Administrator</option>
-        </select>
-      </div>
-      <div class="form-group"><label>Username / Email</label><input type="text" id="login-username" required placeholder="Masukkan username"></div>
-      <div class="form-group"><label>Kata Sandi</label><input type="password" id="login-password" required placeholder="******"></div>
-      <p id="login-hint" style="font-size:10px; color:var(--text-muted); margin-bottom:10px;">*Untuk Akses Admin demo gunakan: user: <b>admin</b> | pass: <b>admin123</b></p>
-      <button type="submit" class="btn-buy">Masuk</button>
-    </form>
-  </div>
-</div>
-
-<!-- Modal Detail -->
-<div id="detailModal" class="modal-overlay" onclick="if(event.target.id==='detailModal') closeDetailModal()">
-  <div class="modal-card">
-    <span id="detail-tag" class="tag">TAG</span>
-    <h3 id="detail-title" style="margin-top:4px;">Judul</h3>
-    <div id="detail-price" class="price">Rp 0</div>
-    <p id="detail-desc" style="font-size:12px; color:var(--text-muted); margin:8px 0;">Deskripsi...</p>
     <button id="detail-add-btn" class="btn-buy">+ Keranjang</button>
   </div>
 </div>
 
-<!-- Modal Keranjang -->
-<div id="cartModal" class="modal-overlay" onclick="if(event.target.id==='cartModal') toggleCart(false)">
+<!-- Modal Keranjang Belanja -->
+<div id="cartModal" class="modal-overlay" onclick="closeCartOnOuterClick(event)">
   <div class="cart-content">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h3>Keranjang</h3><button style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;" onclick="toggleCart()">✕</button>
+    <div class="cart-header">
+      <h2>Keranjang Belanja</h2>
+      <button class="close-btn" onclick="toggleCart()">&times;</button>
     </div>
     <div id="cart-items" class="cart-items"></div>
-    <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:8px;">
-      <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:8px;">
-        <span>Total:</span><span id="cart-total">Rp 0</span>
+    <div style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+      <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 12px;">
+        <span>Total:</span>
+        <span id="cart-total">Rp 0</span>
       </div>
-      <button class="btn-buy" style="background:var(--accent);" onclick="goToCheckout()">Checkout</button>
+      <button class="btn-buy" style="background: var(--accent);" onclick="goToCheckout()">Checkout</button>
     </div>
   </div>
 </div>
 
-<!-- Modal Pembayaran Berhasil -->
+<!-- Modal Konfirmasi Pembayaran Berhasil -->
 <div id="successModal" class="modal-overlay">
-  <div class="modal-card" style="text-align:center;">
-    <div style="font-size:36px; color:var(--success);">✓</div>
-    <h2>Pembayaran Berhasil!</h2>
-    <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Pesanan Anda sedang diproses.</p>
-    <div style="background:var(--bg-card); padding:10px; border-radius:6px; text-align:left; font-size:12px; color:var(--text-muted); margin-bottom:12px;">
-      <div>No. Pesanan: <b id="success-id" style="color:#fff;"></b></div>
-      <div>Nama: <b id="success-name" style="color:#fff;"></b></div>
-      <div>No. Telp: <b id="success-phone" style="color:#fff;"></b></div>
-      <div>Metode: <b id="success-method" style="color:#fff;"></b></div>
-      <div>Total: <b id="success-total" style="color:var(--success);"></b></div>
+  <div class="success-card">
+    <div class="success-icon">✓</div>
+    <h2 style="font-size: 20px; color: #fff;">Pembayaran Berhasil!</h2>
+    <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Terima kasih, pesanan Anda sedang kami proses.</p>
+
+    <div class="success-details">
+      <div><strong>No. Pesanan:</strong> <span id="success-id" style="color:#fff;">#NX-0000</span></div>
+      <div><strong>Nama:</strong> <span id="success-name" style="color:#fff;">-</span></div>
+      <div><strong>No. Telp:</strong> <span id="success-phone" style="color:#fff;">-</span></div>
+      <div><strong>Metode:</strong> <span id="success-method" style="color:#fff;">-</span></div>
+      <div><strong>Total Bayar:</strong> <span id="success-total" style="color:var(--success); font-weight:700;">Rp 0</span></div>
     </div>
+
     <button class="btn-buy" onclick="closeSuccessModal()">Kembali ke Beranda</button>
   </div>
 </div>
 
-<footer><p>© 2026 NexaStore Platform.</p></footer>
+<footer>
+  <p>© 2026 NexaStore Platform.</p>
+</footer>
 
 <script>
-let products = [
-  { id: 1, title: 'Studio ANC Wireless', category: 'home', tag: 'Audio', price: 1450000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300', desc: 'Headphone Active Noise Cancelling.' },
-  { id: 2, title: 'NexaWatch Series X', category: 'home', tag: 'Gadget', price: 2199000, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300', desc: 'Smartwatch futuristik pemantau kesehatan.' },
-  { id: 3, title: 'Runner Pro V2', category: 'home', tag: 'Sepatu', price: 899000, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300', desc: 'Sepatu lari ultralight empuk.' },
-  { id: 4, title: 'NexaBook Pro 14"', category: 'kategori', tag: 'Laptop', price: 12499000, img: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300', desc: 'Ultrabook tipis kencang.' },
-  { id: 5, title: 'NexaWatch Sport', category: 'promo', tag: 'Diskon 30%', price: 1199000, img: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=300', desc: 'Jam olahraga tahan air.' }
+// Data Produk
+const products = [
+  { id: 1, title: 'Studio ANC Wireless', category: 'home', tag: 'Audio', price: 1450000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', desc: 'Headphone wireless dengan Active Noise Cancelling.' },
+  { id: 2, title: 'NexaWatch Series X', category: 'home', tag: 'Gadget', price: 2199000, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400', desc: 'Smartwatch futuristik dengan pemantau kesehatan.' },
+  { id: 3, title: 'Runner Pro V2', category: 'home', tag: 'Sepatu', price: 899000, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400', desc: 'Sepatu lari ultralight bantalan empuk.' },
+  { id: 4, title: 'Retro Cam 35mm', category: 'home', tag: 'Kamera', price: 3100000, img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400', desc: 'Kamera analog bergaya klasik 35mm.' },
+  { id: 5, title: 'NexaBook Pro 14"', category: 'kategori', tag: 'Laptop', price: 12499000, img: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400', desc: 'Ultrabook tipis berprosesor kencang.' },
+  { id: 6, title: 'Pulse Gaming Headset', category: 'kategori', tag: 'Gaming', price: 950000, img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400', desc: 'Audio surround 7.1 presisi.' },
+  { id: 7, title: 'NexaWatch Sport', category: 'promo', tag: 'Diskon 30%', price: 1199000, oldPrice: 1699000, img: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400', desc: 'Jam tangan olahraga GPS tahan air.' },
+  { id: 8, title: 'MechKey RGB Wireless', category: 'promo', tag: 'Diskon 40%', price: 750000, oldPrice: 1250000, img: 'https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=400', desc: 'Keyboard mekanikal RGB hotswap.' }
 ];
 
 let cart = [];
-let currentUser = null; // null | { username: string, role: 'pelanggan' | 'admin' }
 
-// Fitur Auth / Login
-function openLoginModal() {
-  document.getElementById('loginModal').style.display = 'flex';
-}
-function closeLoginModal() {
-  document.getElementById('loginModal').style.display = 'none';
-}
-function handleLogin(e) {
-  e.preventDefault();
-  const role = document.getElementById('login-role').value;
-  const user = document.getElementById('login-username').value;
-  const pass = document.getElementById('login-password').value;
-
-  if (role === 'admin' && (user !== 'admin' || pass !== 'admin123')) {
-    alert('Kredensial Admin Salah! (Gunakan admin / admin123)');
-    return;
-  }
-
-  currentUser = { username: user, role: role };
-  updateUserUI();
-  closeLoginModal();
-  alert(`Selamat datang, ${user} (${role})!`);
-}
-
-function handleLogout() {
-  currentUser = null;
-  updateUserUI();
-  switchTab('home');
-  alert('Anda telah keluar.');
-}
-
-function updateUserUI() {
-  const btnAction = document.getElementById('btn-user-action');
-  const adminWrapper = document.getElementById('nav-admin-wrapper');
-
-  if (currentUser) {
-    btnAction.textContent = `Keluar (${currentUser.username})`;
-    btnAction.onclick = handleLogout;
-    btnAction.className = 'btn-action btn-danger';
-    if (currentUser.role === 'admin') {
-      adminWrapper.style.display = 'inline-block';
-      renderAdminTable();
-    } else {
-      adminWrapper.style.display = 'none';
-    }
-  } else {
-    btnAction.textContent = 'Masuk';
-    btnAction.onclick = openLoginModal;
-    btnAction.className = 'btn-action btn-login';
-    adminWrapper.style.display = 'none';
-  }
-}
-
-// Render Produk
-function renderProducts() {
-  ['home','kategori','promo'].forEach(cat => {
-    const el = document.getElementById('grid-' + cat);
-    if(el) el.innerHTML = products.filter(p => p.category === cat).map(p => `
-      <div class="card" onclick="openDetailModal(${p.id})">
-        <img src="${p.img}" alt="${p.title}">
-        <div class="card-body">
-          <span class="tag">${p.tag}</span>
-          <h4 style="font-size:12px; margin-top:2px;">${p.title}</h4>
-          <div class="price">Rp ${p.price.toLocaleString('id-ID')}</div>
-          <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Keranjang</button>
-        </div>
-      </div>
-    `).join('');
-  });
-}
-
-// Kelola Produk (Admin)
-function renderAdminTable() {
-  const tbody = document.getElementById('admin-product-list');
-  tbody.innerHTML = products.map(p => `
-    <tr>
-      <td>${p.id}</td>
-      <td>${p.title}</td>
-      <td>${p.category}</td>
-      <td>Rp ${p.price.toLocaleString('id-ID')}</td>
-      <td><button class="btn-action btn-danger" onclick="deleteProduct(${p.id})">Hapus</button></td>
-    </tr>
-  `).join('');
-}
-
-function addNewProduct(e) {
-  e.preventDefault();
-  const newProd = {
-    id: Date.now(),
-    title: document.getElementById('p-title').value,
-    category: document.getElementById('p-category').value,
-    tag: document.getElementById('p-tag').value,
-    price: Number(document.getElementById('p-price').value),
-    img: document.getElementById('p-img').value,
-    desc: document.getElementById('p-desc').value
-  };
-  products.push(newProd);
-  renderProducts();
-  renderAdminTable();
-  document.getElementById('add-product-form').reset();
-  alert('Produk berhasil ditambahkan!');
-}
-
-function deleteProduct(id) {
-  if (confirm('Yakin ingin menghapus produk ini?')) {
-    products = products.filter(p => p.id !== id);
-    renderProducts();
-    renderAdminTable();
-  }
-}
-
-function handleSearch() {
-  const kw = document.getElementById('search-input').value.toLowerCase().trim();
-  if (!kw) return switchTab('home');
-  const res = products.filter(p => p.title.toLowerCase().includes(kw) || p.tag.toLowerCase().includes(kw));
-  document.getElementById('search-title').textContent = `🔍 Hasil: "${kw}"`;
-  document.getElementById('grid-search').innerHTML = res.length ? res.map(p => `
+function createCardHtml(p) {
+  return `
     <div class="card" onclick="openDetailModal(${p.id})">
-      <img src="${p.img}">
+      <img src="${p.img}" alt="${p.title}" loading="lazy">
       <div class="card-body">
-        <span class="tag">${p.tag}</span><h4>${p.title}</h4>
-        <div class="price">Rp ${p.price.toLocaleString('id-ID')}</div>
+        <div>
+          <span class="tag">${p.tag}</span>
+          <h3>${p.title}</h3>
+          <div class="price">
+            Rp ${p.price.toLocaleString('id-ID')}
+            ${p.oldPrice ? `<span class="old-price">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
+          </div>
+        </div>
         <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Keranjang</button>
       </div>
     </div>
-  `).join('') : '<p style="color:var(--text-muted); font-size:12px;">Tidak ditemukan.</p>';
+  `;
+}
+
+function renderProducts() {
+  const homeGrid = document.getElementById('grid-home');
+  const kategoriGrid = document.getElementById('grid-kategori');
+  const promoGrid = document.getElementById('grid-promo');
+
+  if (homeGrid) homeGrid.innerHTML = '';
+  if (kategoriGrid) kategoriGrid.innerHTML = '';
+  if (promoGrid) promoGrid.innerHTML = '';
+
+  products.forEach(p => {
+    const html = createCardHtml(p);
+    if (p.category === 'home' && homeGrid) homeGrid.innerHTML += html;
+    if (p.category === 'kategori' && kategoriGrid) kategoriGrid.innerHTML += html;
+    if (p.category === 'promo' && promoGrid) promoGrid.innerHTML += html;
+  });
+}
+
+function handleSearch() {
+  const keyword = document.getElementById('search-input').value.toLowerCase().trim();
+  const searchGrid = document.getElementById('grid-search');
+  const searchTitle = document.getElementById('search-title');
+
+  if (!keyword) {
+    switchTab('home');
+    return;
+  }
+
+  const results = products.filter(p => 
+    p.title.toLowerCase().includes(keyword) || 
+    p.tag.toLowerCase().includes(keyword)
+  );
+
+  searchTitle.textContent = `🔍 Hasil Pencarian: "${keyword}"`;
+  
+  if (results.length === 0) {
+    searchGrid.innerHTML = `<p style="grid-column: 1/-1; color: var(--text-muted); font-size: 14px;">Barang tidak ditemukan.</p>`;
+  } else {
+    searchGrid.innerHTML = results.map(p => createCardHtml(p)).join('');
+  }
+
   switchTab('search-results');
 }
 
-function switchTab(id) {
+function switchTab(tabId) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.getElementById(id)?.classList.add('active');
-  document.getElementById('nav-' + id)?.classList.add('active');
+
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add('active');
+
+  const navItem = document.getElementById('nav-' + tabId);
+  if (navItem) navItem.classList.add('active');
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function openDetailModal(id) {
-  const p = products.find(x => x.id === id);
-  if(!p) return;
+  const p = products.find(item => item.id === id);
+  if (!p) return;
+
+  document.getElementById('detail-img').src = p.img;
   document.getElementById('detail-tag').textContent = p.tag;
   document.getElementById('detail-title').textContent = p.title;
   document.getElementById('detail-price').textContent = 'Rp ' + p.price.toLocaleString('id-ID');
   document.getElementById('detail-desc').textContent = p.desc;
-  document.getElementById('detail-add-btn').onclick = () => { addToCart(p.id); closeDetailModal(); };
+  
+  const addBtn = document.getElementById('detail-add-btn');
+  addBtn.onclick = () => {
+    addToCart(p.id);
+    closeDetailModal();
+  };
+
   document.getElementById('detailModal').style.display = 'flex';
 }
-function closeDetailModal() { document.getElementById('detailModal').style.display = 'none'; }
 
-function addToCart(id) {
-  const item = cart.find(i => i.id === id);
-  if (item) item.qty++;
-  else cart.push({ ...products.find(p => p.id === id), qty: 1 });
-  updateCartUI(); toggleCart(true);
+function closeDetailModal() {
+  document.getElementById('detailModal').style.display = 'none';
 }
 
-function updateQty(id, change) {
+function closeDetailOnOuterClick(e) {
+  if (e.target.id === 'detailModal') closeDetailModal();
+}
+
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+
   const item = cart.find(i => i.id === id);
-  if (item) { item.qty += change; if (item.qty <= 0) cart = cart.filter(i => i.id !== id); }
+  if (item) {
+    item.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+  updateCartUI();
+  toggleCart(true);
+}
+
+function updateQuantity(id, change) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+
+  item.qty += change;
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
+  }
   updateCartUI();
 }
 
 function updateCartUI() {
-  document.getElementById('cart-count').textContent = cart.reduce((a, b) => a + b.qty, 0);
-  const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-  document.getElementById('cart-total').textContent = 'Rp ' + total.toLocaleString('id-ID');
-  document.getElementById('cart-items').innerHTML = cart.length ? cart.map(i => `
-    <div class="cart-item">
-      <div><b>${i.title}</b><div style="color:var(--primary)">Rp ${(i.price * i.qty).toLocaleString('id-ID')}</div></div>
-      <div><button class="btn-qty" onclick="updateQty(${i.id}, -1)">-</button> <span>${i.qty}</span> <button class="btn-qty" onclick="updateQty(${i.id}, 1)">+</button></div>
-    </div>
-  `).join('') : '<p style="color:var(--text-muted); font-size:12px;">Keranjang kosong.</p>';
+  const cartCount = document.getElementById('cart-count');
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartTotal = document.getElementById('cart-total');
+
+  const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
+  const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+
+  if (cartCount) cartCount.textContent = totalQty;
+  if (cartTotal) cartTotal.textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
+
+  if (cartItemsContainer) {
+    if (cart.length === 0) {
+      cartItemsContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">Keranjang kosong.</p>';
+    } else {
+      cartItemsContainer.innerHTML = cart.map(i => `
+        <div class="cart-item">
+          <div>
+            <div style="font-weight:600;">${i.title}</div>
+            <div style="color: var(--primary);">Rp ${(i.price * i.qty).toLocaleString('id-ID')}</div>
+          </div>
+          <div class="cart-controls">
+            <button class="btn-qty" onclick="updateQuantity(${i.id}, -1)">-</button>
+            <span>${i.qty}</span>
+            <button class="btn-qty" onclick="updateQuantity(${i.id}, 1)">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
 }
 
-function toggleCart(open) {
-  const m = document.getElementById('cartModal');
-  m.style.display = open !== undefined ? (open ? 'flex' : 'none') : (m.style.display === 'flex' ? 'none' : 'flex');
+function toggleCart(forceOpen = false) {
+  const modal = document.getElementById('cartModal');
+  if (modal) {
+    modal.style.display = forceOpen ? 'flex' : (modal.style.display === 'flex' ? 'none' : 'flex');
+  }
+}
+
+function closeCartOnOuterClick(e) {
+  if (e.target.id === 'cartModal') toggleCart(false);
 }
 
 function goToCheckout() {
-  if (!cart.length) return alert('Keranjang kosong!');
-  toggleCart(false);
-  const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-  document.getElementById('checkout-summary').innerHTML = cart.map(i => `<div>${i.title} (x${i.qty}) - Rp ${(i.price * i.qty).toLocaleString('id-ID')}</div>`).join('');
-  document.getElementById('checkout-total').textContent = 'Rp ' + total.toLocaleString('id-ID');
-  
-  if (currentUser) {
-    document.getElementById('cust-name').value = currentUser.username;
+  if (cart.length === 0) {
+    alert('Keranjang belanja kosong!');
+    return;
   }
+  toggleCart(false);
+  
+  const summary = document.getElementById('checkout-summary');
+  const total = document.getElementById('checkout-total');
+  const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+
+  if (summary) {
+    summary.innerHTML = cart.map(i => `
+      <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+        <span>${i.title} (x${i.qty})</span>
+        <span>Rp ${(i.price * i.qty).toLocaleString('id-ID')}</span>
+      </div>
+    `).join('');
+  }
+  if (total) total.textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
+  
   switchTab('checkout');
 }
 
 function processOrder(e) {
   e.preventDefault();
-  const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+
+  const name = document.getElementById('cust-name').value;
+  const phone = document.getElementById('cust-phone').value;
+  const method = document.getElementById('payment-method').value;
+  const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+
+  // Isi data konfirmasi
   document.getElementById('success-id').textContent = '#NX-' + Math.floor(1000 + Math.random() * 9000);
-  document.getElementById('success-name').textContent = document.getElementById('cust-name').value;
-  document.getElementById('success-phone').textContent = document.getElementById('cust-phone').value;
-  document.getElementById('success-method').textContent = document.getElementById('payment-method').value;
-  document.getElementById('success-total').textContent = 'Rp ' + total.toLocaleString('id-ID');
+  document.getElementById('success-name').textContent = name;
+  document.getElementById('success-phone').textContent = phone;
+  document.getElementById('success-method').textContent = method;
+  document.getElementById('success-total').textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
+
+  // Buka modal sukses
   document.getElementById('successModal').style.display = 'flex';
-  cart = []; updateCartUI();
+
+  // Reset keranjang & form
+  cart = [];
+  updateCartUI();
   document.getElementById('checkout-form').reset();
 }
 
@@ -440,7 +529,11 @@ function closeSuccessModal() {
   switchTab('home');
 }
 
-document.addEventListener('DOMContentLoaded', () => { renderProducts(); updateCartUI(); });
+// Inisialisasi awal saat dokumen siap
+document.addEventListener('DOMContentLoaded', () => {
+  renderProducts();
+  updateCartUI();
+});
 </script>
 </body>
 </html>
