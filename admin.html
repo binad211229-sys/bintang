@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk - NexaStore</title>
+<style>
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --bg-main: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.75);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #ec4899;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+body { 
+  background: var(--bg-main); 
+  color: var(--text-main); 
+  min-height: 100vh; 
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: var(--primary);
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.25;
+  top: 15%;
+  left: 20%;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: var(--accent);
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.2;
+  bottom: 15%;
+  right: 20%;
+  z-index: 0;
+}
+
+header {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  padding: 20px 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.brand { 
+  font-size: 24px; 
+  font-weight: 800; 
+  color: var(--primary); 
+  letter-spacing: -0.5px; 
+  text-decoration: none;
+}
+
+.btn-back {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.btn-back:hover { color: var(--text-main); }
+
+.login-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 36px 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-header h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  background: linear-gradient(to right, #fff, var(--text-muted));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.login-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.role-selector {
+  display: flex;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.role-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.role-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+.form-group { margin-bottom: 18px; }
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input-field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.remember-me input { accent-color: var(--primary); cursor: pointer; }
+
+.forgot-pass {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.forgot-pass:hover { text-decoration: underline; }
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover { background: var(--primary-hover); }
+
+/* Tombol Akses Langsung Menggunakan HREF */
+.direct-links {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-link-href {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-link-admin {
+  background: rgba(236, 72, 153, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+.btn-link-admin:hover {
+  background: rgba(236, 72, 153, 0.3);
+}
+
+.btn-link-customer {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.btn-link-customer:hover {
+  background: rgba(99, 102, 241, 0.3);
+}
+
+.login-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.login-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="brand">NEXA</a>
+  <a href="index.html" class="btn-back">← Kembali ke Toko</a>
+</header>
+
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>Selamat Datang</h2>
+      <p id="sub-title">Masuk ke akun Pelanggan Anda</p>
+    </div>
+
+    <!-- Switch Kategori Masuk -->
+    <div class="role-selector">
+      <button type="button" class="role-btn active" id="btn-customer" onclick="setRole('customer')">👤 Pelanggan</button>
+      <button type="button" class="role-btn" id="btn-admin" onclick="setRole('admin')">🛠️ Admin Store</button>
+    </div>
+
+    <form action="#" method="POST" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="identity" id="label-identity">Alamat Email / No. HP</label>
+        <input type="text" id="identity" class="input-field" placeholder="pelanggan123@gmail.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Kata Sandi</label>
+        <input type="password" id="password" class="input-field" placeholder="••••••••" required>
+      </div>
+
+      <div class="form-actions">
+        <label class="remember-me">
+          <input type="checkbox"> Ingat Saya
+        </label>
+        <a href="#" class="forgot-pass">Lupa kata sandi?</a>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-text">Masuk Sebagai Pelanggan</button>
+    </form>
+
+    <!-- Menu Tautan Langsung Menggunakan Tag HREF -->
+    <div class="direct-links">
+      <a href="admin.html" class="btn-link-href btn-link-admin">🛠️ Langsung Masuk ke Admin (`admin.html`)</a>
+      <a href="index.html" class="btn-link-href btn-link-customer">🛒 Langsung Masuk ke Pelanggan (`index.html`)</a>
+    </div>
+
+    <div class="login-footer" id="signup-prompt">
+      Belum punya akun? <a href="#">Daftar Sekarang</a>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentRole = 'customer';
+
+function setRole(role) {
+  currentRole = role;
+  const btnCustomer = document.getElementById('btn-customer');
+  const btnAdmin = document.getElementById('btn-admin');
+  const subTitle = document.getElementById('sub-title');
+  const labelIdentity = document.getElementById('label-identity');
+  const inputIdentity = document.getElementById('identity');
+  const btnText = document.getElementById('btn-text');
+  const signupPrompt = document.getElementById('signup-prompt');
+
+  if (role === 'admin') {
+    btnAdmin.classList.add('active');
+    btnCustomer.classList.remove('active');
+    subTitle.textContent = 'Portal Manajemen Admin NexaStore';
+    labelIdentity.textContent = 'ID Admin / Email Staf';
+    inputIdentity.placeholder = 'admin@nexastore.com';
+    btnText.textContent = 'Masuk ke Dashboard Admin';
+    signupPrompt.style.display = 'none';
+  } else {
+    btnCustomer.classList.add('active');
+    btnAdmin.classList.remove('active');
+    subTitle.textContent = 'Masuk ke akun Pelanggan Anda';
+    labelIdentity.textContent = 'Alamat Email / No. HP';
+    inputIdentity.placeholder = 'pelanggan123@gmail.com';
+    btnText.textContent = 'Masuk Sebagai Pelanggan';
+    signupPrompt.style.display = 'block';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const roleParam = urlParams.get('role');
+  if (roleParam === 'admin') {
+    setRole('admin');
+  } else {
+    setRole('customer');
+  }
+});
+
+function handleLogin(e) {
+  e.preventDefault();
+  const identity = document.getElementById('identity').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  if (currentRole === 'admin') {
+    if (identity === 'admin@nexastore.com' && password === 'admin123') {
+      alert('Login Admin Berhasil! Mengalihkan ke Dashboard Admin...');
+      window.location.href = 'admin.html';
+    } else {
+      alert('Email/Password Admin Salah!\nEmail: admin@nexastore.com\nPassword: admin123');
+    }
+  } else {
+    if (identity === 'pelanggan123@gmail.com' && password === 'pelanggan123') {
+      alert('Login Pelanggan Berhasil! Mengalihkan ke Beranda Toko...');
+      window.location.href = 'index.html';
+    } else {
+      alert('Email/Password Pelanggan Salah!\nEmail: pelanggan123@gmail.com\nPassword: pelanggan123');
+    }
+  }
+}
+</script>
+</body>
+</html>
