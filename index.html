@@ -1,27 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexaStore | E-Commerce Next-Gen</title>
+<style>
+:root { --primary: #6366f1; --bg-main: #0f172a; --bg-card: rgba(30, 41, 59, 0.7); --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #ec4899; --success: #10b981; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+header { position: sticky; top: 0; z-index: 100; background: rgba(15,23,42,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.brand { font-size: 20px; font-weight: 800; color: var(--primary); cursor: pointer; }
+.main-nav { display: flex; gap: 12px; list-style: none; }
+.nav-link { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 13px; cursor: pointer; }
+.nav-link.active { color: var(--text-main); border-bottom: 2px solid var(--primary); }
+.search-bar { flex: 1; max-width: 300px; display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; }
+.search-bar input { width: 100%; padding: 6px 10px; background: transparent; border: none; color: #fff; font-size: 13px; outline: none; }
+.search-bar button { padding: 6px 12px; background: var(--primary); border: none; color: #fff; cursor: pointer; font-weight: 600; }
+.btn-action { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 12px; }
+.btn-login { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); }
+.btn-cart { background: var(--primary); color: #fff; }
+.page-section { display: none; } .page-section.active { display: block; }
+.hero-banner { margin: 16px 5%; padding: 24px; border-radius: 16px; background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2)); border: 1px solid rgba(255,255,255,0.1); }
+.section-title { padding: 16px 5% 8px; font-size: 16px; font-weight: 700; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 0 5% 32px; }
+@media (min-width: 600px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }
+.card { background: var(--bg-card); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; }
+.card img { width: 100%; height: 130px; object-fit: cover; }
+.card-body { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+.tag { font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 4px; background: rgba(236,72,153,0.2); color: var(--accent); width: max-content; }
+.price { font-size: 14px; font-weight: 800; margin: 4px 0; }
+.btn-buy { width: 100%; padding: 6px; border-radius: 6px; border: none; background: var(--primary); color: #fff; font-weight: 600; cursor: pointer; font-size: 12px; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 200; align-items: center; justify-content: center; padding: 16px; }
+.modal-card { background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; width: 100%; max-width: 400px; padding: 16px; position: relative; }
+.cart-content { width: 100%; max-width: 360px; background: var(--bg-main); height: 100%; padding: 16px; display: flex; flex-direction: column; position: absolute; right: 0; top: 0; border-left: 1px solid rgba(255,255,255,0.1); }
+.cart-items { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: var(--bg-card); border-radius: 6px; font-size: 12px; }
+.btn-qty { background: var(--primary); color: #fff; border: none; width: 20px; height: 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+.checkout-container { max-width: 500px; margin: 16px auto; padding: 16px; background: var(--bg-card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
+.form-group { margin-bottom: 10px; }
+.form-group label { display: block; margin-bottom: 4px; font-size: 12px; color: var(--text-muted); }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; outline: none; font-size: 13px; }
+footer { margin-top: auto; padding: 12px; text-align: center; color: var(--text-muted); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand" onclick="switchTab('home')">NEXA</div>
+  <ul class="main-nav">
+    <li><a class="nav-link active" id="nav-home" onclick="switchTab('home')">Home</a></li>
+    <li><a class="nav-link" id="nav-kategori" onclick="switchTab('kategori')">Kategori</a></li>
+    <li><a class="nav-link" id="nav-promo" onclick="switchTab('promo')">Promo</a></li>
+  </ul>
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Cari..." oninput="handleSearch()">
+    <button onclick="handleSearch()">Cari</button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-action btn-cart" onclick="toggleCart()">Keranjang (<span id="cart-count">0</span>)</button>
+  </div>
+</header>
+
+<main>
+  <div id="home" class="page-section active">
+    <section class="hero-banner">
+      <h2>Koleksi Masa Depan</h2>
+      <p style="font-size:12px; color:var(--text-muted); margin:4px 0 12px;">Diskon hingga 50% produk pilihan.</p>
+      <button class="btn-action btn-cart" onclick="switchTab('promo')">Jelajahi Promo</button>
+    </section>
+    <div class="section-title">⚡ Barang Pilihan</div>
+    <section class="product-grid" id="grid-home"></section>
+  </div>
+
+  <div id="kategori" class="page-section">
+    <div class="section-title">📦 Semua Kategori</div>
+    <section class="product-grid" id="grid-kategori"></section>
+  </div>
+
+  <div id="promo" class="page-section">
+    <div class="section-title">🔥 Diskon Spesial</div>
+    <section class="product-grid" id="grid-promo"></section>
+  </div>
+
+  <div id="search-results" class="page-section">
+    <div class="section-title" id="search-title">🔍 Hasil Pencarian</div>
+    <section class="product-grid" id="grid-search"></section>
+  </div>
+
+  <div id="checkout" class="page-section">
+    <div class="checkout-container">
+      <h3>💳 Checkout</h3>
+      <div id="checkout-summary" style="font-size:12px; color:var(--text-muted); margin:10px 0;"></div>
+      <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:12px;">
+        <span>Total:</span><span id="checkout-total" style="color:var(--primary);">Rp 0</span>
+      </div>
+      <form id="checkout-form" onsubmit="processOrder(event)">
+        <div class="form-group"><label>Nama Lengkap</label><input type="text" id="cust-name" required placeholder="Nama Anda"></div>
+        <div class="form-group"><label>Nomor Telepon / WhatsApp</label><input type="tel" id="cust-phone" required placeholder="081234567890"></div>
+        <div class="form-group"><label>Alamat Pengiriman</label><textarea id="cust-address" rows="2" required placeholder="Alamat lengkap"></textarea></div>
+        <div class="form-group">
+          <label>Metode Pembayaran</label>
+          <select id="payment-method" required>
+            <option value="">-- Pilih --</option>
+            <option value="QRIS / E-Wallet">QRIS / E-Wallet</option>
+            <option value="Transfer Bank">Transfer Bank</option>
+            <option value="COD">COD (Bayar Tempat)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-buy" style="background:var(--accent); padding:10px;">Konfirmasi & Bayar</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- Modal Detail -->
+<div id="detailModal" class="modal-overlay" onclick="if(event.target.id==='detailModal') closeDetailModal()">
+  <div class="modal-card">
+    <span id="detail-tag" class="tag">TAG</span>
+    <h3 id="detail-title" style="margin-top:4px;">Judul</h3>
+    <div id="detail-price" class="price">Rp 0</div>
+    <p id="detail-desc" style="font-size:12px; color:var(--text-muted); margin:8px 0;">Deskripsi...</p>
+    <button id="detail-add-btn" class="btn-buy">+ Keranjang</button>
+  </div>
+</div>
+
+<!-- Modal Keranjang -->
+<div id="cartModal" class="modal-overlay" onclick="if(event.target.id==='cartModal') toggleCart(false)">
+  <div class="cart-content">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3>Keranjang</h3><button style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;" onclick="toggleCart()">✕</button>
+    </div>
+    <div id="cart-items" class="cart-items"></div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:8px;">
+      <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:8px;">
+        <span>Total:</span><span id="cart-total">Rp 0</span>
+      </div>
+      <button class="btn-buy" style="background:var(--accent);" onclick="goToCheckout()">Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Pembayaran Berhasil -->
+<div id="successModal" class="modal-overlay">
+  <div class="modal-card" style="text-align:center;">
+    <div style="font-size:36px; color:var(--success);">✓</div>
+    <h2>Pembayaran Berhasil!</h2>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Pesanan Anda sedang diproses.</p>
+    <div style="background:var(--bg-card); padding:10px; border-radius:6px; text-align:left; font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+      <div>No. Pesanan: <b id="success-id" style="color:#fff;"></b></div>
+      <div>Nama: <b id="success-name" style="color:#fff;"></b></div>
+      <div>No. Telp: <b id="success-phone" style="color:#fff;"></b></div>
+      <div>Metode: <b id="success-method" style="color:#fff;"></b></div>
+      <div>Total: <b id="success-total" style="color:var(--success);"></b></div>
+    </div>
+    <button class="btn-buy" onclick="closeSuccessModal()">Kembali ke Beranda</button>
+  </div>
+</div>
+
+<footer><p>© 2026 NexaStore Platform.</p></footer>
+
 <script>
-// Data Produk (Ditambah lebih banyak pilihan barang)
 const products = [
-  // --- KATEGORI HOME (Barang Pilihan) ---
   { id: 1, title: 'Studio ANC Wireless', category: 'home', tag: 'Audio', price: 1450000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300', desc: 'Headphone Active Noise Cancelling.' },
   { id: 2, title: 'NexaWatch Series X', category: 'home', tag: 'Gadget', price: 2199000, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300', desc: 'Smartwatch futuristik pemantau kesehatan.' },
   { id: 3, title: 'Runner Pro V2', category: 'home', tag: 'Sepatu', price: 899000, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300', desc: 'Sepatu lari ultralight empuk.' },
-  { id: 4, title: 'Retro Cam 35mm', category: 'home', tag: 'Kamera', price: 3100000, img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300', desc: 'Kamera analog bergaya klasik.' },
-  { id: 5, title: 'Minimalist Tumbler 1L', category: 'home', tag: 'Aksesori', price: 185000, img: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=300', desc: 'Tumbler tahan dingin 24 jam.' },
-  { id: 6, title: 'Smart Desk Lamp RGB', category: 'home', tag: 'Elektronik', price: 349000, img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=300', desc: 'Lampu meja pintar kontrol aplikasi.' },
-
-  // --- KATEGORI (Semua Kategori Produk) ---
-  { id: 7, title: 'NexaBook Pro 14"', category: 'kategori', tag: 'Laptop', price: 12499000, img: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300', desc: 'Ultrabook tipis kencang.' },
-  { id: 8, title: 'Pulse Gaming Headset', category: 'kategori', tag: 'Gaming', price: 950000, img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=300', desc: 'Audio surround 7.1 presisi.' },
-  { id: 9, title: 'Mechanical Keyboard RGB', category: 'kategori', tag: 'Aksesori', price: 680000, img: 'https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=300', desc: 'Keyboard mekanikal hotswap.' },
-  { id: 10, title: 'Ergonomic Chair Pro', category: 'kategori', tag: 'Mebel', price: 2450000, img: 'https://images.unsplash.com/photo-1580481072645-022f9a6d1203?w=300', desc: 'Kursi kerja ergonomis penopang pinggang.' },
-  { id: 11, title: 'Wireless Ergonomic Mouse', category: 'kategori', tag: 'Aksesori', price: 299000, img: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=300', desc: 'Mouse nirkabel nyamannya maksimal.' },
-  { id: 12, title: 'UltraWide Monitor 34"', category: 'kategori', tag: 'Elektronik', price: 5890000, img: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=300', desc: 'Layar lengkung 144Hz untuk kerja dan game.' },
-
-  // --- KATEGORI PROMO (Diskon Spesial) ---
-  { id: 13, title: 'NexaWatch Sport', category: 'promo', tag: 'Diskon 30%', price: 1199000, img: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=300', desc: 'Jam olahraga tahan air GPS.' },
-  { id: 14, title: 'True Wireless Earbuds', category: 'promo', tag: 'Diskon 40%', price: 450000, img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300', desc: 'Earbuds TWS bass mantap.' },
-  { id: 15, title: 'Powerbank FastCharge 20k', category: 'promo', tag: 'Diskon 25%', price: 275000, img: 'https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=300', desc: 'Pengisian cepat 22.5W dual port.' },
-  { id: 16, title: 'Backpack Waterproof 25L', category: 'promo', tag: 'Diskon 50%', price: 249000, img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300', desc: 'Tas ransel laptop anti air.' }
+  { id: 4, title: 'NexaBook Pro 14"', category: 'kategori', tag: 'Laptop', price: 12499000, img: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300', desc: 'Ultrabook tipis kencang.' },
+  { id: 5, title: 'NexaWatch Sport', category: 'promo', tag: 'Diskon 30%', price: 1199000, img: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=300', desc: 'Jam olahraga tahan air.' }
 ];
 
 let cart = [];
@@ -31,7 +174,7 @@ function renderProducts() {
     const el = document.getElementById('grid-' + cat);
     if(el) el.innerHTML = products.filter(p => p.category === cat).map(p => `
       <div class="card" onclick="openDetailModal(${p.id})">
-        <img src="${p.img}" alt="${p.title}" loading="lazy">
+        <img src="${p.img}" alt="${p.title}">
         <div class="card-body">
           <span class="tag">${p.tag}</span>
           <h4 style="font-size:12px; margin-top:2px;">${p.title}</h4>
