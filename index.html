@@ -45,7 +45,7 @@ cursor: pointer;
 
 .search{
 display:flex;
-width:40%;
+width:30%;
 }
 
 .search input{
@@ -65,8 +65,13 @@ border-radius:0 30px 30px 0;
 cursor:pointer;
 }
 
+.menu {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+
 .menu a{
-margin-left:20px;
 text-decoration:none;
 color:#333;
 font-weight:bold;
@@ -79,6 +84,33 @@ cursor: pointer;
 color: #2563eb;
 border-bottom: 2px solid #2563eb;
 padding-bottom: 5px;
+}
+
+/* Tombol Login Tambahan */
+.btn-login-user {
+background: #2563eb;
+color: white !important;
+padding: 8px 16px;
+border-radius: 20px;
+border: none;
+font-size: 14px;
+}
+
+.btn-login-admin {
+background: #1e293b;
+color: white !important;
+padding: 8px 16px;
+border-radius: 20px;
+border: none;
+font-size: 14px;
+}
+
+.btn-login-user:hover {
+background: #1d4ed8;
+}
+
+.btn-login-admin:hover {
+background: #0f172a;
 }
 
 .hero{
@@ -282,6 +314,81 @@ box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 margin-top: 20px;
 }
 
+/* Style Form Login */
+.login-box {
+max-width: 400px;
+margin: 60px auto;
+background: white;
+padding: 35px 30px;
+border-radius: 16px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.login-box h2 {
+text-align: center;
+margin-bottom: 8px;
+color: #1e293b;
+}
+
+.login-box p.subtitle {
+text-align: center;
+color: #64748b;
+font-size: 14px;
+margin-bottom: 25px;
+}
+
+.input-group {
+margin-bottom: 18px;
+}
+
+.input-group label {
+display: block;
+margin-bottom: 6px;
+font-size: 14px;
+font-weight: bold;
+color: #334155;
+}
+
+.input-group input {
+width: 100%;
+padding: 12px 14px;
+border: 1px solid #cbd5e1;
+border-radius: 8px;
+outline: none;
+font-size: 14px;
+transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+border-color: #2563eb;
+}
+
+.login-btn {
+width: 100%;
+padding: 12px;
+background: #2563eb;
+color: white;
+border: none;
+border-radius: 8px;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+margin-top: 10px;
+transition: background 0.2s;
+}
+
+.login-btn:hover {
+background: #1d4ed8;
+}
+
+.admin-theme .login-btn {
+background: #1e293b;
+}
+
+.admin-theme .login-btn:hover {
+background: #0f172a;
+}
+
 /* Sembunyikan Halaman */
 .page {
 display: none;
@@ -317,6 +424,8 @@ margin-top: auto;
 <a href="#" class="nav-link" onclick="showPage('kategori-page', this)">Kategori</a>
 <a href="#" class="nav-link" onclick="showPage('promo-page', this)">Promo</a>
 <a href="#" class="nav-link" onclick="showPage('keranjang-page', this)">Keranjang 🛒</a>
+<a href="#" class="nav-link btn-login-user" onclick="showPage('login-user-page', this)">Login Pelanggan</a>
+<a href="#" class="nav-link btn-login-admin" onclick="showPage('login-admin-page', this)">Login Admin</a>
 </div>
 </header>
 
@@ -479,6 +588,44 @@ margin-top: auto;
       </div>
     </div>
   </div>
+
+  <!-- ================= HALAMAN LOGIN PELANGGAN ================= -->
+  <div id="login-user-page" class="page">
+    <div class="login-box">
+      <h2>Masuk Pelanggan</h2>
+      <p class="subtitle">Silakan masuk ke akun BinStore Anda</p>
+      <form onsubmit="handleLogin(event, 'Pelanggan')">
+        <div class="input-group">
+          <label>Email / Nomor HP</label>
+          <input type="text" placeholder="Masukkan email atau No HP" required>
+        </div>
+        <div class="input-group">
+          <label>Kata Sandi</label>
+          <input type="password" placeholder="Masukkan kata sandi" required>
+        </div>
+        <button type="submit" class="login-btn">Masuk Sebagai Pelanggan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= HALAMAN LOGIN ADMIN ================= -->
+  <div id="login-admin-page" class="page">
+    <div class="login-box admin-theme">
+      <h2>🔐 Portal Admin</h2>
+      <p class="subtitle">Akses khusus pengelola toko</p>
+      <form onsubmit="handleLogin(event, 'Admin')">
+        <div class="input-group">
+          <label>ID Admin / Username</label>
+          <input type="text" placeholder="Masukkan username admin" required>
+        </div>
+        <div class="input-group">
+          <label>Password Keamanan</label>
+          <input type="password" placeholder="Masukkan password admin" required>
+        </div>
+        <button type="submit" class="login-btn">Masuk Portal Admin</button>
+      </form>
+    </div>
+  </div>
 </main>
 
 <footer>
@@ -509,6 +656,12 @@ function showPage(pageId, element) {
 
   // Scroll kembali ke atas setiap berganti halaman
   window.scrollTo(0, 0);
+}
+
+function handleLogin(event, role) {
+  event.preventDefault();
+  alert('Berhasil Login sebagai ' + role + '!');
+  showPage('home-page', document.querySelectorAll('.nav-link')[0]);
 }
 </script>
 
