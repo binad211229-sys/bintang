@@ -37,7 +37,8 @@ header {
 
 .search-bar { width: 35%; display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
 .search-bar input { width: 100%; padding: 10px 16px; background: transparent; border: none; color: white; outline: none; }
-.search-bar button { padding: 10px 20px; background: var(--primary); border: none; color: white; cursor: pointer; }
+.search-bar button { padding: 10px 20px; background: var(--primary); border: none; color: white; cursor: pointer; font-weight: 600; }
+.search-bar button:hover { background: var(--primary-hover); }
 
 .nav-actions { display: flex; gap: 16px; align-items: center; }
 .btn-action { 
@@ -84,6 +85,8 @@ header {
 .btn-buy { width: 100%; padding: 10px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: 600; cursor: pointer; }
 .btn-buy:hover { background: var(--primary-hover); }
 
+.no-results { grid-column: 1 / -1; color: var(--text-muted); text-align: center; padding: 40px 0; font-size: 16px; }
+
 /* Modal Styles General */
 .modal-overlay {
   display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
@@ -124,8 +127,8 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
     <li><a class="nav-link" onclick="switchTab('promo')">Promo</a></li>
   </ul>
   <div class="search-bar">
-    <input type="text" placeholder="Cari item eksklusif...">
-    <button>Cari</button>
+    <input type="text" id="search-input" placeholder="Cari item eksklusif..." oninput="handleSearch()">
+    <button onclick="handleSearch()">Cari</button>
   </div>
   <div class="nav-actions">
     <a href="login.html" class="btn-action btn-login">Masuk</a>
@@ -230,8 +233,28 @@ const products = [
 
 let cart = [];
 
+// Helper untuk membuat HTML Card
+function createCardHtml(p) {
+  return `
+    <div class="card" onclick="openDetailModal(${p.id})">
+      <img src="${p.img}" alt="${p.title}">
+      <div class="card-body">
+        <div>
+          <span class="tag">${p.tag}</span>
+          <h3>${p.title}</h3>
+          <div class="price">
+            Rp ${p.price.toLocaleString('id-ID')}
+            ${p.oldPrice ? `<span class="old-price">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
+          </div>
+        </div>
+        <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Keranjang</button>
+      </div>
+    </div>
+  `;
+}
+
 // Render Produk ke Grid HTML
-function renderProducts() {
+function renderProducts(filteredProducts = null) {
   const homeGrid = document.getElementById('grid-home');
   const kategoriGrid = document.getElementById('grid-kategori');
   const promoGrid = document.getElementById('grid-promo');
@@ -240,28 +263,32 @@ function renderProducts() {
   kategoriGrid.innerHTML = '';
   promoGrid.innerHTML = '';
 
-  products.forEach(p => {
-    const cardHtml = `
-      <div class="card" onclick="openDetailModal(${p.id})">
-        <img src="${p.img}" alt="${p.title}">
-        <div class="card-body">
-          <div>
-            <span class="tag">${p.tag}</span>
-            <h3>${p.title}</h3>
-            <div class="price">
-              Rp ${p.price.toLocaleString('id-ID')}
-              ${p.oldPrice ? `<span class="old-price">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
-            </div>
-          </div>
-          <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Keranjang</button>
-        </div>
-      </div>
-    `;
+  const itemsToRender = filteredProducts || products;
 
-    if (p.category === 'home') homeGrid.innerHTML += cardHtml;
-    else if (p.category === 'kategori') kategoriGrid.innerHTML += cardHtml;
-    else if (p.category === 'promo') promoGrid.innerHTML += cardHtml;
-  });
+  const homeItems = itemsToRender.filter(p => p.category === 'home');
+  const kategoriItems = itemsToRender.filter(p => p.category === 'kategori');
+  const promoItems = itemsToRender.filter(p => p.category === 'promo');
+
+  homeGrid.innerHTML = homeItems.length ? homeItems.map(createCardHtml).join('') : '<div class="no-results">Produk tidak ditemukan.</div>';
+  kategoriGrid.innerHTML = kategoriItems.length ? kategoriItems.map(createCardHtml).join('') : '<div class="no-results">Produk tidak ditemukan.</div>';
+  promoGrid.innerHTML = promoItems.length ? promoItems.map(createCardHtml).join('') : '<div class="no-results">Produk tidak ditemukan.</div>';
+}
+
+// Fungsi Pencarian Produk
+function handleSearch() {
+  const query = document.getElementById('search-input').value.toLowerCase().trim();
+  if (!query) {
+    renderProducts();
+    return;
+  }
+
+  const filtered = products.filter(p => 
+    p.title.toLowerCase().includes(query) || 
+    p.tag.toLowerCase().includes(query) ||
+    p.category.toLowerCase().includes(query)
+  );
+
+  renderProducts(filtered);
 }
 
 // Fungsi Navigasi Tab
@@ -355,15 +382,4 @@ function toggleCart(forceOpen = false) {
   if (forceOpen) {
     modal.style.display = 'flex';
   } else {
-    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-  }
-}
-
-// Inisialisasi saat pertama dibuka
-document.addEventListener('DOMContentLoaded', () => {
-  renderProducts();
-});
-</script>
-
-</body>
-</html>
+    modal.style.display = modal.style.display === 'flex' ? 'none' : 'f
