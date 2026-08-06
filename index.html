@@ -15,6 +15,13 @@ font-family:Arial,sans-serif;
 
 body{
 background:#f3f6fb;
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+}
+
+main {
+flex: 1;
 }
 
 header{
@@ -33,6 +40,7 @@ z-index:100;
 font-size:28px;
 font-weight:bold;
 color:#2563eb;
+cursor: pointer;
 }
 
 .search{
@@ -62,6 +70,15 @@ margin-left:20px;
 text-decoration:none;
 color:#333;
 font-weight:bold;
+transition: color 0.3s;
+cursor: pointer;
+}
+
+/* Style untuk menu aktif */
+.menu a.active {
+color: #2563eb;
+border-bottom: 2px solid #2563eb;
+padding-bottom: 5px;
 }
 
 .hero{
@@ -92,7 +109,6 @@ font-weight:bold;
 cursor:pointer;
 }
 
-/* Ukuran gambar hero disesuaikan */
 .hero img{
 width:500px;
 height:320px;
@@ -106,46 +122,56 @@ padding:40px 8% 20px;
 font-size:30px;
 }
 
-/* === PERUBAHAN TAMPILAN PRODUK (SCROLL SAMPING) === */
 .products-container {
-    padding: 0 8% 60px;
-    overflow-x: auto; /* Memungkinkan scroll horizontal */
-    -webkit-overflow-scrolling: touch; /* Scroll halus di mobile */
+padding: 0 8% 60px;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
 }
 
-/* Menghilangkan scrollbar default (opsional, untuk tampilan bersih) */
 .products-container::-webkit-scrollbar {
-    height: 8px; /* Tinggi scrollbar */
+height: 8px;
 }
 
 .products-container::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-    border-radius: 10px;
+background: #f1f1f1; 
+border-radius: 10px;
 }
- 
+
 .products-container::-webkit-scrollbar-thumb {
-    background: #c1c1c1; 
-    border-radius: 10px;
+background: #c1c1c1; 
+border-radius: 10px;
 }
 
 .products-container::-webkit-scrollbar-thumb:hover {
-    background: #a1a1a1; 
+background: #a1a1a1; 
 }
 
 .products{
-display:flex; /* Menggunakan Flexbox untuk baris samping */
+display:flex;
 gap:25px;
-padding-bottom: 15px; /* Ruang untuk scrollbar */
+padding-bottom: 15px;
+}
+
+.products-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+gap: 25px;
+padding: 0 8% 60px;
 }
 
 .card{
-flex: 0 0 280px; /* Lebar kartu tetap, tidak menyusut */
+flex: 0 0 280px;
 background:white;
 border-radius:18px;
 overflow:hidden;
 box-shadow:0 10px 25px rgba(0,0,0,.08);
 transition:.3s;
-margin-bottom: 10px; /* Ruang untuk bayangan saat hover */
+margin-bottom: 10px;
+}
+
+.products-grid .card {
+flex: none;
+width: 100%;
 }
 
 .card:hover{
@@ -194,11 +220,84 @@ border-radius:10px;
 cursor:pointer;
 }
 
+/* Layout Kategori & Keranjang */
+.category-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 20px;
+padding: 0 8% 60px;
+}
+
+.category-card {
+background: white;
+padding: 30px 20px;
+border-radius: 15px;
+text-align: center;
+box-shadow: 0 5px 15px rgba(0,0,0,.05);
+cursor: pointer;
+transition: 0.3s;
+}
+
+.category-card:hover {
+background: #2563eb;
+color: white;
+transform: translateY(-5px);
+}
+
+.category-card div {
+font-size: 40px;
+margin-bottom: 10px;
+}
+
+.cart-container {
+padding: 0 8% 60px;
+max-width: 800px;
+margin: 0 auto;
+}
+
+.cart-item {
+display: flex;
+align-items: center;
+justify-content: space-between;
+background: white;
+padding: 20px;
+border-radius: 12px;
+margin-bottom: 15px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.cart-item img {
+width: 80px;
+height: 80px;
+object-fit: cover;
+border-radius: 8px;
+}
+
+.cart-checkout {
+background: white;
+padding: 20px;
+border-radius: 12px;
+text-align: right;
+box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+margin-top: 20px;
+}
+
+/* Sembunyikan Halaman */
+.page {
+display: none;
+}
+
+/* Tampilkan Halaman Aktif */
+.page.active {
+display: block;
+}
+
 footer{
 background:#111827;
 color:white;
 padding:40px;
 text-align:center;
+margin-top: auto;
 }
 </style>
 
@@ -206,8 +305,7 @@ text-align:center;
 <body>
 
 <header>
-
-<div class="logo">💎 BinStore</div>
+<div class="logo" onclick="showPage('home-page')">💎 BinStore</div>
 
 <div class="search">
 <input type="text" placeholder="Cari produk...">
@@ -215,96 +313,204 @@ text-align:center;
 </div>
 
 <div class="menu">
-<a href="#">Home</a>
-<a href="#">Kategori</a>
-<a href="#">Promo</a>
-<a href="#">Keranjang</a>
+<a href="#" class="nav-link active" onclick="showPage('home-page', this)">Home</a>
+<a href="#" class="nav-link" onclick="showPage('kategori-page', this)">Kategori</a>
+<a href="#" class="nav-link" onclick="showPage('promo-page', this)">Promo</a>
+<a href="#" class="nav-link" onclick="showPage('keranjang-page', this)">Keranjang 🛒</a>
 </div>
-
 </header>
 
-<section class="hero">
+<main>
+  <!-- ================= HALAMAN HOME ================= -->
+  <div id="home-page" class="page active">
+    <section class="hero">
+      <div>
+        <h1>Belanja Lebih Mudah</h1>
+        <p>Promo hingga 70% untuk produk pilihan.</p>
+        <button onclick="showPage('promo-page')">Belanja Sekarang</button>
+      </div>
+      <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600&auto=format&fit=crop" alt="Teknologi dan Belanja Modern">
+    </section>
 
-<div>
-<h1>Belanja Lebih Mudah</h1>
-<p>Promo hingga 70% untuk produk pilihan.</p>
-<button>Belanja Sekarang</button>
-</div>
+    <h2 class="title">🔥 Produk Populer</h2>
 
-<!-- === GAMBAR HERO DIUBAH === -->
-<img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600&auto=format&fit=crop" alt="Teknologi dan Belanja Modern">
+    <div class="products-container">
+      <div class="products">
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80" alt="Laptop Gaming">
+          <div class="info">
+            <div class="badge">-30%</div>
+            <h3>Laptop Gaming</h3>
+            <div class="price">Rp12.999.000</div>
+            <div class="rating">⭐⭐⭐⭐⭐ (256)</div>
+            <button class="buy">Tambah ke Keranjang</button>
+          </div>
+        </div>
 
-</section>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" alt="iPhone Baru">
+          <div class="info">
+            <div class="badge">Best Seller</div>
+            <h3>iPhone</h3>
+            <div class="price">Rp16.999.000</div>
+            <div class="rating">⭐⭐⭐⭐⭐ (520)</div>
+            <button class="buy">Tambah ke Keranjang</button>
+          </div>
+        </div>
 
-<h2 class="title">🔥 Produk Populer</h2>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headset">
+          <div class="info">
+            <div class="badge">Baru</div>
+            <h3>Headset</h3>
+            <div class="price">Rp799.000</div>
+            <div class="rating">⭐⭐⭐⭐ (180)</div>
+            <button class="buy">Tambah ke Keranjang</button>
+          </div>
+        </div>
 
-<!-- === WADAH BARU UNTUK SCROLLING === -->
-<div class="products-container">
-<div class="products">
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Smartwatch">
+          <div class="info">
+            <div class="badge">Hot</div>
+            <h3>Smartwatch</h3>
+            <div class="price">Rp1.499.000</div>
+            <div class="rating">⭐⭐⭐⭐⭐ (310)</div>
+            <button class="buy">Tambah ke Keranjang</button>
+          </div>
+        </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80" alt="Laptop Gaming">
-<div class="info">
-<div class="badge">-30%</div>
-<h3>Laptop Gaming</h3>
-<div class="price">Rp12.999.000</div>
-<div class="rating">⭐⭐⭐⭐⭐ (256)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80" alt="Kamera Instant">
+          <div class="info">
+            <div class="badge">Eksklusif</div>
+            <h3>Kamera Instant</h3>
+            <div class="price">Rp2.100.000</div>
+            <div class="rating">⭐⭐⭐⭐ (95)</div>
+            <button class="buy">Tambah ke Keranjang</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" alt="iPhone Baru">
-<div class="info">
-<div class="badge">Best Seller</div>
-<h3>iPhone</h3>
-<div class="price">Rp16.999.000</div>
-<div class="rating">⭐⭐⭐⭐⭐ (520)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
+  <!-- ================= HALAMAN KATEGORI ================= -->
+  <div id="kategori-page" class="page">
+    <h2 class="title">📁 Kategori Produk</h2>
+    <div class="category-grid">
+      <div class="category-card">
+        <div>💻</div>
+        <h3>Komputer & Laptop</h3>
+      </div>
+      <div class="category-card">
+        <div>📱</div>
+        <h3>Smartphone</h3>
+      </div>
+      <div class="category-card">
+        <div>🎧</div>
+        <h3>Aksesoris Audio</h3>
+      </div>
+      <div class="category-card">
+        <div>⌚</div>
+        <h3>Wearable Gadget</h3>
+      </div>
+      <div class="category-card">
+        <div>📷</div>
+        <h3>Kamera & Fotografi</h3>
+      </div>
+      <div class="category-card">
+        <div>🎮</div>
+        <h3>Gaming Equipment</h3>
+      </div>
+    </div>
+  </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headset">
-<div class="info">
-<div class="badge">Baru</div>
-<h3>Headset</h3>
-<div class="price">Rp799.000</div>
-<div class="rating">⭐⭐⭐⭐ (180)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
+  <!-- ================= HALAMAN PROMO ================= -->
+  <div id="promo-page" class="page">
+    <h2 class="title">⚡ Promo Spesial Hari Ini</h2>
+    <div class="products-grid">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80" alt="Laptop Gaming">
+        <div class="info">
+          <div class="badge">Diskon 50%</div>
+          <h3>Laptop Gaming</h3>
+          <div class="price">Rp9.999.000 <span style="text-decoration: line-through; font-size:14px; color:gray;">Rp19.999.000</span></div>
+          <button class="buy">Beli Sekarang</button>
+        </div>
+      </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Smartwatch">
-<div class="info">
-<div class="badge">Hot</div>
-<h3>Smartwatch</h3>
-<div class="price">Rp1.499.000</div>
-<div class="rating">⭐⭐⭐⭐⭐ (310)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headset">
+        <div class="info">
+          <div class="badge">Flash Sale</div>
+          <h3>Headset Wireless</h3>
+          <div class="price">Rp399.000 <span style="text-decoration: line-through; font-size:14px; color:gray;">Rp799.000</span></div>
+          <button class="buy">Beli Sekarang</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<!-- Menambahkan satu produk lagi untuk mendemonstrasikan scroll -->
-<div class="card">
-<img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80" alt="Kamera Polaroid">
-<div class="info">
-<div class="badge">Eksklusif</div>
-<h3>Kamera Instant</h3>
-<div class="price">Rp2.100.000</div>
-<div class="rating">⭐⭐⭐⭐ (95)</div>
-<button class="buy">Tambah ke Keranjang</button>
-</div>
-</div>
+  <!-- ================= HALAMAN KERANJANG ================= -->
+  <div id="keranjang-page" class="page">
+    <h2 class="title">🛒 Keranjang Belanja Anda</h2>
+    <div class="cart-container">
+      <div class="cart-item">
+        <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" alt="iPhone">
+        <div>
+          <h3>iPhone</h3>
+          <p>Jumlah: 1</p>
+        </div>
+        <div class="price" style="font-size: 18px;">Rp16.999.000</div>
+      </div>
 
-</div>
-</div>
+      <div class="cart-item">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headset">
+        <div>
+          <h3>Headset</h3>
+          <p>Jumlah: 1</p>
+        </div>
+        <div class="price" style="font-size: 18px;">Rp799.000</div>
+      </div>
+
+      <div class="cart-checkout">
+        <h3>Total: <span style="color:#2563eb;">Rp17.798.000</span></h3>
+        <button class="buy" style="margin-top:15px; width: auto; padding: 12px 30px;">Lanjut Pembayaran</button>
+      </div>
+    </div>
+  </div>
+</main>
 
 <footer>
 <h2>BinStore</h2>
 <p>Belanja Aman • Cepat • Terpercaya</p>
 </footer>
+
+<script>
+function showPage(pageId, element) {
+  // Sembunyikan semua halaman
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(page => {
+    page.classList.remove('active');
+  });
+
+  // Tampilkan halaman yang dipilih
+  const selectedPage = document.getElementById(pageId);
+  if (selectedPage) {
+    selectedPage.classList.add('active');
+  }
+
+  // Atur class 'active' untuk menu navigasi
+  if (element) {
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => link.classList.remove('active'));
+    element.classList.add('active');
+  }
+
+  // Scroll kembali ke atas setiap berganti halaman
+  window.scrollTo(0, 0);
+}
+</script>
 
 </body>
 </html>
