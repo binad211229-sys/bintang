@@ -27,6 +27,7 @@ header {
 }
 .brand { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; cursor: pointer; }
 
+/* Navigasi Utama */
 .main-nav { display: flex; gap: 24px; list-style: none; }
 .nav-link { 
   color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 15px; 
@@ -39,9 +40,8 @@ header {
 .search-bar button { padding: 10px 20px; background: var(--primary); border: none; color: white; cursor: pointer; }
 
 .nav-actions { display: flex; gap: 16px; align-items: center; }
-.btn-action { padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-action { padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
 .btn-login { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); }
-.btn-login:hover { background: rgba(255,255,255,0.1); }
 .btn-cart { background: var(--primary); color: white; position: relative; }
 
 /* Section Management */
@@ -74,13 +74,11 @@ header {
 .btn-buy { width: 100%; padding: 10px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: 600; cursor: pointer; }
 .btn-buy:hover { background: var(--primary-hover); }
 
-/* Modal Keranjang & Login Overlay */
-.cart-modal, .auth-modal {
+/* Modal Keranjang */
+.cart-modal {
   display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
-  backdrop-filter: blur(4px); z-index: 200; justify-content: center; align-items: center;
+  backdrop-filter: blur(4px); z-index: 200; justify-content: flex-end;
 }
-
-.cart-modal { justify-content: flex-end; }
 .cart-content {
   width: 400px; background: var(--bg-main); height: 100%; padding: 24px; 
   display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.1);
@@ -89,35 +87,6 @@ header {
 .cart-items { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
 .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-card); border-radius: 8px; }
 .close-btn { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
-
-/* Card Login Modal */
-.auth-card {
-  background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1);
-  padding: 32px; border-radius: 20px; width: 400px; text-align: center; position: relative;
-}
-.auth-card h2 { margin-bottom: 4px; }
-.auth-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
-
-/* Tab Switch Role Login */
-.role-switch {
-  display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px; padding: 4px; margin-bottom: 20px; gap: 4px;
-}
-.role-btn {
-  flex: 1; padding: 8px; border: none; background: transparent; color: var(--text-muted);
-  font-weight: 600; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
-}
-.role-btn.active {
-  background: var(--primary); color: white;
-}
-
-.form-group { margin-bottom: 16px; text-align: left; }
-.form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
-.form-group input { 
-  width: 100%; padding: 12px; background: rgba(255,255,255,0.05); 
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; outline: none; 
-}
-.form-group input:focus { border-color: var(--primary); }
 
 footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); text-align: center; color: var(--text-muted); font-size: 14px; border-top: 1px solid rgba(255,255,255,0.05); }
 </style>
@@ -136,7 +105,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
     <button>Cari</button>
   </div>
   <div class="nav-actions">
-    <button class="btn-action btn-login" onclick="toggleLoginModal(true)">Masuk</button>
+    <button class="btn-action btn-login">Masuk</button>
     <button class="btn-action btn-cart" onclick="toggleCart()">Keranjang (<span id="cart-count">0</span>)</button>
   </div>
 </header>
@@ -152,8 +121,9 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
       </div>
     </section>
 
-    <div class="section-title">⚡ Barang Pilihan Popular</div>
+    <div class="section-title">⚡ Barang Pilihan</div>
     <section class="product-grid">
+      <!-- Item 1 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headphone Studio">
         <div class="card-body">
@@ -166,6 +136,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
+      <!-- Item 2 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Smartwatch">
         <div class="card-body">
@@ -178,6 +149,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
+      <!-- Item 3 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="Sepatu Sport">
         <div class="card-body">
@@ -190,6 +162,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
+      <!-- Item 4 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80" alt="Kamera Vintage">
         <div class="card-body">
@@ -202,51 +175,107 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
+      <!-- Item 5 Tambahan -->
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1507764923504-cd90bf7da772?auto=format&fit=crop&w=500&q=80" alt="Laptop Sleek">
+        <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80" alt="Laptop Ultrabook">
         <div class="card-body">
           <div>
-            <span class="tag">Komputer</span>
-            <h3>NexaBook Air 14</h3>
+            <span class="tag">Komputasi</span>
+            <h3>NexaBook Pro 14"</h3>
             <div class="price">Rp 12.499.000</div>
           </div>
-          <button class="btn-buy" onclick="addToCart('NexaBook Air 14', 12499000)">+ Keranjang</button>
+          <button class="btn-buy" onclick="addToCart('NexaBook Pro 14\"', 12499000)">+ Keranjang</button>
         </div>
       </div>
 
+      <!-- Item 6 Tambahan -->
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" alt="Kacamata Sun">
+        <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=500&q=80" alt="Headphone Gaming">
+        <div class="card-body">
+          <div>
+            <span class="tag">Gaming</span>
+            <h3>Pulse Surround 7.1</h3>
+            <div class="price">Rp 950.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('Pulse Surround 7.1', 950000)">+ Keranjang</button>
+        </div>
+      </div>
+
+      <!-- Item 7 Tambahan -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" alt="Kacamata Hitam">
         <div class="card-body">
           <div>
             <span class="tag">Fashion</span>
-            <h3>Dark Prism Sunglasses</h3>
-            <div class="price">Rp 450.000</div>
+            <h3>Cyber Frame Sunglasses</h3>
+            <div class="price">Rp 420.000</div>
           </div>
-          <button class="btn-buy" onclick="addToCart('Dark Prism Sunglasses', 450000)">+ Keranjang</button>
+          <button class="btn-buy" onclick="addToCart('Cyber Frame Sunglasses', 420000)">+ Keranjang</button>
         </div>
       </div>
 
+      <!-- Item 8 Tambahan -->
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=500&q=80" alt="Smart Glasses">
+        <img src="https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=500&q=80" alt="Sepatu Sneakers">
         <div class="card-body">
           <div>
-            <span class="tag">Teknologi</span>
-            <h3>Vision AR Frames</h3>
-            <div class="price">Rp 4.200.000</div>
+            <span class="tag">Streetwear</span>
+            <h3>Aura Neon Sneakers</h3>
+            <div class="price">Rp 1.299.000</div>
           </div>
-          <button class="btn-buy" onclick="addToCart('Vision AR Frames', 4200000)">+ Keranjang</button>
+          <button class="btn-buy" onclick="addToCart('Aura Neon Sneakers', 1299000)">+ Keranjang</button>
         </div>
       </div>
 
+      <!-- Item 9 Tambahan -->
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=500&q=80" alt="Wireless TWS">
+        <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&w=500&q=80" alt="Smartphone Modern">
+        <div class="card-body">
+          <div>
+            <span class="tag">Gadget</span>
+            <h3>Nexa Phone Z Flip</h3>
+            <div class="price">Rp 9.800.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('Nexa Phone Z Flip', 9800000)">+ Keranjang</button>
+        </div>
+      </div>
+
+      <!-- Item 10 Tambahan -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=500&q=80" alt="Speaker Bluetooth">
         <div class="card-body">
           <div>
             <span class="tag">Audio</span>
-            <h3>NexaBuds Neon</h3>
-            <div class="price">Rp 799.000</div>
+            <h3>SoundBoom Portable</h3>
+            <div class="price">Rp 680.000</div>
           </div>
-          <button class="btn-buy" onclick="addToCart('NexaBuds Neon', 799000)">+ Keranjang</button>
+          <button class="btn-buy" onclick="addToCart('SoundBoom Portable', 680000)">+ Keranjang</button>
+        </div>
+      </div>
+
+      <!-- Item 11 Tambahan -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=500&q=80" alt="Smartwatch Minimalis">
+        <div class="card-body">
+          <div>
+            <span class="tag">Lifestyle</span>
+            <h3>Minimalist Slate Watch</h3>
+            <div class="price">Rp 1.650.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('Minimalist Slate Watch', 1650000)">+ Keranjang</button>
+        </div>
+      </div>
+
+      <!-- Item 12 Tambahan -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=500&q=80" alt="Mouse Ergonomis">
+        <div class="card-body">
+          <div>
+            <span class="tag">Aksesori PC</span>
+            <h3>ErgoGlide Wireless Mouse</h3>
+            <div class="price">Rp 399.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('ErgoGlide Wireless Mouse', 399000)">+ Keranjang</button>
         </div>
       </div>
     </section>
@@ -267,6 +296,19 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
           <button class="btn-buy" onclick="addToCart('NexaBuds Pro', 650000)">+ Keranjang</button>
         </div>
       </div>
+
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=500&q=80" alt="Kacamata Smart">
+        <div class="card-body">
+          <div>
+            <span class="tag">Aksesori</span>
+            <h3>Smart Glasses Vision</h3>
+            <div class="price">Rp 1.850.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('Smart Glasses Vision', 1850000)">+ Keranjang</button>
+        </div>
+      </div>
+
       <div class="card">
         <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80" alt="Smartphone">
         <div class="card-body">
@@ -296,6 +338,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
           <button class="btn-buy" onclick="addToCart('NexaWatch Sport', 1199000)">+ Keranjang</button>
         </div>
       </div>
+
       <div class="card">
         <img src="https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?auto=format&fit=crop&w=500&q=80" alt="Keyboard Mechanical">
         <div class="card-body">
@@ -331,75 +374,25 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
   </div>
 </div>
 
-<!-- Modal Login Halaman dengan Pemilih Kategori (Admin & Pelanggan) -->
-<div id="loginModal" class="auth-modal">
-  <div class="auth-card">
-    <button class="close-btn" style="position: absolute; right: 20px; top: 16px;" onclick="toggleLoginModal(false)">&times;</button>
-    <h2>Selamat Datang</h2>
-    <p>Silakan pilih kategori akses akun Anda</p>
-    
-    <!-- Tab Pilih Kategori User -->
-    <div class="role-switch">
-      <button class="role-btn active" id="btn-role-user" onclick="setRole('pelanggan')">Pelanggan</button>
-      <button class="role-btn" id="btn-role-admin" onclick="setRole('admin')">Admin Store</button>
-    </div>
-
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label id="email-label">Alamat Email Pelanggan</label>
-        <input type="email" id="login-email" placeholder="nama@email.com" required>
-      </div>
-      <div class="form-group">
-        <label>Kata Sandi</label>
-        <input type="password" placeholder="••••••••" required>
-      </div>
-      <button type="submit" id="submit-btn" class="btn-buy" style="margin-top: 10px;">Masuk Sebagai Pelanggan</button>
-    </form>
-  </div>
-</div>
-
 <footer>
   <p>© 2026 NexaStore Platform. All rights reserved.</p>
 </footer>
 
 <script>
+// State Keranjang
 let cart = [];
-let currentRole = 'pelanggan';
 
-// Handler Role Switch Login
-function setRole(role) {
-  currentRole = role;
-  const userBtn = document.getElementById('btn-role-user');
-  const adminBtn = document.getElementById('btn-role-admin');
-  const emailLabel = document.getElementById('email-label');
-  const submitBtn = document.getElementById('submit-btn');
-  const emailInput = document.getElementById('login-email');
-
-  if (role === 'admin') {
-    adminBtn.classList.add('active');
-    userBtn.classList.remove('active');
-    emailLabel.textContent = 'ID Admin / Email Staf';
-    emailInput.placeholder = 'admin@nexastore.com';
-    submitBtn.textContent = 'Masuk Portal Admin';
-    submitBtn.style.background = 'var(--accent)';
-  } else {
-    userBtn.classList.add('active');
-    adminBtn.classList.remove('active');
-    emailLabel.textContent = 'Alamat Email Pelanggan';
-    emailInput.placeholder = 'nama@email.com';
-    submitBtn.textContent = 'Masuk Sebagai Pelanggan';
-    submitBtn.style.background = 'var(--primary)';
-  }
-}
-
-// Navigation Handler
+// Fungsi Navigasi Tab
 function switchTab(tabId) {
+  // Sembunyikan semua section
   const sections = document.querySelectorAll('.page-section');
   sections.forEach(section => section.classList.remove('active'));
 
+  // Nonaktifkan semua link navigasi
   const navLinks = document.querySelectorAll('.nav-link');
   navLinks.forEach(link => link.classList.remove('active'));
 
+  // Tampilkan section & aktifkan link yang dipilih
   document.getElementById(tabId).classList.add('active');
   const activeLink = Array.from(navLinks).find(link => link.getAttribute('onclick').includes(tabId));
   if (activeLink) activeLink.classList.add('active');
@@ -407,23 +400,7 @@ function switchTab(tabId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Modal Login Handler
-function toggleLoginModal(show) {
-  const loginModal = document.getElementById('loginModal');
-  loginModal.style.display = show ? 'flex' : 'none';
-}
-
-function handleLogin(e) {
-  e.preventDefault();
-  if (currentRole === 'admin') {
-    alert('Berhasil masuk ke Dashboard Admin!');
-  } else {
-    alert('Berhasil masuk sebagai Pelanggan!');
-  }
-  toggleLoginModal(false);
-}
-
-// Cart Handlers
+// Fitur Keranjang Belanja
 function addToCart(title, price) {
   const existingItem = cart.find(item => item.title === title);
   if (existingItem) {
@@ -432,7 +409,7 @@ function addToCart(title, price) {
     cart.push({ title, price, qty: 1 });
   }
   updateCartUI();
-  toggleCart(true);
+  toggleCart(true); // Tampilkan keranjang saat item ditambahkan
 }
 
 function removeFromCart(title) {
