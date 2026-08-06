@@ -534,25 +534,6 @@ function handleSearch() {
   switchTab('search-results');
 }
 
-function switchTab(tabld) { document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-link').forEach(I => I.classList.remove('active'));
-
-}
-
-const target = document.getElementById(tabld); if (target) target.classList.add('active');
-
-const navitem = document.getElementById('nav-' + tabld); if (navltem) navltem.classList.add('active');
-
-window.scrollTo({ top: 0, behavior: 'smooth' });
-
-function openDetailModal(id) { const p = products.find(item => item.id === id); if (!p) return;
-
-document.getElementById('detail-img').src = p.img; document.getElementById('detail-tag').textContent = p.tag; document.getElementById('detail-title').textContent = p.title; document.getElementById('detail-price').textContent = 'Rp ' + p.price.toLocaleString('id-ID'); document.getElementById('detail-desc').textContent = p.desc;
-
-const addBtn = document.getElementById('detail-add-btn'); addBtn.onclick = () => { }; addToCart(p.id); closeDetail Modal();
-
-} document.getElementById('detail Modal').style.display = 'flex';
-
-function closeDetailModal() { document.getElementById('detail Modal').style.display = 'none'; }
-
-function closeDetail OnOuterClick(e) { } if (e.target.id === 'detailModal') closeDetail Modal();
-}
+function switchTab(tabId) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.na
