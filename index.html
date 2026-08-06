@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NexaStore | E-Commerce Next-Gen</title>
 <style>
-:root { --primary: #6366f1; --bg-main: #0f172a; --bg-card: rgba(30, 41, 59, 0.7); --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #ec4899; --success: #10b981; }
+:root { --primary: #6366f1; --bg-main: #0f172a; --bg-card: rgba(30, 41, 59, 0.7); --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #ec4899; --success: #10b981; --danger: #ef4444; }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 header { position: sticky; top: 0; z-index: 100; background: rgba(15,23,42,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -12,12 +12,14 @@ header { position: sticky; top: 0; z-index: 100; background: rgba(15,23,42,0.85)
 .main-nav { display: flex; gap: 12px; list-style: none; }
 .nav-link { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 13px; cursor: pointer; }
 .nav-link.active { color: var(--text-main); border-bottom: 2px solid var(--primary); }
-.search-bar { flex: 1; max-width: 300px; display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; }
+.search-bar { flex: 1; max-width: 250px; display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; }
 .search-bar input { width: 100%; padding: 6px 10px; background: transparent; border: none; color: #fff; font-size: 13px; outline: none; }
 .search-bar button { padding: 6px 12px; background: var(--primary); border: none; color: #fff; cursor: pointer; font-weight: 600; }
+.nav-actions { display: flex; gap: 8px; align-items: center; }
 .btn-action { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 12px; }
 .btn-login { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); }
 .btn-cart { background: var(--primary); color: #fff; }
+.btn-danger { background: var(--danger); color: #fff; }
 .page-section { display: none; } .page-section.active { display: block; }
 .hero-banner { margin: 16px 5%; padding: 24px; border-radius: 16px; background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2)); border: 1px solid rgba(255,255,255,0.1); }
 .section-title { padding: 16px 5% 8px; font-size: 16px; font-weight: 700; }
@@ -35,11 +37,13 @@ header { position: sticky; top: 0; z-index: 100; background: rgba(15,23,42,0.85)
 .cart-items { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
 .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: var(--bg-card); border-radius: 6px; font-size: 12px; }
 .btn-qty { background: var(--primary); color: #fff; border: none; width: 20px; height: 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-.checkout-container { max-width: 500px; margin: 16px auto; padding: 16px; background: var(--bg-card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
+.checkout-container, .admin-container { max-width: 600px; margin: 16px auto; padding: 16px; background: var(--bg-card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
 .form-group { margin-bottom: 10px; }
 .form-group label { display: block; margin-bottom: 4px; font-size: 12px; color: var(--text-muted); }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; outline: none; font-size: 13px; }
 footer { margin-top: auto; padding: 12px; text-align: center; color: var(--text-muted); font-size: 11px; }
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
+.admin-table th, .admin-table td { border: 1px solid rgba(255,255,255,0.1); padding: 8px; text-align: left; }
 </style>
 </head>
 <body>
@@ -50,12 +54,14 @@ footer { margin-top: auto; padding: 12px; text-align: center; color: var(--text-
     <li><a class="nav-link active" id="nav-home" onclick="switchTab('home')">Home</a></li>
     <li><a class="nav-link" id="nav-kategori" onclick="switchTab('kategori')">Kategori</a></li>
     <li><a class="nav-link" id="nav-promo" onclick="switchTab('promo')">Promo</a></li>
+    <li id="nav-admin-wrapper" style="display:none;"><a class="nav-link" id="nav-admin" onclick="switchTab('admin')">Panel Admin</a></li>
   </ul>
   <div class="search-bar">
     <input type="text" id="search-input" placeholder="Cari..." oninput="handleSearch()">
     <button onclick="handleSearch()">Cari</button>
   </div>
   <div class="nav-actions">
+    <button id="btn-user-action" class="btn-action btn-login" onclick="openLoginModal()">Masuk</button>
     <button class="btn-action btn-cart" onclick="toggleCart()">Keranjang (<span id="cart-count">0</span>)</button>
   </div>
 </header>
@@ -86,6 +92,37 @@ footer { margin-top: auto; padding: 12px; text-align: center; color: var(--text-
     <section class="product-grid" id="grid-search"></section>
   </div>
 
+  <!-- Panel Admin -->
+  <div id="admin" class="page-section">
+    <div class="admin-container">
+      <h3>⚙️ Dashboard Kelola Barang (Admin)</h3>
+      <form id="add-product-form" onsubmit="addNewProduct(event)" style="margin-top: 12px;">
+        <div class="form-group"><label>Nama Produk</label><input type="text" id="p-title" required></div>
+        <div class="form-group">
+          <label>Kategori Menu</label>
+          <select id="p-category" required>
+            <option value="home">Home (Pilihan)</option>
+            <option value="kategori">Kategori</option>
+            <option value="promo">Promo</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Tag (cth: Audio / Diskon 20%)</label><input type="text" id="p-tag" required></div>
+        <div class="form-group"><label>Harga (Rp)</label><input type="number" id="p-price" required></div>
+        <div class="form-group"><label>URL Gambar</label><input type="url" id="p-img" required placeholder="https://images.unsplash.com/..."></div>
+        <div class="form-group"><label>Deskripsi</label><textarea id="p-desc" rows="2" required></textarea></div>
+        <button type="submit" class="btn-buy" style="background:var(--success); margin-bottom:16px;">+ Tambah Produk Baru</button>
+      </form>
+      
+      <h4>Daftar Produk Aktif</h4>
+      <table class="admin-table">
+        <thead>
+          <tr><th>ID</th><th>Produk</th><th>Menu</th><th>Harga</th><th>Aksi</th></tr>
+        </thead>
+        <tbody id="admin-product-list"></tbody>
+      </table>
+    </div>
+  </div>
+
   <div id="checkout" class="page-section">
     <div class="checkout-container">
       <h3>💳 Checkout</h3>
@@ -111,6 +148,29 @@ footer { margin-top: auto; padding: 12px; text-align: center; color: var(--text-
     </div>
   </div>
 </main>
+
+<!-- Modal Login -->
+<div id="loginModal" class="modal-overlay" onclick="if(event.target.id==='loginModal') closeLoginModal()">
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3>Masuk Ke Akun</h3>
+      <button onclick="closeLoginModal()" style="background:none; border:none; color:#fff; cursor:pointer;">✕</button>
+    </div>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Peran (Role)</label>
+        <select id="login-role" onchange="toggleLoginHint()">
+          <option value="pelanggan">Pelanggan / User</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Username / Email</label><input type="text" id="login-username" required placeholder="Masukkan username"></div>
+      <div class="form-group"><label>Kata Sandi</label><input type="password" id="login-password" required placeholder="******"></div>
+      <p id="login-hint" style="font-size:10px; color:var(--text-muted); margin-bottom:10px;">*Untuk Akses Admin demo gunakan: user: <b>admin</b> | pass: <b>admin123</b></p>
+      <button type="submit" class="btn-buy">Masuk</button>
+    </form>
+  </div>
+</div>
 
 <!-- Modal Detail -->
 <div id="detailModal" class="modal-overlay" onclick="if(event.target.id==='detailModal') closeDetailModal()">
@@ -159,7 +219,7 @@ footer { margin-top: auto; padding: 12px; text-align: center; color: var(--text-
 <footer><p>© 2026 NexaStore Platform.</p></footer>
 
 <script>
-const products = [
+let products = [
   { id: 1, title: 'Studio ANC Wireless', category: 'home', tag: 'Audio', price: 1450000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300', desc: 'Headphone Active Noise Cancelling.' },
   { id: 2, title: 'NexaWatch Series X', category: 'home', tag: 'Gadget', price: 2199000, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300', desc: 'Smartwatch futuristik pemantau kesehatan.' },
   { id: 3, title: 'Runner Pro V2', category: 'home', tag: 'Sepatu', price: 899000, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300', desc: 'Sepatu lari ultralight empuk.' },
@@ -168,7 +228,62 @@ const products = [
 ];
 
 let cart = [];
+let currentUser = null; // null | { username: string, role: 'pelanggan' | 'admin' }
 
+// Fitur Auth / Login
+function openLoginModal() {
+  document.getElementById('loginModal').style.display = 'flex';
+}
+function closeLoginModal() {
+  document.getElementById('loginModal').style.display = 'none';
+}
+function handleLogin(e) {
+  e.preventDefault();
+  const role = document.getElementById('login-role').value;
+  const user = document.getElementById('login-username').value;
+  const pass = document.getElementById('login-password').value;
+
+  if (role === 'admin' && (user !== 'admin' || pass !== 'admin123')) {
+    alert('Kredensial Admin Salah! (Gunakan admin / admin123)');
+    return;
+  }
+
+  currentUser = { username: user, role: role };
+  updateUserUI();
+  closeLoginModal();
+  alert(`Selamat datang, ${user} (${role})!`);
+}
+
+function handleLogout() {
+  currentUser = null;
+  updateUserUI();
+  switchTab('home');
+  alert('Anda telah keluar.');
+}
+
+function updateUserUI() {
+  const btnAction = document.getElementById('btn-user-action');
+  const adminWrapper = document.getElementById('nav-admin-wrapper');
+
+  if (currentUser) {
+    btnAction.textContent = `Keluar (${currentUser.username})`;
+    btnAction.onclick = handleLogout;
+    btnAction.className = 'btn-action btn-danger';
+    if (currentUser.role === 'admin') {
+      adminWrapper.style.display = 'inline-block';
+      renderAdminTable();
+    } else {
+      adminWrapper.style.display = 'none';
+    }
+  } else {
+    btnAction.textContent = 'Masuk';
+    btnAction.onclick = openLoginModal;
+    btnAction.className = 'btn-action btn-login';
+    adminWrapper.style.display = 'none';
+  }
+}
+
+// Render Produk
 function renderProducts() {
   ['home','kategori','promo'].forEach(cat => {
     const el = document.getElementById('grid-' + cat);
@@ -184,6 +299,46 @@ function renderProducts() {
       </div>
     `).join('');
   });
+}
+
+// Kelola Produk (Admin)
+function renderAdminTable() {
+  const tbody = document.getElementById('admin-product-list');
+  tbody.innerHTML = products.map(p => `
+    <tr>
+      <td>${p.id}</td>
+      <td>${p.title}</td>
+      <td>${p.category}</td>
+      <td>Rp ${p.price.toLocaleString('id-ID')}</td>
+      <td><button class="btn-action btn-danger" onclick="deleteProduct(${p.id})">Hapus</button></td>
+    </tr>
+  `).join('');
+}
+
+function addNewProduct(e) {
+  e.preventDefault();
+  const newProd = {
+    id: Date.now(),
+    title: document.getElementById('p-title').value,
+    category: document.getElementById('p-category').value,
+    tag: document.getElementById('p-tag').value,
+    price: Number(document.getElementById('p-price').value),
+    img: document.getElementById('p-img').value,
+    desc: document.getElementById('p-desc').value
+  };
+  products.push(newProd);
+  renderProducts();
+  renderAdminTable();
+  document.getElementById('add-product-form').reset();
+  alert('Produk berhasil ditambahkan!');
+}
+
+function deleteProduct(id) {
+  if (confirm('Yakin ingin menghapus produk ini?')) {
+    products = products.filter(p => p.id !== id);
+    renderProducts();
+    renderAdminTable();
+  }
 }
 
 function handleSearch() {
@@ -260,6 +415,10 @@ function goToCheckout() {
   const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
   document.getElementById('checkout-summary').innerHTML = cart.map(i => `<div>${i.title} (x${i.qty}) - Rp ${(i.price * i.qty).toLocaleString('id-ID')}</div>`).join('');
   document.getElementById('checkout-total').textContent = 'Rp ' + total.toLocaleString('id-ID');
+  
+  if (currentUser) {
+    document.getElementById('cust-name').value = currentUser.username;
+  }
   switchTab('checkout');
 }
 
