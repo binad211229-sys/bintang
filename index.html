@@ -27,7 +27,6 @@ header {
 }
 .brand { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; cursor: pointer; }
 
-/* Navigasi Utama */
 .main-nav { display: flex; gap: 16px; list-style: none; }
 .nav-link { 
   color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px; 
@@ -56,7 +55,7 @@ header {
 .page-section { display: none; }
 .page-section.active { display: block; }
 
-/* Hero Section */
+/* Hero Banner */
 .hero-banner {
   margin: 16px 5%; padding: 32px 24px; border-radius: 20px;
   background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2));
@@ -254,16 +253,31 @@ footer { margin-top: auto; padding: 16px; background: rgba(15,23,42,0.95); text-
 </footer>
 
 <script>
-// Data Produk
+// Data Produk Lengkap (18 Produk)
 const products = [
-  { id: 1, title: 'Studio ANC Wireless', category: 'home', tag: 'Audio', price: 1450000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', desc: 'Headphone wireless dengan Active Noise Cancelling.' },
-  { id: 2, title: 'NexaWatch Series X', category: 'home', tag: 'Gadget', price: 2199000, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400', desc: 'Smartwatch futuristik dengan pemantau kesehatan.' },
-  { id: 3, title: 'Runner Pro V2', category: 'home', tag: 'Sepatu', price: 899000, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400', desc: 'Sepatu lari ultralight bantalan empuk.' },
-  { id: 4, title: 'Retro Cam 35mm', category: 'home', tag: 'Kamera', price: 3100000, img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400', desc: 'Kamera analog bergaya klasik 35mm.' },
-  { id: 5, title: 'NexaBook Pro 14"', category: 'kategori', tag: 'Laptop', price: 12499000, img: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400', desc: 'Ultrabook tipis berprosesor kencang.' },
-  { id: 6, title: 'Pulse Gaming Headset', category: 'kategori', tag: 'Gaming', price: 950000, img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400', desc: 'Audio surround 7.1 presisi.' },
-  { id: 7, title: 'NexaWatch Sport', category: 'promo', tag: 'Diskon 30%', price: 1199000, oldPrice: 1699000, img: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400', desc: 'Jam tangan olahraga GPS tahan air.' },
-  { id: 8, title: 'MechKey RGB Wireless', category: 'promo', tag: 'Diskon 40%', price: 750000, oldPrice: 1250000, img: 'https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=400', desc: 'Keyboard mekanikal RGB hotswap.' }
+  // BARANG HOME
+  { id: 1, title: 'Studio ANC Wireless', category: 'home', tag: 'Audio', price: 1450000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', desc: 'Headphone wireless dengan Active Noise Cancelling jernih.' },
+  { id: 2, title: 'NexaWatch Series X', category: 'home', tag: 'Gadget', price: 2199000, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400', desc: 'Smartwatch futuristik dengan pemantau kesehatan otomatis.' },
+  { id: 3, title: 'Runner Pro V2', category: 'home', tag: 'Sepatu', price: 899000, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400', desc: 'Sepatu lari ultralight dengan bantalan yang sangat empuk.' },
+  { id: 4, title: 'Retro Cam 35mm', category: 'home', tag: 'Kamera', price: 3100000, img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400', desc: 'Kamera analog bergaya klasik dengan lensa 35mm presisi.' },
+  { id: 5, title: 'VR Headset Pro', category: 'home', tag: 'Gaming', price: 4500000, img: 'https://images.unsplash.com/photo-1622979135225-d2ba269bc1bd?w=400', desc: 'Virtual reality headset resolusi 4K untuk pengalaman imersif.' },
+  { id: 6, title: 'Wireless Speaker Bass', category: 'home', tag: 'Audio', price: 650000, img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400', desc: 'Speaker portabel tahan air dengan dentuman bass maksimal.' },
+
+  // BARANG KATEGORI
+  { id: 7, title: 'NexaBook Pro 14"', category: 'kategori', tag: 'Laptop', price: 12499000, img: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400', desc: 'Ultrabook tipis berprosesor kencang untuk komputasi berat.' },
+  { id: 8, title: 'Pulse Gaming Headset', category: 'kategori', tag: 'Gaming', price: 950000, img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400', desc: 'Audio surround 7.1 dengan mikrofon jernih tanpa lag.' },
+  { id: 9, title: 'Ergonomic Chair Pro', category: 'kategori', tag: 'Mebel', price: 1850000, img: 'https://images.unsplash.com/photo-1580481072645-022f9a6d1270?w=400', desc: 'Kursi kerja ergonomis penopang tulang belakang sempurna.' },
+  { id: 10, title: 'Mechanical Keyboard', category: 'kategori', tag: 'Aksesori', price: 820000, img: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400', desc: 'Keyboard mekanikal switch biru responsif dan tahan lama.' },
+  { id: 11, title: 'Smart Backpack 20L', category: 'kategori', tag: 'Tas', price: 420000, img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400', desc: 'Tas punggung anti air lengkap dengan port pengisi daya USB.' },
+  { id: 12, title: 'Wireless Mouse 4K', category: 'kategori', tag: 'Aksesori', price: 350000, img: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400', desc: 'Mouse nirkabel presisi tinggi dengan baterai tahan lama.' },
+
+  // BARANG PROMO
+  { id: 13, title: 'NexaWatch Sport', category: 'promo', tag: 'Diskon 30%', price: 1199000, oldPrice: 1699000, img: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400', desc: 'Jam tangan olahraga dengan GPS terintegrasi dan fitur detak jantung.' },
+  { id: 14, title: 'MechKey RGB Wireless', category: 'promo', tag: 'Diskon 40%', price: 750000, oldPrice: 1250000, img: 'https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=400', desc: 'Keyboard hotswap RGB tanpa kabel dengan latency sangat rendah.' },
+  { id: 15, title: 'TWS Earbuds Mini', category: 'promo', tag: 'Diskon 50%', price: 299000, oldPrice: 599000, img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400', desc: 'Earbuds nirkabel kecil dengan daya tahan baterai hingga 24 jam.' },
+  { id: 16, title: 'Action Cam 4K HDR', category: 'promo', tag: 'Diskon 25%', price: 1200000, oldPrice: 1600000, img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400', desc: 'Kamera aksi tahan air rekaman video stabil resolusi 4K.' },
+  { id: 17, title: 'Powerbank 20000mAh', category: 'promo', tag: 'Diskon 35%', price: 260000, oldPrice: 400000, img: 'https://images.unsplash.com/photo-1609592424074-12822a9018f6?w=400', desc: 'Powerbank pengisian cepat Fast Charging 22.5W.' },
+  { id: 18, title: 'Desk Lamp Smart LED', category: 'promo', tag: 'Diskon 20%', price: 180000, oldPrice: 225000, img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400', desc: 'Lampu meja LED pintar dengan kontrol tingkat kecerahan.' }
 ];
 
 let cart = [];
@@ -271,7 +285,7 @@ let cart = [];
 function createCardHtml(p) {
   return `
     <div class="card" onclick="openDetailModal(${p.id})">
-      <img src="${p.img}" alt="${p.title}" loading="lazy">
+      <img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Produk+Nexa'">
       <div class="card-body">
         <div>
           <span class="tag">${p.tag}</span>
@@ -396,86 +410,4 @@ function updateQuantity(id, change) {
 }
 
 function updateCartUI() {
-  const cartCount = document.getElementById('cart-count');
-  const cartItemsContainer = document.getElementById('cart-items');
-  const cartTotal = document.getElementById('cart-total');
-
-  const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
-  const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-
-  if (cartCount) cartCount.textContent = totalQty;
-  if (cartTotal) cartTotal.textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
-
-  if (cartItemsContainer) {
-    if (cart.length === 0) {
-      cartItemsContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">Keranjang kosong.</p>';
-    } else {
-      cartItemsContainer.innerHTML = cart.map(i => `
-        <div class="cart-item">
-          <div>
-            <div style="font-weight:600;">${i.title}</div>
-            <div style="color: var(--primary);">Rp ${(i.price * i.qty).toLocaleString('id-ID')}</div>
-          </div>
-          <div class="cart-controls">
-            <button class="btn-qty" onclick="updateQuantity(${i.id}, -1)">-</button>
-            <span>${i.qty}</span>
-            <button class="btn-qty" onclick="updateQuantity(${i.id}, 1)">+</button>
-          </div>
-        </div>
-      `).join('');
-    }
-  }
-}
-
-function toggleCart(forceOpen = false) {
-  const modal = document.getElementById('cartModal');
-  if (modal) {
-    modal.style.display = forceOpen ? 'flex' : (modal.style.display === 'flex' ? 'none' : 'flex');
-  }
-}
-
-function closeCartOnOuterClick(e) {
-  if (e.target.id === 'cartModal') toggleCart(false);
-}
-
-function goToCheckout() {
-  if (cart.length === 0) {
-    alert('Keranjang belanja kosong!');
-    return;
-  }
-  toggleCart(false);
-  
-  const summary = document.getElementById('checkout-summary');
-  const total = document.getElementById('checkout-total');
-  const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-
-  if (summary) {
-    summary.innerHTML = cart.map(i => `
-      <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
-        <span>${i.title} (x${i.qty})</span>
-        <span>Rp ${(i.price * i.qty).toLocaleString('id-ID')}</span>
-      </div>
-    `).join('');
-  }
-  if (total) total.textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
-  
-  switchTab('checkout');
-}
-
-function processOrder(e) {
-  e.preventDefault();
-  alert('Pesanan berhasil diproses!');
-  cart = [];
-  updateCartUI();
-  switchTab('home');
-}
-
-// Inisialisasi awal saat dokumen siap
-document.addEventListener('DOMContentLoaded', () => {
-  renderProducts();
-  updateCartUI();
-});
-</script>
-
-</body>
-</html>
+  const cartCount = docum
