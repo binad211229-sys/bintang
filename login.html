@@ -112,13 +112,13 @@ header {
 
 .login-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
 .login-header h2 {
   font-size: 26px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   background: linear-gradient(to right, #fff, var(--text-muted));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -129,9 +129,37 @@ header {
   font-size: 14px;
 }
 
+/* Kategori Role Selector (Pelanggan / Admin) */
+.role-selector {
+  display: flex;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.role-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.role-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
 /* Form Styles */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .form-group label {
@@ -236,13 +264,19 @@ header {
   <div class="login-card">
     <div class="login-header">
       <h2>Selamat Datang</h2>
-      <p>Masuk ke akun NexaStore Anda</p>
+      <p id="sub-title">Masuk ke akun Pelanggan Anda</p>
     </div>
 
-    <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Login Berhasil!');">
+    <!-- Switch Kategori Masuk -->
+    <div class="role-selector">
+      <button type="button" class="role-btn active" id="btn-customer" onclick="setRole('customer')">👤 Pelanggan</button>
+      <button type="button" class="role-btn" id="btn-admin" onclick="setRole('admin')">🛠️ Admin Store</button>
+    </div>
+
+    <form action="#" method="POST" onsubmit="handleLogin(event)">
       <div class="form-group">
-        <label for="email">Alamat Email</label>
-        <input type="email" id="email" class="input-field" placeholder="nama@email.com" required>
+        <label for="identity" id="label-identity">Alamat Email / No. HP</label>
+        <input type="text" id="identity" class="input-field" placeholder="nama@email.com" required>
       </div>
 
       <div class="form-group">
@@ -257,14 +291,69 @@ header {
         <a href="#" class="forgot-pass">Lupa kata sandi?</a>
       </div>
 
-      <button type="submit" class="btn-submit">Masuk Akun</button>
+      <button type="submit" class="btn-submit" id="btn-text">Masuk Sebagai Pelanggan</button>
     </form>
 
-    <div class="login-footer">
+    <div class="login-footer" id="signup-prompt">
       Belum punya akun? <a href="#">Daftar Sekarang</a>
     </div>
   </div>
 </div>
+
+<script>
+let currentRole = 'customer';
+
+// Fungsi Switch Kategori (Pelanggan / Admin)
+function setRole(role) {
+  currentRole = role;
+  const btnCustomer = document.getElementById('btn-customer');
+  const btnAdmin = document.getElementById('btn-admin');
+  const subTitle = document.getElementById('sub-title');
+  const labelIdentity = document.getElementById('label-identity');
+  const inputIdentity = document.getElementById('identity');
+  const btnText = document.getElementById('btn-text');
+  const signupPrompt = document.getElementById('signup-prompt');
+
+  if (role === 'admin') {
+    btnAdmin.classList.add('active');
+    btnCustomer.classList.remove('active');
+    subTitle.textContent = 'Portal Manajemen Admin NexaStore';
+    labelIdentity.textContent = 'ID Admin / Email Staf';
+    inputIdentity.placeholder = 'admin@nexastore.com';
+    btnText.textContent = 'Masuk ke Dashboard Admin';
+    signupPrompt.style.display = 'none'; // Sembunyikan opsi pendaftaran untuk admin
+  } else {
+    btnCustomer.classList.add('active');
+    btnAdmin.classList.remove('active');
+    subTitle.textContent = 'Masuk ke akun Pelanggan Anda';
+    labelIdentity.textContent = 'Alamat Email / No. HP';
+    inputIdentity.placeholder = 'nama@email.com';
+    btnText.textContent = 'Masuk Sebagai Pelanggan';
+    signupPrompt.style.display = 'block';
+  }
+}
+
+// Menyesuaikan role otomatis berdasarkan parameter URL (?role=admin atau ?role=customer)
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const roleParam = urlParams.get('role');
+  if (roleParam === 'admin') {
+    setRole('admin');
+  } else {
+    setRole('customer');
+  }
+});
+
+function handleLogin(e) {
+  e.preventDefault();
+  if(currentRole === 'admin') {
+    alert('Login Admin Berhasil! Mengalihkan ke Dashboard Admin...');
+  } else {
+    alert('Login Pelanggan Berhasil! Mengalihkan ke Toko...');
+    window.location.href = 'index.html';
+  }
+}
+</script>
 
 </body>
 </html>
