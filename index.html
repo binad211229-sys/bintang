@@ -378,4 +378,24 @@ function updateCartUI() {
 }
 
 function toggleCart(forceOpen = false) {
-  const modal = document.getEle
+  const modal = document.getElementById('cartModal');
+  if (forceOpen) {
+    modal.style.display = 'flex';
+  } else {
+    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+  }
+}
+
+// Fungsi penutup luar modal keranjang yang ditambahkan
+function closeCartOnOuterClick(e) {
+  if (e.target.id === 'cartModal') toggleCart(false);
+}
+
+// Inisialisasi saat pertama dibuka
+document.addEventListener('DOMContentLoaded', () => {
+  renderProducts();
+});
+</script>
+
+</body>
+</html>
