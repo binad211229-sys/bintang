@@ -27,7 +27,6 @@ header {
 }
 .brand { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; cursor: pointer; }
 
-/* Navigasi Utama */
 .main-nav { display: flex; gap: 24px; list-style: none; }
 .nav-link { 
   color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 15px; 
@@ -40,8 +39,9 @@ header {
 .search-bar button { padding: 10px 20px; background: var(--primary); border: none; color: white; cursor: pointer; }
 
 .nav-actions { display: flex; gap: 16px; align-items: center; }
-.btn-action { padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
+.btn-action { padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .btn-login { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); }
+.btn-login:hover { background: rgba(255,255,255,0.1); }
 .btn-cart { background: var(--primary); color: white; position: relative; }
 
 /* Section Management */
@@ -74,11 +74,13 @@ header {
 .btn-buy { width: 100%; padding: 10px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: 600; cursor: pointer; }
 .btn-buy:hover { background: var(--primary-hover); }
 
-/* Modal Keranjang */
-.cart-modal {
+/* Modal Keranjang & Login Overlay */
+.cart-modal, .auth-modal {
   display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
-  backdrop-filter: blur(4px); z-index: 200; justify-content: flex-end;
+  backdrop-filter: blur(4px); z-index: 200; justify-content: center; align-items: center;
 }
+
+.cart-modal { justify-content: flex-end; }
 .cart-content {
   width: 400px; background: var(--bg-main); height: 100%; padding: 24px; 
   display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.1);
@@ -87,6 +89,21 @@ header {
 .cart-items { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
 .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-card); border-radius: 8px; }
 .close-btn { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+
+/* Card Login Modal */
+.auth-card {
+  background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1);
+  padding: 32px; border-radius: 20px; width: 380px; text-align: center; position: relative;
+}
+.auth-card h2 { margin-bottom: 8px; }
+.auth-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+.form-group { margin-bottom: 16px; text-align: left; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
+.form-group input { 
+  width: 100%; padding: 12px; background: rgba(255,255,255,0.05); 
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; outline: none; 
+}
+.form-group input:focus { border-color: var(--primary); }
 
 footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); text-align: center; color: var(--text-muted); font-size: 14px; border-top: 1px solid rgba(255,255,255,0.05); }
 </style>
@@ -105,13 +122,13 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
     <button>Cari</button>
   </div>
   <div class="nav-actions">
-    <button class="btn-action btn-login">Masuk</button>
+    <button class="btn-action btn-login" onclick="toggleLoginModal(true)">Masuk</button>
     <button class="btn-action btn-cart" onclick="toggleCart()">Keranjang (<span id="cart-count">0</span>)</button>
   </div>
 </header>
 
 <main>
-  <!-- TAB HOME -->
+  <!-- TAB HOME (DITAMBAHKAN BANYAK ITEM) -->
   <div id="home" class="page-section active">
     <section class="hero-banner">
       <div class="hero-text">
@@ -121,8 +138,9 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
       </div>
     </section>
 
-    <div class="section-title">⚡ Barang Pilihan</div>
+    <div class="section-title">⚡ Barang Pilihan Popular</div>
     <section class="product-grid">
+      <!-- Item 1 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headphone Studio">
         <div class="card-body">
@@ -135,6 +153,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
+      <!-- Item 2 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Smartwatch">
         <div class="card-body">
@@ -147,6 +166,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
+      <!-- Item 3 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="Sepatu Sport">
         <div class="card-body">
@@ -159,6 +179,7 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
         </div>
       </div>
 
+      <!-- Item 4 -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80" alt="Kamera Vintage">
         <div class="card-body">
@@ -168,6 +189,58 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
             <div class="price">Rp 3.100.000</div>
           </div>
           <button class="btn-buy" onclick="addToCart('Retro Cam 35mm', 3100000)">+ Keranjang</button>
+        </div>
+      </div>
+
+      <!-- Item 5 (Baru) -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1507764923504-cd90bf7da772?auto=format&fit=crop&w=500&q=80" alt="Laptop Sleek">
+        <div class="card-body">
+          <div>
+            <span class="tag">Komputer</span>
+            <h3>NexaBook Air 14</h3>
+            <div class="price">Rp 12.499.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('NexaBook Air 14', 12499000)">+ Keranjang</button>
+        </div>
+      </div>
+
+      <!-- Item 6 (Baru) -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" alt="Kacamata Sun">
+        <div class="card-body">
+          <div>
+            <span class="tag">Fashion</span>
+            <h3>Dark Prism Sunglasses</h3>
+            <div class="price">Rp 450.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('Dark Prism Sunglasses', 450000)">+ Keranjang</button>
+        </div>
+      </div>
+
+      <!-- Item 7 (Baru) -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=500&q=80" alt="Smart Glasses">
+        <div class="card-body">
+          <div>
+            <span class="tag">Teknologi</span>
+            <h3>Vision AR Frames</h3>
+            <div class="price">Rp 4.200.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('Vision AR Frames', 4200000)">+ Keranjang</button>
+        </div>
+      </div>
+
+      <!-- Item 8 (Baru) -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=500&q=80" alt="Wireless TWS">
+        <div class="card-body">
+          <div>
+            <span class="tag">Audio</span>
+            <h3>NexaBuds Neon</h3>
+            <div class="price">Rp 799.000</div>
+          </div>
+          <button class="btn-buy" onclick="addToCart('NexaBuds Neon', 799000)">+ Keranjang</button>
         </div>
       </div>
     </section>
@@ -188,19 +261,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
           <button class="btn-buy" onclick="addToCart('NexaBuds Pro', 650000)">+ Keranjang</button>
         </div>
       </div>
-
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=500&q=80" alt="Kacamata Smart">
-        <div class="card-body">
-          <div>
-            <span class="tag">Aksesori</span>
-            <h3>Smart Glasses Vision</h3>
-            <div class="price">Rp 1.850.000</div>
-          </div>
-          <button class="btn-buy" onclick="addToCart('Smart Glasses Vision', 1850000)">+ Keranjang</button>
-        </div>
-      </div>
-
       <div class="card">
         <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80" alt="Smartphone">
         <div class="card-body">
@@ -230,7 +290,6 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
           <button class="btn-buy" onclick="addToCart('NexaWatch Sport', 1199000)">+ Keranjang</button>
         </div>
       </div>
-
       <div class="card">
         <img src="https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?auto=format&fit=crop&w=500&q=80" alt="Keyboard Mechanical">
         <div class="card-body">
@@ -266,25 +325,41 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
   </div>
 </div>
 
+<!-- Modal Login Halaman / Overlay -->
+<div id="loginModal" class="auth-modal">
+  <div class="auth-card">
+    <button class="close-btn" style="position: absolute; right: 20px; top: 16px;" onclick="toggleLoginModal(false)">&times;</button>
+    <h2>Selamat Datang</h2>
+    <p>Masuk ke akun NexaStore Anda</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Alamat Email</label>
+        <input type="email" placeholder="nama@email.com" required>
+      </div>
+      <div class="form-group">
+        <label>Kata Sandi</label>
+        <input type="password" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-buy" style="margin-top: 10px;">Masuk Sekarang</button>
+    </form>
+  </div>
+</div>
+
 <footer>
   <p>© 2026 NexaStore Platform. All rights reserved.</p>
 </footer>
 
 <script>
-// State Keranjang
 let cart = [];
 
-// Fungsi Navigasi Tab
+// Navigation Handler
 function switchTab(tabId) {
-  // Sembunyikan semua section
   const sections = document.querySelectorAll('.page-section');
   sections.forEach(section => section.classList.remove('active'));
 
-  // Nonaktifkan semua link navigasi
   const navLinks = document.querySelectorAll('.nav-link');
   navLinks.forEach(link => link.classList.remove('active'));
 
-  // Tampilkan section & aktifkan link yang dipilih
   document.getElementById(tabId).classList.add('active');
   const activeLink = Array.from(navLinks).find(link => link.getAttribute('onclick').includes(tabId));
   if (activeLink) activeLink.classList.add('active');
@@ -292,7 +367,19 @@ function switchTab(tabId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Fitur Keranjang Belanja
+// Modal Login Handler
+function toggleLoginModal(show) {
+  const loginModal = document.getElementById('loginModal');
+  loginModal.style.display = show ? 'flex' : 'none';
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  alert('Berhasil masuk ke akun Anda!');
+  toggleLoginModal(false);
+}
+
+// Cart Handlers
 function addToCart(title, price) {
   const existingItem = cart.find(item => item.title === title);
   if (existingItem) {
@@ -301,7 +388,7 @@ function addToCart(title, price) {
     cart.push({ title, price, qty: 1 });
   }
   updateCartUI();
-  toggleCart(true); // Tampilkan keranjang saat item ditambahkan
+  toggleCart(true);
 }
 
 function removeFromCart(title) {
