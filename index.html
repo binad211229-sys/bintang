@@ -114,15 +114,149 @@ header {
 .detail-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
 .detail-desc { color: var(--text-muted); font-size: 13px; margin: 8px 0; line-height: 1.4; }
 
-.checkout-container {
-  max-width: 600px; margin: 16px auto; padding: 20px; background: var(--bg-card);
-  border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+/* Styling Checkout TikTok Shop */
+.checkout-wrapper {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.form-group { margin-bottom: 14px; }
-.form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
-.form-group input, .form-group select, .form-group textarea {
-  width: 100%; padding: 10px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px; color: white; outline: none; font-size: 14px;
+
+.checkout-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-card-header {
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 8px;
+}
+
+.address-box {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.address-details h4 {
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.address-details p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.checkout-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.checkout-item img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #1e293b;
+}
+.checkout-item-info {
+  flex: 1;
+}
+.checkout-item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+.checkout-item-qty {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.checkout-item-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.option-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.option-tile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(15, 23, 42, 0.4);
+}
+.option-tile.selected {
+  border-color: var(--accent);
+  background: rgba(236, 72, 153, 0.08);
+}
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.cost-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.cost-row.total {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  border-top: 1px dashed rgba(255,255,255,0.1);
+  padding-top: 10px;
+  margin-top: 8px;
+}
+
+.checkout-sticky-bar {
+  position: sticky;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 90;
+  margin-top: 12px;
+  border-radius: 12px 12px 0 0;
+}
+.btn-order-now {
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
 }
 
 footer { margin-top: auto; padding: 16px; background: rgba(15,23,42,0.95); text-align: center; color: var(--text-muted); font-size: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -180,38 +314,108 @@ footer { margin-top: auto; padding: 16px; background: rgba(15,23,42,0.95); text-
     <section class="product-grid" id="grid-search"></section>
   </div>
 
-  <!-- TAB CHECKOUT -->
+  <!-- TAB CHECKOUT ALA TIKTOK SHOP -->
   <div id="checkout" class="page-section">
-    <div class="checkout-container">
-      <h2 style="margin-bottom: 16px;">💳 Form Checkout</h2>
-      <div style="margin-bottom: 16px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-        <div id="checkout-summary" style="font-size: 13px; color: var(--text-muted);"></div>
-        <div style="display: flex; justify-content: space-between; font-weight: 700; margin-top: 12px; font-size: 16px;">
-          <span>Total:</span>
-          <span id="checkout-total" style="color: var(--primary);">Rp 0</span>
+    <div class="checkout-wrapper">
+      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 4px;">Ringkasan Pesanan</h2>
+
+      <!-- Kartu Alamat Pengiriman -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <span>📍 Alamat Pengiriman</span>
+          <span style="color: var(--primary); cursor: pointer; font-size: 12px;">Ubah</span>
+        </div>
+        <div class="address-box">
+          <div class="address-details">
+            <h4>Budi Santoso <span style="font-weight: normal; color: var(--text-muted); font-size: 12px;">(+62 812-3456-7890)</span></h4>
+            <p>Jl. Sudirman No. 42, lantai 3, Kebayoran Baru, Jakarta Selatan, DKI Jakarta, 12190</p>
+          </div>
         </div>
       </div>
 
-      <form onsubmit="processOrder(event)">
-        <div class="form-group">
-          <label>Nama Lengkap</label>
-          <input type="text" required placeholder="Nama Anda">
+      <!-- Daftar Produk -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <span>🛍️ Item Pesanan</span>
         </div>
-        <div class="form-group">
-          <label>Alamat Pengiriman</label>
-          <textarea rows="3" required placeholder="Alamat lengkap"></textarea>
+        <div id="checkout-items-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+      </div>
+
+      <!-- Pilihan Kurir -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <span>🚚 Opsi Pengiriman</span>
         </div>
-        <div class="form-group">
-          <label>Metode Pembayaran</label>
-          <select required>
-            <option value="">-- Pilih Pembayaran --</option>
-            <option value="qris">QRIS / E-Wallet</option>
-            <option value="tf">Transfer Bank</option>
-            <option value="cod">COD</option>
-          </select>
+        <div class="option-selector">
+          <div class="option-tile selected">
+            <div class="option-label">
+              <span>⚡ Reguler (2-3 Hari)</span>
+            </div>
+            <span style="font-weight: 700; font-size: 13px;">Rp 15.000</span>
+          </div>
         </div>
-        <button type="submit" class="btn-buy" style="background: var(--accent); padding: 12px; font-size: 15px;">Konfirmasi & Bayar</button>
-      </form>
+      </div>
+
+      <!-- Metode Pembayaran -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <span>💳 Metode Pembayaran</span>
+        </div>
+        <div class="option-selector" id="payment-options">
+          <div class="option-tile selected" onclick="selectPayment(this)">
+            <div class="option-label">
+              <span>📱 QRIS / E-Wallet (GoPay, OVO, Dana)</span>
+            </div>
+            <span>✓</span>
+          </div>
+          <div class="option-tile" onclick="selectPayment(this)">
+            <div class="option-label">
+              <span>🏦 Transfer Bank (VA)</span>
+            </div>
+            <span></span>
+          </div>
+          <div class="option-tile" onclick="selectPayment(this)">
+            <div class="option-label">
+              <span>💵 Bayar di Tempat (COD)</span>
+            </div>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rincian Biaya -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <span>🧾 Rincian Pembayaran</span>
+        </div>
+        <div>
+          <div class="cost-row">
+            <span>Subtotal Produk</span>
+            <span id="checkout-subtotal">Rp 0</span>
+          </div>
+          <div class="cost-row">
+            <span>Biaya Pengiriman</span>
+            <span>Rp 15.000</span>
+          </div>
+          <div class="cost-row">
+            <span>Diskon Ongkir</span>
+            <span style="color: #22c55e;">-Rp 15.000</span>
+          </div>
+          <div class="cost-row total">
+            <span>Total Pembayaran</span>
+            <span id="checkout-total-final" style="color: var(--accent);">Rp 0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Action Bar (Fixed / Sticky) -->
+      <div class="checkout-sticky-bar">
+        <div>
+          <div style="font-size: 11px; color: var(--text-muted);">Total Pembayaran</div>
+          <div id="sticky-total" style="font-size: 18px; font-weight: 800; color: #fff;">Rp 0</div>
+        </div>
+        <button class="btn-order-now" onclick="processOrderTikTokStyle()">Buat Pesanan</button>
+      </div>
     </div>
   </div>
 </main>
@@ -330,152 +534,25 @@ function handleSearch() {
   switchTab('search-results');
 }
 
-function switchTab(tabId) {
-  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+function switchTab(tabld) { document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-link').forEach(I => I.classList.remove('active'));
 
-  const target = document.getElementById(tabId);
-  if (target) target.classList.add('active');
-
-  const navItem = document.getElementById('nav-' + tabId);
-  if (navItem) navItem.classList.add('active');
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function openDetailModal(id) {
-  const p = products.find(item => item.id === id);
-  if (!p) return;
+const target = document.getElementById(tabld); if (target) target.classList.add('active');
 
-  document.getElementById('detail-img').src = p.img;
-  document.getElementById('detail-tag').textContent = p.tag;
-  document.getElementById('detail-title').textContent = p.title;
-  document.getElementById('detail-price').textContent = 'Rp ' + p.price.toLocaleString('id-ID');
-  document.getElementById('detail-desc').textContent = p.desc;
-  
-  const addBtn = document.getElementById('detail-add-btn');
-  addBtn.onclick = () => {
-    addToCart(p.id);
-    closeDetailModal();
-  };
+const navitem = document.getElementById('nav-' + tabld); if (navltem) navltem.classList.add('active');
 
-  document.getElementById('detailModal').style.display = 'flex';
+window.scrollTo({ top: 0, behavior: 'smooth' });
+
+function openDetailModal(id) { const p = products.find(item => item.id === id); if (!p) return;
+
+document.getElementById('detail-img').src = p.img; document.getElementById('detail-tag').textContent = p.tag; document.getElementById('detail-title').textContent = p.title; document.getElementById('detail-price').textContent = 'Rp ' + p.price.toLocaleString('id-ID'); document.getElementById('detail-desc').textContent = p.desc;
+
+const addBtn = document.getElementById('detail-add-btn'); addBtn.onclick = () => { }; addToCart(p.id); closeDetail Modal();
+
+} document.getElementById('detail Modal').style.display = 'flex';
+
+function closeDetailModal() { document.getElementById('detail Modal').style.display = 'none'; }
+
+function closeDetail OnOuterClick(e) { } if (e.target.id === 'detailModal') closeDetail Modal();
 }
-
-function closeDetailModal() {
-  document.getElementById('detailModal').style.display = 'none';
-}
-
-function closeDetailOnOuterClick(e) {
-  if (e.target.id === 'detailModal') closeDetailModal();
-}
-
-function addToCart(id) {
-  const product = products.find(p => p.id === id);
-  if (!product) return;
-
-  const item = cart.find(i => i.id === id);
-  if (item) {
-    item.qty += 1;
-  } else {
-    cart.push({ ...product, qty: 1 });
-  }
-  updateCartUI();
-  toggleCart(true);
-}
-
-function updateQuantity(id, change) {
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
-
-  item.qty += change;
-  if (item.qty <= 0) {
-    cart = cart.filter(i => i.id !== id);
-  }
-  updateCartUI();
-}
-
-function updateCartUI() {
-  const cartCount = document.getElementById('cart-count');
-  const cartItemsContainer = document.getElementById('cart-items');
-  const cartTotal = document.getElementById('cart-total');
-
-  const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
-  const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-
-  if (cartCount) cartCount.textContent = totalQty;
-  if (cartTotal) cartTotal.textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
-
-  if (cartItemsContainer) {
-    if (cart.length === 0) {
-      cartItemsContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">Keranjang kosong.</p>';
-    } else {
-      cartItemsContainer.innerHTML = cart.map(i => `
-        <div class="cart-item">
-          <div>
-            <div style="font-weight:600;">${i.title}</div>
-            <div style="color: var(--primary);">Rp ${(i.price * i.qty).toLocaleString('id-ID')}</div>
-          </div>
-          <div class="cart-controls">
-            <button class="btn-qty" onclick="updateQuantity(${i.id}, -1)">-</button>
-            <span>${i.qty}</span>
-            <button class="btn-qty" onclick="updateQuantity(${i.id}, 1)">+</button>
-          </div>
-        </div>
-      `).join('');
-    }
-  }
-}
-
-function toggleCart(forceOpen = false) {
-  const modal = document.getElementById('cartModal');
-  if (modal) {
-    modal.style.display = forceOpen ? 'flex' : (modal.style.display === 'flex' ? 'none' : 'flex');
-  }
-}
-
-function closeCartOnOuterClick(e) {
-  if (e.target.id === 'cartModal') toggleCart(false);
-}
-
-function goToCheckout() {
-  if (cart.length === 0) {
-    alert('Keranjang belanja kosong!');
-    return;
-  }
-  toggleCart(false);
-  
-  const summary = document.getElementById('checkout-summary');
-  const total = document.getElementById('checkout-total');
-  const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-
-  if (summary) {
-    summary.innerHTML = cart.map(i => `
-      <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
-        <span>${i.title} (x${i.qty})</span>
-        <span>Rp ${(i.price * i.qty).toLocaleString('id-ID')}</span>
-      </div>
-    `).join('');
-  }
-  if (total) total.textContent = 'Rp ' + totalPrice.toLocaleString('id-ID');
-  
-  switchTab('checkout');
-}
-
-function processOrder(e) {
-  e.preventDefault();
-  alert('Pesanan berhasil diproses!');
-  cart = [];
-  updateCartUI();
-  switchTab('home');
-}
-
-// Inisialisasi awal saat dokumen siap
-document.addEventListener('DOMContentLoaded', () => {
-  renderProducts();
-  updateCartUI();
-});
-</script>
-
-</body>
-</html>
