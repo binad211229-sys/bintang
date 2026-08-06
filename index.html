@@ -92,18 +92,13 @@ header {
 
 /* Modal Keranjang */
 .cart-content {
-  width: 420px; background: var(--bg-main); height: 100%; padding: 24px; 
+  width: 400px; background: var(--bg-main); height: 100%; padding: 24px; 
   display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.1);
   position: absolute; right: 0; top: 0;
 }
 .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .cart-items { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-card); border-radius: 8px; gap: 12px; }
-.cart-item-info { flex-grow: 1; }
-.cart-controls { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 6px; }
-.btn-qty { background: var(--primary); color: white; border: none; width: 22px; height: 22px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.btn-qty:hover { background: var(--primary-hover); }
-.qty-count { font-size: 14px; font-weight: 600; min-width: 16px; text-align: center; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-card); border-radius: 8px; }
 .close-btn { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
 
 /* Modal Detail Produk */
@@ -129,8 +124,8 @@ footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); te
     <li><a class="nav-link" onclick="switchTab('promo')">Promo</a></li>
   </ul>
   <div class="search-bar">
-    <input type="text" id="search-input" placeholder="Cari item eksklusif..." onkeyup="filterProducts()">
-    <button onclick="filterProducts()">Cari</button>
+    <input type="text" placeholder="Cari item eksklusif...">
+    <button>Cari</button>
   </div>
   <div class="nav-actions">
     <a href="login.html" class="btn-action btn-login">Masuk</a>
@@ -235,28 +230,8 @@ const products = [
 
 let cart = [];
 
-// Helper untuk menyusun elemen HTML Card
-function buildCardHtml(p) {
-  return `
-    <div class="card" onclick="openDetailModal(${p.id})">
-      <img src="${p.img}" alt="${p.title}">
-      <div class="card-body">
-        <div>
-          <span class="tag">${p.tag}</span>
-          <h3>${p.title}</h3>
-          <div class="price">
-            Rp ${p.price.toLocaleString('id-ID')}
-            ${p.oldPrice ? `<span class="old-price">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
-          </div>
-        </div>
-        <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Keranjang</button>
-      </div>
-    </div>
-  `;
-}
-
 // Render Produk ke Grid HTML
-function renderProducts(productList = products) {
+function renderProducts() {
   const homeGrid = document.getElementById('grid-home');
   const kategoriGrid = document.getElementById('grid-kategori');
   const promoGrid = document.getElementById('grid-promo');
@@ -265,45 +240,28 @@ function renderProducts(productList = products) {
   kategoriGrid.innerHTML = '';
   promoGrid.innerHTML = '';
 
-  let countHome = 0, countKategori = 0, countPromo = 0;
+  products.forEach(p => {
+    const cardHtml = `
+      <div class="card" onclick="openDetailModal(${p.id})">
+        <img src="${p.img}" alt="${p.title}">
+        <div class="card-body">
+          <div>
+            <span class="tag">${p.tag}</span>
+            <h3>${p.title}</h3>
+            <div class="price">
+              Rp ${p.price.toLocaleString('id-ID')}
+              ${p.oldPrice ? `<span class="old-price">Rp ${p.oldPrice.toLocaleString('id-ID')}</span>` : ''}
+            </div>
+          </div>
+          <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Keranjang</button>
+        </div>
+      </div>
+    `;
 
-  productList.forEach(p => {
-    const cardHtml = buildCardHtml(p);
-
-    if (p.category === 'home') {
-      homeGrid.innerHTML += cardHtml;
-      countHome++;
-    } else if (p.category === 'kategori') {
-      kategoriGrid.innerHTML += cardHtml;
-      countKategori++;
-    } else if (p.category === 'promo') {
-      promoGrid.innerHTML += cardHtml;
-      countPromo++;
-    }
+    if (p.category === 'home') homeGrid.innerHTML += cardHtml;
+    else if (p.category === 'kategori') kategoriGrid.innerHTML += cardHtml;
+    else if (p.category === 'promo') promoGrid.innerHTML += cardHtml;
   });
-
-  const emptyMsg = '<p style="color: var(--text-muted); grid-column: 1/-1;">Produk tidak ditemukan.</p>';
-  if (countHome === 0) homeGrid.innerHTML = emptyMsg;
-  if (countKategori === 0) kategoriGrid.innerHTML = emptyMsg;
-  if (countPromo === 0) promoGrid.innerHTML = emptyMsg;
-}
-
-// Logika Pencarian Produk
-function filterProducts() {
-  const query = document.getElementById('search-input').value.toLowerCase().trim();
-  
-  if (!query) {
-    renderProducts(products);
-    return;
-  }
-
-  const filtered = products.filter(p => 
-    p.title.toLowerCase().includes(query) ||
-    p.tag.toLowerCase().includes(query) ||
-    p.desc.toLowerCase().includes(query)
-  );
-
-  renderProducts(filtered);
 }
 
 // Fungsi Navigasi Tab
@@ -346,7 +304,7 @@ function closeDetailOnOuterClick(e) {
   if (e.target.id === 'detailModal') closeDetailModal();
 }
 
-// Fungsi Keranjang Belanja & Manajemen Kuantitas
+// Fungsi Keranjang Belanja
 function addToCart(id) {
   const product = products.find(p => p.id === id);
   if (!product) return;
@@ -359,18 +317,6 @@ function addToCart(id) {
   }
   updateCartUI();
   toggleCart(true);
-}
-
-function updateQuantity(id, amount) {
-  const item = cart.find(item => item.id === id);
-  if (!item) return;
-
-  item.qty += amount;
-  if (item.qty <= 0) {
-    removeFromCart(id);
-  } else {
-    updateCartUI();
-  }
 }
 
 function removeFromCart(id) {
@@ -394,4 +340,30 @@ function updateCartUI() {
   } else {
     cartItemsContainer.innerHTML = cart.map(item => `
       <div class="cart-item">
-        <div
+        <div>
+          <div style="font-weight:600; font-size: 14px;">${item.title}</div>
+          <div style="font-size:12px; color: var(--text-muted);">Rp ${item.price.toLocaleString('id-ID')} x ${item.qty}</div>
+        </div>
+        <button class="close-btn" style="font-size: 14px;" onclick="removeFromCart(${item.id})">✕</button>
+      </div>
+    `).join('');
+  }
+}
+
+function toggleCart(forceOpen = false) {
+  const modal = document.getElementById('cartModal');
+  if (forceOpen) {
+    modal.style.display = 'flex';
+  } else {
+    modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+  }
+}
+
+// Inisialisasi saat pertama dibuka
+document.addEventListener('DOMContentLoaded', () => {
+  renderProducts();
+});
+</script>
+
+</body>
+</html>
