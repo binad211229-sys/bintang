@@ -3,497 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NexaStore | E-Commerce Next-Gen</title>
+<title>Masuk - NexaStore</title>
 <style>
 :root {
   --primary: #6366f1;
   --primary-hover: #4f46e5;
   --bg-main: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.7);
+  --bg-card: rgba(30, 41, 59, 0.75);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --accent: #ec4899;
-  --success: #10b981;
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 
-/* Header Navigasi */
+body { 
+  background: var(--bg-main); 
+  color: var(--text-main); 
+  min-height: 100vh; 
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background Ambient Gradient */
+body::before {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: var(--primary);
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.25;
+  top: 15%;
+  left: 20%;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: var(--accent);
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.2;
+  bottom: 15%;
+  right: 20%;
+  z-index: 0;
+}
+
+/* Header Ringkas */
 header {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding: 16px 8%; display: flex; justify-content: space-between; align-items: center; gap: 20px;
-}
-.brand { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; cursor: pointer; }
-
-.main-nav { display: flex; gap: 24px; list-style: none; }
-.nav-link { 
-  color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 15px; 
-  cursor: pointer; transition: color 0.2s; padding: 6px 0;
-}
-.nav-link:hover, .nav-link.active { color: var(--text-main); border-bottom: 2px solid var(--primary); }
-
-.search-bar { width: 35%; display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
-.search-bar input { width: 100%; padding: 10px 16px; background: transparent; border: none; color: white; outline: none; }
-.search-bar button { padding: 10px 20px; background: var(--primary); border: none; color: white; cursor: pointer; }
-
-.nav-actions { display: flex; gap: 16px; align-items: center; }
-.btn-action { padding: 8px 16px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-login { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); }
-.btn-login:hover { background: rgba(255,255,255,0.1); }
-.btn-cart { background: var(--primary); color: white; position: relative; }
-.btn-logout { background: #ef4444; color: white; display: none; }
-
-/* Section Management */
-.page-section { display: none; }
-.page-section.active { display: block; }
-
-/* Hero Section */
-.hero-banner {
-  margin: 24px 8%; padding: 48px; border-radius: 24px;
-  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2));
-  border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;
-}
-.hero-text h1 { font-size: 40px; margin-bottom: 12px; background: linear-gradient(to right, #fff, var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero-text p { color: var(--text-muted); margin-bottom: 24px; }
-
-/* Grid & Card Produk */
-.section-title { padding: 24px 8% 16px; font-size: 20px; font-weight: 700; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; padding: 0 8% 48px; }
-
-.card {
-  background: var(--bg-card); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);
-  overflow: hidden; transition: transform 0.2s; display: flex; flex-direction: column;
-}
-.card:hover { transform: translateY(-6px); border-color: rgba(99,102,241,0.4); }
-.card img { width: 100%; height: 200px; object-fit: cover; }
-.card-body { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
-.tag { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; background: rgba(236,72,153,0.2); color: var(--accent); width: max-content; margin-bottom: 8px; }
-.price { font-size: 20px; font-weight: 800; color: #fff; margin: 8px 0; }
-.old-price { font-size: 13px; text-decoration: line-through; color: var(--text-muted); margin-left: 6px; }
-.btn-buy { width: 100%; padding: 10px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: 600; cursor: pointer; }
-.btn-buy:hover { background: var(--primary-hover); }
-
-/* Dashboard Styling */
-.dashboard-container { padding: 32px 8%; }
-.dashboard-header { margin-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px; }
-.stat-card { background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); }
-.stat-card h4 { color: var(--text-muted); font-size: 14px; margin-bottom: 8px; }
-.stat-card .value { font-size: 24px; font-weight: 800; }
-
-.data-table { width: 100%; border-collapse: collapse; margin-top: 16px; background: var(--bg-card); border-radius: 12px; overflow: hidden; }
-.data-table th, .data-table td { padding: 14px 20px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.data-table th { background: rgba(255,255,255,0.05); font-size: 14px; color: var(--text-muted); }
-
-/* Modal Keranjang & Login Overlay */
-.cart-modal, .auth-modal {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
-  backdrop-filter: blur(4px); z-index: 200; justify-content: center; align-items: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  padding: 20px 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
 }
 
-.cart-modal { justify-content: flex-end; }
-.cart-content {
-  width: 400px; background: var(--bg-main); height: 100%; padding: 24px; 
-  display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.1);
+.brand { 
+  font-size: 24px; 
+  font-weight: 800; 
+  color: var(--primary); 
+  letter-spacing: -0.5px; 
+  text-decoration: none;
 }
-.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.cart-items { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-card); border-radius: 8px; }
-.close-btn { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
 
-/* Card Login Modal */
-.auth-card {
-  background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1);
-  padding: 32px; border-radius: 20px; width: 400px; text-align: center; position: relative;
+.btn-back {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: color 0.2s;
 }
-.auth-card h2 { margin-bottom: 4px; }
-.auth-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
 
-/* Tab Switch Role Login */
-.role-switch {
-  display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px; padding: 4px; margin-bottom: 20px; gap: 4px;
+.btn-back:hover {
+  color: var(--text-main);
 }
-.role-btn {
-  flex: 1; padding: 8px; border: none; background: transparent; color: var(--text-muted);
-  font-weight: 600; font-size: 13px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
-}
-.role-btn.active { background: var(--primary); color: white; }
 
-.form-group { margin-bottom: 16px; text-align: left; }
-.form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
-.form-group input { 
-  width: 100%; padding: 12px; background: rgba(255,255,255,0.05); 
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; outline: none; 
+/* Login Card Container */
+.login-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
 }
-.form-group input:focus { border-color: var(--primary); }
 
-footer { margin-top: auto; padding: 24px 8%; background: rgba(15,23,42,0.95); text-align: center; color: var(--text-muted); font-size: 14px; border-top: 1px solid rgba(255,255,255,0.05); }
+.login-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 36px 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-header h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(to right, #fff, var(--text-muted));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.login-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input-field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.remember-me input {
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.forgot-pass {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.forgot-pass:hover {
+  text-decoration: underline;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover {
+  background: var(--primary-hover);
+}
+
+.login-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.login-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand" onclick="switchTab('home')">NEXA</div>
-  <ul class="main-nav" id="main-nav">
-    <li><a class="nav-link active" onclick="switchTab('home')">Home</a></li>
-    <li><a class="nav-link" onclick="switchTab('kategori')">Kategori</a></li>
-    <li><a class="nav-link" onclick="switchTab('promo')">Promo</a></li>
-  </ul>
-  <div class="search-bar">
-    <input type="text" placeholder="Cari item eksklusif...">
-    <button>Cari</button>
-  </div>
-  <div class="nav-actions">
-    <button id="btn-login-trigger" class="btn-action btn-login" onclick="toggleLoginModal(true)">Masuk</button>
-    <button id="btn-logout-trigger" class="btn-action btn-logout" onclick="handleLogout()">Keluar</button>
-    <button class="btn-action btn-cart" onclick="toggleCart()">Keranjang (<span id="cart-count">0</span>)</button>
-  </div>
+  <a href="index.html" class="brand">NEXA</a>
+  <a href="index.html" class="btn-back">← Kembali ke Toko</a>
 </header>
 
-<main>
-  <!-- TAB HOME -->
-  <div id="home" class="page-section active">
-    <section class="hero-banner">
-      <div class="hero-text">
-        <h1>Koleksi Masa Depan</h1>
-        <p>Dapatkan diskon terbatas hingga 50% untuk lini produk audio terkurasi.</p>
-        <button class="btn-action btn-cart" onclick="switchTab('promo')">Jelajahi Promo</button>
-      </div>
-    </section>
-
-    <div class="section-title">⚡ Barang Pilihan Popular</div>
-    <section class="product-grid">
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headphone Studio">
-        <div class="card-body">
-          <div>
-            <span class="tag">Audio Premium</span>
-            <h3>Studio ANC Wireless</h3>
-            <div class="price">Rp 1.450.000</div>
-          </div>
-          <button class="btn-buy" onclick="addToCart('Studio ANC Wireless', 1450000)">+ Keranjang</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Smartwatch">
-        <div class="card-body">
-          <div>
-            <span class="tag">Limitless</span>
-            <h3>NexaWatch Series X</h3>
-            <div class="price">Rp 2.199.000</div>
-          </div>
-          <button class="btn-buy" onclick="addToCart('NexaWatch Series X', 2199000)">+ Keranjang</button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- TAB KATEGORI -->
-  <div id="kategori" class="page-section">
-    <div class="section-title">📦 Semua Kategori Produk</div>
-    <section class="product-grid">
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=500&q=80" alt="Earphones">
-        <div class="card-body">
-          <div>
-            <span class="tag">Audio</span>
-            <h3>NexaBuds Pro</h3>
-            <div class="price">Rp 650.000</div>
-          </div>
-          <button class="btn-buy" onclick="addToCart('NexaBuds Pro', 650000)">+ Keranjang</button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- TAB PROMO -->
-  <div id="promo" class="page-section">
-    <div class="section-title">🔥 Diskon & Penawaran Terbatas</div>
-    <section class="product-grid">
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=500&q=80" alt="Smartwatch Promo">
-        <div class="card-body">
-          <div>
-            <span class="tag">Diskon 30%</span>
-            <h3>NexaWatch Sport</h3>
-            <div class="price">Rp 1.199.000 <span class="old-price">Rp 1.699.000</span></div>
-          </div>
-          <button class="btn-buy" onclick="addToCart('NexaWatch Sport', 1199000)">+ Keranjang</button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- HALAMAN DASHBOARD PELANGGAN (PINDAH SAAT LOGIN PELANGGAN) -->
-  <div id="dashboard-pelanggan" class="page-section">
-    <div class="dashboard-container">
-      <div class="dashboard-header">
-        <div>
-          <h2>Area Anggota Pelanggan</h2>
-          <p style="color: var(--text-muted)">Selamat datang kembali, Budi Santoso!</p>
-        </div>
-        <span class="tag" style="background: rgba(16, 185, 129, 0.2); color: var(--success); font-size: 12px;">Akun Verifikasi</span>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h4>Total Pesanan</h4>
-          <div class="value">12</div>
-        </div>
-        <div class="stat-card">
-          <h4>Poin Reward</h4>
-          <div class="value" style="color: var(--accent)">2.450 Poin</div>
-        </div>
-        <div class="stat-card">
-          <h4>Pesanan Aktif</h4>
-          <div class="value">1 Pengiriman</div>
-        </div>
-      </div>
-
-      <h3>📦 Riwayat Transaksi Terakhir</h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID Transaksi</th>
-            <th>Tanggal</th>
-            <th>Item</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>#NX-9942</td>
-            <td>04 Ags 2026</td>
-            <td>Studio ANC Wireless</td>
-            <td>Rp 1.450.000</td>
-            <td><span style="color: var(--success)">Dikirim</span></td>
-          </tr>
-          <tr>
-            <td>#NX-8821</td>
-            <td>28 Jul 2026</td>
-            <td>NexaWatch Series X</td>
-            <td>Rp 2.199.000</td>
-            <td><span style="color: var(--text-muted)">Selesai</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- HALAMAN DASHBOARD ADMIN STORE (PINDAH SAAT LOGIN ADMIN) -->
-  <div id="dashboard-admin" class="page-section">
-    <div class="dashboard-container">
-      <div class="dashboard-header">
-        <div>
-          <h2>Portal Admin Toko</h2>
-          <p style="color: var(--text-muted)">Panel Operasional & Kontrol Inventaris</p>
-        </div>
-        <button class="btn-buy" style="width: auto; padding: 8px 16px;">+ Tambah Produk</button>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h4>Pendapatan Bulan Ini</h4>
-          <div class="value" style="color: var(--success)">Rp 48.950.000</div>
-        </div>
-        <div class="stat-card">
-          <h4>Total Stok Produk</h4>
-          <div class="value">1,420 Unit</div>
-        </div>
-        <div class="stat-card">
-          <h4>Pesanan Perlu Diproses</h4>
-          <div class="value" style="color: var(--accent)">8 Pesanan</div>
-        </div>
-      </div>
-
-      <h3>⚙️ Kelola Inventaris Produk</h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Kode SKU</th>
-            <th>Nama Produk</th>
-            <th>Kategori</th>
-            <th>Harga</th>
-            <th>Stok</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>SKU-001</td>
-            <td>Studio ANC Wireless</td>
-            <td>Audio</td>
-            <td>Rp 1.450.000</td>
-            <td>45</td>
-            <td><button style="background:none; border:none; color: var(--primary); cursor:pointer;">Edit</button></td>
-          </tr>
-          <tr>
-            <td>SKU-002</td>
-            <td>NexaWatch Series X</td>
-            <td>Gadget</td>
-            <td>Rp 2.199.000</td>
-            <td>12</td>
-            <td><button style="background:none; border:none; color: var(--primary); cursor:pointer;">Edit</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</main>
-
-<!-- Modal Keranjang Belanja -->
-<div id="cartModal" class="cart-modal">
-  <div class="cart-content">
-    <div class="cart-header">
-      <h2>Keranjang Belanja</h2>
-      <button class="close-btn" onclick="toggleCart()">&times;</button>
-    </div>
-    <div id="cart-items" class="cart-items">
-      <p style="color: var(--text-muted);">Keranjang Anda masih kosong.</p>
-    </div>
-    <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
-      <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 16px;">
-        <span>Total:</span>
-        <span id="cart-total">Rp 0</span>
-      </div>
-      <button class="btn-buy" style="background: var(--accent);">Checkout</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Login Halaman -->
-<div id="loginModal" class="auth-modal">
-  <div class="auth-card">
-    <button class="close-btn" style="position: absolute; right: 20px; top: 16px;" onclick="toggleLoginModal(false)">&times;</button>
-    <h2>Selamat Datang</h2>
-    <p>Silakan pilih kategori akses akun Anda</p>
-    
-    <!-- Tab Pilih Kategori User -->
-    <div class="role-switch">
-      <button class="role-btn active" id="btn-role-user" onclick="setRole('pelanggan')">Pelanggan</button>
-      <button class="role-btn" id="btn-role-admin" onclick="setRole('admin')">Admin Store</button>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>Selamat Datang</h2>
+      <p>Masuk ke akun NexaStore Anda</p>
     </div>
 
-    <form onsubmit="handleLogin(event)">
+    <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Login Berhasil!');">
       <div class="form-group">
-        <label id="email-label">Alamat Email Pelanggan</label>
-        <input type="email" id="login-email" placeholder="nama@email.com" required>
+        <label for="email">Alamat Email</label>
+        <input type="email" id="email" class="input-field" placeholder="nama@email.com" required>
       </div>
+
       <div class="form-group">
-        <label>Kata Sandi</label>
-        <input type="password" placeholder="••••••••" required>
+        <label for="password">Kata Sandi</label>
+        <input type="password" id="password" class="input-field" placeholder="••••••••" required>
       </div>
-      <button type="submit" id="submit-btn" class="btn-buy" style="margin-top: 10px;">Masuk Sebagai Pelanggan</button>
+
+      <div class="form-actions">
+        <label class="remember-me">
+          <input type="checkbox"> Ingat Saya
+        </label>
+        <a href="#" class="forgot-pass">Lupa kata sandi?</a>
+      </div>
+
+      <button type="submit" class="btn-submit">Masuk Akun</button>
     </form>
+
+    <div class="login-footer">
+      Belum punya akun? <a href="#">Daftar Sekarang</a>
+    </div>
   </div>
 </div>
 
-<footer>
-  <p>© 2026 NexaStore Platform. All rights reserved.</p>
-</footer>
-
-<script>
-let cart = [];
-let currentRole = 'pelanggan';
-
-// Handler Role Switch Login
-function setRole(role) {
-  currentRole = role;
-  const userBtn = document.getElementById('btn-role-user');
-  const adminBtn = document.getElementById('btn-role-admin');
-  const emailLabel = document.getElementById('email-label');
-  const submitBtn = document.getElementById('submit-btn');
-  const emailInput = document.getElementById('login-email');
-
-  if (role === 'admin') {
-    adminBtn.classList.add('active');
-    userBtn.classList.remove('active');
-    emailLabel.textContent = 'ID Admin / Email Staf';
-    emailInput.placeholder = 'admin@nexastore.com';
-    submitBtn.textContent = 'Masuk Portal Admin';
-    submitBtn.style.background = 'var(--accent)';
-  } else {
-    userBtn.classList.add('active');
-    adminBtn.classList.remove('active');
-    emailLabel.textContent = 'Alamat Email Pelanggan';
-    emailInput.placeholder = 'nama@email.com';
-    submitBtn.textContent = 'Masuk Sebagai Pelanggan';
-    submitBtn.style.background = 'var(--primary)';
-  }
-}
-
-// Navigation Handler Utam
-function switchTab(tabId) {
-  const sections = document.querySelectorAll('.page-section');
-  sections.forEach(section => section.classList.remove('active'));
-
-  const navLinks = document.querySelectorAll('.nav-link');
-  navLinks.forEach(link => link.classList.remove('active'));
-
-  const targetSection = document.getElementById(tabId);
-  if (targetSection) {
-    targetSection.classList.add('active');
-  }
-
-  const activeLink = Array.from(navLinks).find(link => link.getAttribute('onclick') && link.getAttribute('onclick').includes(tabId));
-  if (activeLink) activeLink.classList.add('active');
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Modal Login Handler
-function toggleLoginModal(show) {
-  const loginModal = document.getElementById('loginModal');
-  loginModal.style.display = show ? 'flex' : 'none';
-}
-
-// Eksekusi Pindah Halaman Setelah Login
-function handleLogin(e) {
-  e.preventDefault();
-  toggleLoginModal(false);
-
-  // Perbarui UI tombol navigasi login/logout
-  document.getElementById('btn-login-trigger').style.display = 'none';
-  document.getElementById('btn-logout-trigger').style.display = 'block';
-
-  // Pindah halaman sesuai kategori yang dipencet
-  if (currentRole === 'admin') {
-    switchTab('dashboard-admin');
-  } else {
-    switchTab('dashboard-pelanggan');
-  }
-}
-
-// Handler Logout
-function handleLogout() {
-  document.getElementById('btn-login-trigger').style.display = 'block';
-  document.getElementById('btn-logout-trigger').style.display = 'none';
-  switchTab('home');
-}
-
-// Cart Handlers
-function addToCart(title, price) {
-  const existingItem = cart.find(item => item.title === title);
-  if (existingItem) {
-    existingItem.qty += 1;
-  } else {
-    cart.push({ title, price, qty: 1 });
-  }
-  updateCartUI();
-  toggleCart(true);
-}
-
-function removeFromCart(title) {
-  cart = cart.filter(item => item.title !== title);
-  updateCartUI();
-}
-
-function updateCartUI() {
-  const cartCount = document.getElementById('cart-count');
-  const cartItemsContainer = document.getE
+</body>
+</html>
