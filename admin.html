@@ -183,6 +183,18 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 }
 .btn-action-small:hover { background: var(--primary); border-color: var(--primary); }
 
+/* Upload Area UI */
+.upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.upload-area:hover { border-color: var(--primary); background: rgba(99, 102, 241, 0.05); }
+
 @media (max-width: 600px) {
   :root { --sidebar-width: 70px; }
   .brand-title { font-size: 12px; padding: 0 0 16px; justify-content: center; }
@@ -320,13 +332,36 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 2: INPUT BARANG BARU -->
     <div id="page-input-barang" class="admin-section">
       <div class="desktop-grid-2">
+        <!-- Form Utama Input Barang -->
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</span></h2>
           <form id="form-add-product" onsubmit="handleAddNewProduct(event)">
-            <div class="form-group">
-              <label>Nama Barang</label>
-              <input type="text" id="admin-name" required placeholder="Contoh: Nexa Watch">
+            
+            <!-- Upload Foto & SKU Generator -->
+            <div style="display: grid; grid-template-columns: 120px 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="upload-area" onclick="document.getElementById('product-image-input').click()">
+                <input type="file" id="product-image-input" accept="image/*" style="display:none" onchange="previewProductImage(event)">
+                <div id="image-preview-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                  <i data-lucide="image" style="width:24px; height:24px; color:var(--text-muted); margin-bottom:4px;"></i>
+                  <span style="font-size:10px; color:var(--text-muted);">Foto Produk</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="form-group" style="margin-bottom:8px;">
+                  <label>Kode Unik SKU</label>
+                  <div style="display:flex; gap:8px;">
+                    <input type="text" id="admin-sku" placeholder="NX-88219" style="font-family:monospace; font-weight:bold;">
+                    <button type="button" onclick="generateSKU()" class="btn-action-small" style="white-space:nowrap;"><i data-lucide="refresh-cw" style="width:14px;"></i> Generate</button>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label>Nama Barang</label>
+                  <input type="text" id="admin-name" required placeholder="Contoh: Nexa Watch">
+                </div>
+              </div>
             </div>
+
             <div class="form-group">
               <label>Kategori</label>
               <select id="admin-category" required>
@@ -336,14 +371,30 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
                 <option value="Laptop">Laptop</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Harga (Rp)</label>
-              <input type="number" id="admin-price" required placeholder="1500000">
+
+            <!-- Harga Modal vs Harga Jual & Margin Calculator -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label>Harga Modal / HPP (Rp)</label>
+                <input type="number" id="admin-cost" placeholder="1000000" oninput="calculateMargin()">
+              </div>
+              <div class="form-group">
+                <label>Harga Jual (Rp)</label>
+                <input type="number" id="admin-price" required placeholder="1500000" oninput="calculateMargin()">
+              </div>
             </div>
+
+            <!-- Widget Kalkulator Margin -->
+            <div id="margin-badge-box" style="margin-bottom: 16px; padding: 10px; background: rgba(15,23,42,0.6); border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 12px; color: var(--text-muted);">Estimasi Margin Keuntungan:</span>
+              <span id="margin-value" style="font-size: 13px; font-weight: 700; color: var(--success);">0% (Rp 0)</span>
+            </div>
+
             <div class="form-group">
-              <label>Stok</label>
+              <label>Stok Awal</label>
               <input type="number" id="admin-stock" required placeholder="10">
             </div>
+
             <button type="submit" class="btn-submit">
               <i data-lucide="save"></i> Simpan Barang
             </button>
@@ -351,15 +402,18 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
 
         <div>
+          <!-- Panduan Input -->
           <div class="section-card">
             <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="info" style="color:var(--primary)"></i> Panduan Input</span></h2>
             <ul style="color: var(--text-muted); font-size: 13px; line-height: 1.8; padding-left: 20px;">
               <li>Pastikan nama produk spesifik dan unik.</li>
-              <li>Input harga dalam format nominal angka murni.</li>
+              <li>Unggah foto produk berukuran transparan/persegi untuk tampilan maksimal.</li>
+              <li>Input harga modal dan jual untuk kalkulasi estimasi margin keuntungan otomatis.</li>
               <li>Sistem akan otomatis memperbarui kalkulasi laporan stok secara real-time.</li>
             </ul>
           </div>
 
+          <!-- Input Terakhir -->
           <div class="section-card">
             <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="clock" style="color:var(--primary)"></i> Input Terakhir</span></h2>
             <div style="font-size:13px; color:var(--text-muted);" id="last-product-box">
@@ -370,17 +424,34 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
+      <!-- Riwayat Input & Statistik Tambahan Penambahan -->
       <div class="section-card">
-        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="file-spreadsheet" style="color:var(--primary)"></i> Riwayat Penambahan Barang (Terbaru)</span></h2>
+        <h2>
+          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="file-spreadsheet" style="color:var(--primary)"></i> Riwayat Penambahan Barang (Terbaru)</span>
+          <button class="btn-action-small" onclick="triggerImportCSV()"><i data-lucide="file-up" style="width:14px;"></i> Import Massal (CSV)</button>
+        </h2>
+        
+        <!-- Statistik Ringkasan Penambahan Cepat -->
+        <div class="stats-grid" style="margin-bottom: 16px;">
+          <div class="stat-box success">
+            <label>Penambahan Hari Ini</label>
+            <div class="amount" id="stat-added-today" style="font-size:16px;">1 Produk (10 Pcs)</div>
+          </div>
+          <div class="stat-box accent">
+            <label>Estimasi Nilai Tambah Aset</label>
+            <div class="amount" id="stat-added-value" style="font-size:16px;">Rp 125.000.000</div>
+          </div>
+        </div>
+
         <div class="table-responsive">
           <table>
             <thead>
-              <tr><th>Waktu</th><th>Nama Barang</th><th>Kategori</th><th>Harga Unit</th><th>Jumlah Stok</th></tr>
+              <tr><th>Waktu</th><th>SKU</th><th>Nama Barang</th><th>Kategori</th><th>Harga Unit</th><th>Jumlah Stok</th></tr>
             </thead>
             <tbody id="input-history-table">
-              <tr><td>Hari ini, 08:10</td><td>Laptop Gaming Nexa Pro</td><td>Laptop</td><td>Rp 12.500.000</td><td>10 Pcs</td></tr>
-              <tr><td>Kemarin, 16:45</td><td>Runner Pro V2</td><td>Sepatu</td><td>Rp 899.000</td><td>12 Pcs</td></tr>
-              <tr><td>05 Ags 2026</td><td>NexaWatch Series X</td><td>Gadget</td><td>Rp 2.199.000</td><td>15 Pcs</td></tr>
+              <tr><td>Hari ini, 08:10</td><td><code>NX-9912</code></td><td>Laptop Gaming Nexa Pro</td><td>Laptop</td><td>Rp 12.500.000</td><td>10 Pcs</td></tr>
+              <tr><td>Kemarin, 16:45</td><td><code>NX-3341</code></td><td>Runner Pro V2</td><td>Sepatu</td><td>Rp 899.000</td><td>12 Pcs</td></tr>
+              <tr><td>05 Ags 2026</td><td><code>NX-1092</code></td><td>NexaWatch Series X</td><td>Gadget</td><td>Rp 2.199.000</td><td>15 Pcs</td></tr>
             </tbody>
           </table>
         </div>
@@ -440,7 +511,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
-      <!-- BARU: SECTION FITUR PENDUKUNG DI AREA KOSONG -->
+      <!-- SECTION FITUR PENDUKUNG DI AREA KOSONG -->
       <div class="desktop-grid-2">
         <!-- Widget 1: Low Stock Alert -->
         <div class="section-card">
@@ -612,23 +683,23 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 
   <footer>
     <span>&copy; 2026 NexaStore Admin Management System. All rights reserved.</span>
-    <span>Version 2.4.0</span>
+    <span>Version 2.5.0</span>
   </footer>
 </div>
 
 <script>
 // Data State Global
 let adminProducts = [
-  { name: 'Studio ANC Wireless', category: 'Audio', price: 1450000, stock: 8, sold: 142 },
-  { name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15, sold: 98 },
-  { name: 'Runner Pro V2', category: 'Sepatu', price: 899000, stock: 12, sold: 64 },
-  { name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10, sold: 35 }
+  { name: 'Studio ANC Wireless', sku: 'NX-1022', category: 'Audio', price: 1450000, cost: 950000, stock: 8, sold: 142 },
+  { name: 'NexaWatch Series X', sku: 'NX-1092', category: 'Gadget', price: 2199000, cost: 1500000, stock: 15, sold: 98 },
+  { name: 'Runner Pro V2', sku: 'NX-3341', category: 'Sepatu', price: 899000, cost: 500000, stock: 12, sold: 64 },
+  { name: 'Laptop Gaming Nexa Pro', sku: 'NX-9912', category: 'Laptop', price: 12500000, cost: 9800000, stock: 10, sold: 35 }
 ];
 
 let inputHistory = [
-  { time: 'Hari ini, 08:10', name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10 },
-  { time: 'Kemarin, 16:45', name: 'Runner Pro V2', category: 'Sepatu', price: 899000, stock: 12 },
-  { time: '05 Ags 2026', name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15 }
+  { time: 'Hari ini, 08:10', sku: 'NX-9912', name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10 },
+  { time: 'Kemarin, 16:45', sku: 'NX-3341', name: 'Runner Pro V2', category: 'Sepatu', price: 899000, stock: 12 },
+  { time: '05 Ags 2026', sku: 'NX-1092', name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15 }
 ];
 
 let cashflowRecords = [
@@ -644,11 +715,55 @@ let auditLogs = [
   { time: '05 Ags 2026', user: 'Admin Gudang', action: 'Penyesuaian Stok NexaWatch Series X (+15 Pcs)' }
 ];
 
+let currentImageBase64 = null;
 let incomeChartInstance = null;
 let categoryChartInstance = null;
 let assetChartInstance = null;
 
-// Fungsi Menampilkan Notification Toast
+// Generate SKU Random
+function generateSKU() {
+  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  document.getElementById('admin-sku').value = `NX-${randomNum}`;
+}
+
+// Preview Upload Gambar
+function previewProductImage(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      currentImageBase64 = evt.target.result;
+      const container = document.getElementById('image-preview-container');
+      container.innerHTML = `<img src="${currentImageBase64}" style="width:100%; height:100%; object-fit:cover; border-radius:6px;">`;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// Kalkulator Margin Keuntungan
+function calculateMargin() {
+  const cost = parseFloat(document.getElementById('admin-cost').value) || 0;
+  const price = parseFloat(document.getElementById('admin-price').value) || 0;
+  const marginBadge = document.getElementById('margin-value');
+
+  if (price > 0 && cost > 0) {
+    const profit = price - cost;
+    const marginPercent = ((profit / price) * 100).toFixed(1);
+    
+    if (profit >= 0) {
+      marginBadge.style.color = 'var(--success)';
+      marginBadge.textContent = `+${marginPercent}% (Untung Rp ${profit.toLocaleString('id-ID')})`;
+    } else {
+      marginBadge.style.color = 'var(--danger)';
+      marginBadge.textContent = `${marginPercent}% (Rugi Rp ${Math.abs(profit).toLocaleString('id-ID')})`;
+    }
+  } else {
+    marginBadge.style.color = 'var(--text-muted)';
+    marginBadge.textContent = '0% (Rp 0)';
+  }
+}
+
+// Toast Notification UI
 function showToast(message) {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
@@ -666,7 +781,7 @@ function showToast(message) {
   }, 3000);
 }
 
-// Fungsi Perpindahan Tab Navigation
+// Switch Tab Menu
 function switchAdminTab(tabName, element, iconName, titleText) {
   document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -689,7 +804,6 @@ function switchAdminTab(tabName, element, iconName, titleText) {
   lucide.createIcons();
 }
 
-// Handler Logout Tombol
 function handleLogout() {
   if (confirm("Apakah Anda yakin ingin keluar dari sistem admin?")) {
     showToast('Berhasil logout!');
@@ -699,10 +813,9 @@ function handleLogout() {
   }
 }
 
-// Pencarian dan Filter Produk
 function filterProducts() {
   const query = document.getElementById('search-input').value.toLowerCase();
-  const filtered = adminProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+  const filtered = adminProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query) || (p.sku && p.sku.toLowerCase().includes(query)));
   renderTablesAndReports(filtered);
 }
 
@@ -714,11 +827,9 @@ function applyQuickFilter(catName) {
   }
 }
 
-// Hapus Produk
 function deleteProduct(index) {
   const deletedName = adminProducts[index].name;
   
-  // Log Perubahan
   auditLogs.unshift({
     time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + ' WIB',
     user: 'Admin Main',
@@ -730,7 +841,6 @@ function deleteProduct(index) {
   showToast(`Barang "${deletedName}" telah dihapus!`);
 }
 
-// Tambah Cepat Stok dari Widget Alert
 function quickAddStock(index, amount) {
   adminProducts[index].stock += amount;
   
@@ -747,17 +857,19 @@ function quickAddStock(index, amount) {
 // Tambah Produk Baru via Form
 function handleAddNewProduct(e) {
   e.preventDefault();
+  const sku = document.getElementById('admin-sku').value || 'NX-' + Math.floor(1000 + Math.random() * 9000);
   const name = document.getElementById('admin-name').value;
   const category = document.getElementById('admin-category').value;
+  const cost = parseFloat(document.getElementById('admin-cost').value) || 0;
   const price = parseFloat(document.getElementById('admin-price').value);
   const stock = parseInt(document.getElementById('admin-stock').value);
 
-  const newProduct = { name, category, price, stock, sold: 0 };
+  const newProduct = { sku, name, category, cost, price, stock, sold: 0, image: currentImageBase64 };
   adminProducts.push(newProduct);
   
   const now = new Date();
   const timeStr = `Hari ini, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-  inputHistory.unshift({ time: timeStr, name, category, price, stock });
+  inputHistory.unshift({ time: timeStr, sku, name, category, price, stock });
 
   auditLogs.unshift({
     time: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ' WIB',
@@ -769,13 +881,20 @@ function handleAddNewProduct(e) {
   renderInputHistory();
   
   document.getElementById('last-product-box').innerHTML = `
-    <p><b style="color:#fff;">${name}</b></p>
+    <p><b style="color:#fff;">${name}</b> <code style="font-size:11px;">(${sku})</code></p>
     <p style="font-size:12px; margin-top:4px;">Kategori: ${category} | Stok: ${stock} Pcs</p>
   `;
 
   document.getElementById('form-add-product').reset();
+  document.getElementById('image-preview-container').innerHTML = `
+    <i data-lucide="image" style="width:24px; height:24px; color:var(--text-muted); margin-bottom:4px;"></i>
+    <span style="font-size:10px; color:var(--text-muted);">Foto Produk</span>
+  `;
+  document.getElementById('margin-value').textContent = '0% (Rp 0)';
+  currentImageBase64 = null;
+  generateSKU();
+
   showToast('Barang baru berhasil disimpan!');
-  
   switchAdminTab('daftar-barang', null, 'package', 'Daftar Barang');
 }
 
@@ -786,17 +905,23 @@ function renderInputHistory() {
   tbody.innerHTML = inputHistory.map(item => `
     <tr>
       <td>${item.time}</td>
+      <td><code style="color:var(--accent);">${item.sku || 'NX-AUTO'}</code></td>
       <td style="font-weight:600; color:#fff;">${item.name}</td>
       <td>${item.category}</td>
       <td>Rp ${item.price.toLocaleString('id-ID')}</td>
       <td>${item.stock} Pcs</td>
     </tr>
   `).join('');
+
+  // Update Statistik Tambahan Penambahan
+  const totalValueAdded = inputHistory.reduce((acc, item) => acc + (item.price * item.stock), 0);
+  document.getElementById('stat-added-today').textContent = `${inputHistory.length} Transaksi`;
+  document.getElementById('stat-added-value').textContent = `Rp ${totalValueAdded.toLocaleString('id-ID')}`;
 }
 
-// Render Fitur Tambahan di Area Kosong
+// Render Fitur Tambahan
 function renderDaftarBarangWidgets() {
-  // 1. Low Stock Alert
+  // Low Stock Alert
   const lowStockContainer = document.getElementById('low-stock-alert-container');
   if (lowStockContainer) {
     const lowStockItems = adminProducts
@@ -820,7 +945,7 @@ function renderDaftarBarangWidgets() {
     }
   }
 
-  // 2. Best Seller
+  // Best Seller
   const bestSellerContainer = document.getElementById('best-seller-container');
   if (bestSellerContainer) {
     const sortedBest = [...adminProducts].sort((a, b) => b.sold - a.sold).slice(0, 3);
@@ -835,7 +960,7 @@ function renderDaftarBarangWidgets() {
     `).join('');
   }
 
-  // 3. Stock Audit Log
+  // Stock Audit Log
   const auditContainer = document.getElementById('stock-audit-log-container');
   if (auditContainer) {
     auditContainer.innerHTML = auditLogs.slice(0, 4).map(log => `
@@ -850,11 +975,11 @@ function renderDaftarBarangWidgets() {
   }
 }
 
-// Utilitas Aksi Masal
+// Utilitas Import/Export
 function exportProductsCSV() {
-  let csv = "Nama Barang,Kategori,Harga,Stok,Terjual\n";
+  let csv = "SKU,Nama Barang,Kategori,Harga Modal,Harga Jual,Stok,Terjual\n";
   adminProducts.forEach(p => {
-    csv += `"${p.name}","${p.category}",${p.price},${p.stock},${p.sold || 0}\n`;
+    csv += `"${p.sku || ''}","${p.name}","${p.category}",${p.cost || 0},${p.price},${p.stock},${p.sold || 0}\n`;
   });
 
   const blob = new Blob([csv], { type: 'text/csv' });
@@ -873,7 +998,7 @@ function triggerImportCSV() {
 function handleImportCSV(event) {
   const file = event.target.files[0];
   if (file) {
-    showToast(`File ${file.name} berhasil di-import! (Simulasi)`);
+    showToast(`File ${file.name} berhasil di-import! (Simulasi Data Masuk)`);
   }
 }
 
@@ -882,17 +1007,19 @@ function printBarcodes() {
   window.print();
 }
 
-// Render Semua Tabel Utama & Widget
+// Render Semua Tabel
 function renderTablesAndReports(productsToRender = adminProducts) {
   const tbody = document.getElementById('admin-product-table');
   const laporanTbody = document.getElementById('laporan-stok-table');
   const totalStat = document.getElementById('stat-total-produk');
   
-  // Render Tabel Daftar Barang
   if (tbody) {
     tbody.innerHTML = productsToRender.map((p, idx) => `
       <tr>
-        <td style="font-weight: 600; color: #fff;">${p.name}</td>
+        <td style="font-weight: 600; color: #fff;">
+          ${p.name}
+          <br><code style="font-size:10px; color:var(--text-muted);">${p.sku || 'NX-AUTO'}</code>
+        </td>
         <td><span style="font-size: 11px; padding: 2px 8px; background: rgba(99,102,241,0.2); color: var(--primary); border-radius: 4px; font-weight: 700;">${p.category}</span></td>
         <td>Rp ${p.price.toLocaleString('id-ID')}</td>
         <td>${p.stock} pcs</td>
@@ -903,7 +1030,6 @@ function renderTablesAndReports(productsToRender = adminProducts) {
 
   if (totalStat) totalStat.textContent = adminProducts.length + ' Pcs';
 
-  // Render Kategori Aktif & Kapasitas Gudang
   const activeCategories = new Set(adminProducts.map(p => p.category)).size;
   let totalUnits = 0;
   let totalAssetValue = 0;
@@ -950,7 +1076,6 @@ function renderTablesAndReports(productsToRender = adminProducts) {
   updateAssetChart();
 }
 
-// FITUR KEUANGAN: Catat Arus Kas
 function handleAddCashflow(e) {
   e.preventDefault();
   const type = document.getElementById('cf-type').value;
@@ -1007,7 +1132,6 @@ function renderCashflowTable(recordsToRender = cashflowRecords) {
   lucide.createIcons();
 }
 
-// Eksport Laporan PDF
 function exportToPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -1016,7 +1140,6 @@ function exportToPDF() {
   doc.text("Laporan Keuangan & Stok NexaStore", 14, 20);
   doc.setFontSize(10);
   doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 28);
-  
   doc.text("--------------------------------------------------------------------------------", 14, 34);
   
   let y = 42;
@@ -1045,7 +1168,6 @@ function exportToPDF() {
   showToast("Laporan berhasil diunduh sebagai PDF!");
 }
 
-// Inisialisasi Chart.js Grafik
 function initCharts() {
   const ctxIncome = document.getElementById('incomeChart').getContext('2d');
   const gradient = ctxIncome.createLinearGradient(0, 0, 0, 250);
@@ -1125,7 +1247,6 @@ function initCharts() {
   updateAssetChart();
 }
 
-// Update Dinamis Grafik Nilai Aset berdasarkan Data Produk
 function updateAssetChart() {
   if (!assetChartInstance) return;
 
@@ -1140,8 +1261,8 @@ function updateAssetChart() {
   assetChartInstance.update();
 }
 
-// Event saat DOM siap
 document.addEventListener('DOMContentLoaded', () => {
+  generateSKU();
   renderTablesAndReports();
   renderInputHistory();
   renderCashflowTable();
