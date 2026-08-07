@@ -18,7 +18,6 @@
   --accent: #ec4899;
   --success: #10b981;
   --warning: #f59e0b;
-  --danger: #ef4444;
   --border: rgba(255, 255, 255, 0.1);
   --sidebar-width: 240px;
 }
@@ -82,7 +81,7 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
 header {
   background: rgba(15, 23, 42, 0.9); border-bottom: 1px solid var(--border);
   padding: 18px 24px; position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center;
 }
 .header-title { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
 .header-title i { width: 20px; height: 20px; color: var(--primary); }
@@ -97,10 +96,10 @@ header {
 }
 .section-card h2 {
   font-size: 18px; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--border);
-  padding-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding-bottom: 12px; display: flex; align-items: center; gap: 10px;
 }
 
-/* Stats Grid Layout */
+/* Stats Grid Layout: Dibuat 2 Kolom (2 Baris x 2 Kolom di Desktop) */
 .stats-grid { 
   display: grid; 
   grid-template-columns: repeat(2, 1fr); 
@@ -114,7 +113,6 @@ header {
 .stat-box.success { border-left-color: var(--success); }
 .stat-box.accent { border-left-color: var(--accent); }
 .stat-box.warning { border-left-color: var(--warning); }
-.stat-box.danger { border-left-color: var(--danger); }
 .stat-box label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .stat-box .amount { font-size: 20px; font-weight: 800; color: #fff; margin-top: 6px; }
 
@@ -141,18 +139,6 @@ table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
 th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 600; }
 
-.badge {
-  padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block;
-}
-.badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-.badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-.badge-info { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
-
-.btn-icon {
-  background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.2s;
-}
-.btn-icon:hover { color: #fff; background: rgba(255,255,255,0.1); }
-
 @media (max-width: 600px) {
   :root { --sidebar-width: 70px; }
   .brand-title { font-size: 12px; padding: 0 0 16px; justify-content: center; }
@@ -161,6 +147,8 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
   .nav-item span { display: none; }
   .btn-logout { padding: 10px; justify-content: center; }
   .btn-logout span { display: none; }
+  
+  /* Pada Layar Ponsel Sangat Kecil Kembali ke 1 Kolom agar Tidak Sempit */
   .stats-grid { grid-template-columns: 1fr; }
 }
 </style>
@@ -188,7 +176,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
       <i data-lucide="package"></i>
       <span>Daftar Barang</span>
     </div>
-    <div class="nav-item" onclick="switchAdminTab('laporan-keuangan', this, 'bar-chart-3', 'Laporan Keuangan & Stok')">
+    <div class="nav-item" onclick="switchAdminTab('laporan-keuangan', this, 'bar-chart-3', 'Laporan Keuangan')">
       <i data-lucide="bar-chart-3"></i>
       <span>Laporan</span>
     </div>
@@ -213,9 +201,10 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 1: RINGKASAN UTAMA -->
     <div id="page-overview" class="admin-section active">
       <div class="section-card">
-        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="user-check" style="color:var(--primary)"></i> Selamat Datang, Admin</span></h2>
+        <h2><i data-lucide="user-check" style="color:var(--primary)"></i> Selamat Datang, Admin</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Pilih menu di sidebar sebelah kiri untuk mengelola toko online Anda.</p>
         
+        <!-- Stats Grid Format 2x2 Baris & Kolom -->
         <div class="stats-grid">
           <div class="stat-box">
             <label>Total Produk</label>
@@ -238,40 +227,9 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 
       <!-- Card Grafik Pemasukan -->
       <div class="section-card">
-        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="line-chart" style="color:var(--primary)"></i> Grafik Pemasukan (2026)</span></h2>
+        <h2><i data-lucide="line-chart" style="color:var(--primary)"></i> Grafik Pemasukan (2026)</h2>
         <div class="chart-container">
           <canvas id="incomeChart"></canvas>
-        </div>
-      </div>
-
-      <!-- FITUR TAMBAHAN HALAMAN 1: Transaksi Terakhir -->
-      <div class="section-card">
-        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="shopping-cart" style="color:var(--primary)"></i> Transaksi Terbaru</span></h2>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>ID Transaksi</th>
-                <th>Pelanggan</th>
-                <th>Total</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>#TRX-9081</td>
-                <td>Budi Santoso</td>
-                <td>Rp 2.199.000</td>
-                <td><span class="badge badge-success">Selesai</span></td>
-              </tr>
-              <tr>
-                <td>#TRX-9080</td>
-                <td>Siti Rahma</td>
-                <td>Rp 899.000</td>
-                <td><span class="badge badge-warning">Proses</span></td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -279,7 +237,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 2: INPUT BARANG BARU -->
     <div id="page-input-barang" class="admin-section">
       <div class="section-card">
-        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</span></h2>
+        <h2><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</h2>
         <form id="form-add-product" onsubmit="handleAddNewProduct(event)">
           <div class="form-group">
             <label>Nama Barang</label>
@@ -307,30 +265,12 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           </button>
         </form>
       </div>
-
-      <!-- FITUR TAMBAHAN HALAMAN 2: Panduan & Ketentuan -->
-      <div class="section-card">
-        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="info" style="color:var(--primary)"></i> Ketentuan Input Barang</span></h2>
-        <ul style="color: var(--text-muted); font-size: 13px; line-height: 1.8; padding-left: 20px;">
-          <li>Nama barang tidak boleh duplikat dengan produk yang aktif.</li>
-          <li>Harga diinput dalam mata uang Rupiah tanpa tanda titik/koma.</li>
-          <li>Stok awal minimal 1 pcs saat penginputan baru.</li>
-        </ul>
-      </div>
     </div>
 
     <!-- PAGE 3: DAFTAR BARANG -->
     <div id="page-daftar-barang" class="admin-section">
       <div class="section-card">
-        <h2>
-          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="package" style="color:var(--primary)"></i> Daftar Barang (View)</span>
-        </h2>
-        
-        <!-- FITUR TAMBAHAN HALAMAN 3: Filter & Cari -->
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-          <input type="text" id="search-input" placeholder="Cari barang..." onkeyup="filterProducts()" style="padding:8px 12px; background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:6px; color:#fff; flex:1;">
-        </div>
-
+        <h2><i data-lucide="package" style="color:var(--primary)"></i> Daftar Barang (View)</h2>
         <div class="table-responsive">
           <table>
             <thead>
@@ -339,7 +279,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
                 <th>Kategori</th>
                 <th>Harga</th>
                 <th>Stok</th>
-                <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="admin-product-table"></tbody>
@@ -348,14 +287,10 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
       </div>
     </div>
 
-    <!-- PAGE 4: LAPORAN PENJUALAN & LAPORAN STOK BARANG -->
+    <!-- PAGE 4: LAPORAN PENJUALAN -->
     <div id="page-laporan-keuangan" class="admin-section">
       <div class="section-card">
-        <h2>
-          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="trending-up" style="color:var(--primary)"></i> Laporan Penjualan & Keuangan</span>
-          <!-- FITUR TAMBAHAN HALAMAN 4: Export Button -->
-          <button onclick="showToast('Laporan berhasil diunduh!')" style="background:var(--primary); border:none; color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; display:flex; align-items:center; gap:5px;"><i data-lucide="download" style="width:14px;"></i> Export</button>
-        </h2>
+        <h2><i data-lucide="trending-up" style="color:var(--primary)"></i> Laporan Penjualan & Keuangan</h2>
         <div class="stats-grid">
           <div class="stat-box">
             <label>Laporan Harian</label>
@@ -369,39 +304,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
             <label>Laporan Tahunan</label>
             <div class="amount" style="color: var(--primary);">Rp 980.000.000</div>
           </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="boxes" style="color:var(--primary)"></i> Laporan Stok Barang</span></h2>
-        
-        <div class="stats-grid" style="margin-bottom: 24px;">
-          <div class="stat-box">
-            <label>Total Unit Stok</label>
-            <div class="amount" id="stat-laporan-total-unit">45 Pcs</div>
-          </div>
-          <div class="stat-box warning">
-            <label>Stok Menipis (< 10 Pcs)</label>
-            <div class="amount" id="stat-laporan-stok-menipis" style="color: var(--warning);">1 Item</div>
-          </div>
-          <div class="stat-box accent" style="grid-column: span 2;">
-            <label>Total Nilai Aset Stok</label>
-            <div class="amount" id="stat-laporan-nilai-aset" style="color: var(--accent);">Rp 180.373.000</div>
-          </div>
-        </div>
-
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Nama Produk</th>
-                <th>Sisa Stok</th>
-                <th>Total Nilai Stok</th>
-                <th>Status Stok</th>
-              </tr>
-            </thead>
-            <tbody id="laporan-stok-table"></tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -449,69 +351,20 @@ function switchAdminTab(tabName, element, iconName, titleText) {
   }
 }
 
-function filterProducts() {
-  const query = document.getElementById('search-input').value.toLowerCase();
-  const filtered = adminProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
-  renderTablesAndReports(filtered);
-}
-
-function deleteProduct(index) {
-  adminProducts.splice(index, 1);
-  renderTablesAndReports();
-  showToast('Barang berhasil dihapus!');
-}
-
-function renderTablesAndReports(productsToRender = adminProducts) {
+function renderTable() {
   const tbody = document.getElementById('admin-product-table');
-  const laporanTbody = document.getElementById('laporan-stok-table');
   const totalStat = document.getElementById('stat-total-produk');
-  
   if (tbody) {
-    tbody.innerHTML = productsToRender.map((p, idx) => `
+    tbody.innerHTML = adminProducts.map(p => `
       <tr>
         <td style="font-weight: 600; color: #fff;">${p.name}</td>
         <td><span style="font-size: 11px; padding: 2px 8px; background: rgba(99,102,241,0.2); color: var(--primary); border-radius: 4px; font-weight: 700;">${p.category}</span></td>
         <td>Rp ${p.price.toLocaleString('id-ID')}</td>
         <td>${p.stock} pcs</td>
-        <td><button class="btn-icon" onclick="deleteProduct(${idx})"><i data-lucide="trash-2" style="width:16px; color:var(--danger)"></i></button></td>
       </tr>
     `).join('');
   }
   if (totalStat) totalStat.textContent = adminProducts.length + ' Pcs';
-
-  let totalUnits = 0;
-  let totalAssetValue = 0;
-  let lowStockCount = 0;
-
-  if (laporanTbody) {
-    laporanTbody.innerHTML = adminProducts.map(p => {
-      const assetValue = p.price * p.stock;
-      totalUnits += p.stock;
-      totalAssetValue += assetValue;
-      
-      const isLow = p.stock < 10;
-      if (isLow) lowStockCount++;
-
-      return `
-        <tr>
-          <td style="font-weight: 600; color: #fff;">${p.name}</td>
-          <td>${p.stock} Pcs</td>
-          <td>Rp ${assetValue.toLocaleString('id-ID')}</td>
-          <td>
-            ${isLow 
-              ? `<span class="badge badge-warning">Menipis</span>` 
-              : `<span class="badge badge-success">Aman</span>`
-            }
-          </td>
-        </tr>
-      `;
-    }).join('');
-
-    document.getElementById('stat-laporan-total-unit').textContent = totalUnits + ' Pcs';
-    document.getElementById('stat-laporan-stok-menipis').textContent = lowStockCount + ' Item';
-    document.getElementById('stat-laporan-nilai-aset').textContent = 'Rp ' + totalAssetValue.toLocaleString('id-ID');
-  }
-  lucide.createIcons();
 }
 
 function handleAddNewProduct(e) {
@@ -522,7 +375,7 @@ function handleAddNewProduct(e) {
   const stock = parseInt(document.getElementById('admin-stock').value);
 
   adminProducts.push({ name, category, price, stock });
-  renderTablesAndReports();
+  renderTable();
   document.getElementById('form-add-product').reset();
   showToast('Barang berhasil disimpan!');
   
@@ -581,7 +434,7 @@ function initIncomeChart() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderTablesAndReports();
+  renderTable();
   lucide.createIcons();
   initIncomeChart();
 });
