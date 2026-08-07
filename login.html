@@ -3,211 +3,1418 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Masuk - NexaStore</title>
+<title>Dashboard Admin NexaStore</title>
+<!-- Lucide Icons, Chart.js & jsPDF -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --primary: #6366f1;
   --primary-hover: #4f46e5;
   --bg-main: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.75);
+  --bg-card: #1e293b;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --accent: #ec4899;
-  --border-color: rgba(255, 255, 255, 0.1);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --border: rgba(255, 255, 255, 0.1);
+  --sidebar-width: 240px;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; overflow-x: hidden; }
 
-body { 
-  background: var(--bg-main); 
-  color: var(--text-main); 
-  min-height: 100vh; 
-  display: flex; 
-  flex-direction: column;
-  justify-content: center;
+/* Toast Notification UI */
+#toast-container {
+  position: fixed; top: 20px; right: 20px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+}
+.toast {
+  pointer-events: auto; min-width: 280px; background: #1e293b;
+  border: 1px solid rgba(16, 185, 129, 0.3); border-left: 4px solid var(--success);
+  color: #fff; padding: 12px 16px; border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  display: flex; align-items: center; gap: 12px;
+  transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.toast.show { transform: translateX(0); }
+.toast-icon {
+  background: rgba(16, 185, 129, 0.2); color: var(--success);
+  width: 32px; height: 32px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+}
+.toast-message { font-size: 13px; font-weight: 600; }
+
+/* Custom Modal Pop-Up Logout Styling */
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
   align-items: center;
-  position: relative;
-  overflow-x: hidden;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body::before {
-  content: '';
-  position: absolute;
-  width: 300px; height: 300px;
-  background: var(--primary);
+.custom-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.custom-modal-content {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 380px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  transform: scale(0.9);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-modal-overlay.active .custom-modal-content {
+  transform: scale(1);
+}
+
+.custom-modal-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.25;
-  top: 15%; left: 20%; z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
-body::after {
-  content: '';
-  position: absolute;
-  width: 300px; height: 300px;
-  background: var(--accent);
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.2;
-  bottom: 15%; right: 20%; z-index: 0;
+.custom-modal-content h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
 }
 
-header {
-  position: absolute;
-  top: 0; width: 100%; padding: 20px 8%;
-  display: flex; justify-content: space-between; align-items: center; z-index: 10;
+.custom-modal-content p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 24px;
 }
 
-.brand { font-size: 24px; font-weight: 800; color: var(--primary); text-decoration: none; }
-.btn-back { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px; }
-.btn-back:hover { color: var(--text-main); }
-
-.login-container { position: relative; z-index: 1; width: 100%; max-width: 420px; padding: 20px; }
-.login-card {
-  background: var(--bg-card); backdrop-filter: blur(16px);
-  border: 1px solid var(--border-color); border-radius: 20px; padding: 36px 32px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+.custom-modal-actions {
+  display: flex;
+  gap: 12px;
 }
 
-.login-header { text-align: center; margin-bottom: 20px; }
-.login-header h2 {
-  font-size: 26px; font-weight: 700; margin-bottom: 6px;
-  background: linear-gradient(to right, #fff, var(--text-muted));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.login-header p { color: var(--text-muted); font-size: 14px; }
-
-.role-selector {
-  display: flex; background: rgba(15, 23, 42, 0.6);
-  border: 1px solid var(--border-color); border-radius: 12px; padding: 4px; margin-bottom: 24px;
-}
-
-.role-btn {
-  flex: 1; padding: 10px; border: none; background: transparent;
-  color: var(--text-muted); font-weight: 600; font-size: 13px; border-radius: 8px; cursor: pointer;
+.btn-modal-cancel {
+  flex: 1;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
   transition: all 0.2s;
 }
-.role-btn.active { background: var(--primary); color: white; }
 
-.form-group { margin-bottom: 18px; }
-.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
-.input-field {
-  width: 100%; padding: 12px 16px; background: rgba(15, 23, 42, 0.6);
-  border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; outline: none;
+.btn-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.form-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; }
-.remember-me { display: flex; align-items: center; gap: 8px; color: var(--text-muted); cursor: pointer; }
-.remember-me input { accent-color: var(--primary); cursor: pointer; }
-.forgot-pass { color: var(--primary); text-decoration: none; font-weight: 600; }
+.btn-modal-confirm {
+  flex: 1;
+  padding: 10px 16px;
+  background: var(--danger);
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  transition: all 0.2s;
+}
 
-/* Tag A dengan style tombol */
+.btn-modal-confirm:hover {
+  background: #dc2626;
+}
+
+/* Sidebar Navigasi */
+.admin-sidebar {
+  width: var(--sidebar-width); background: #111827; border-right: 1px solid var(--border);
+  padding: 20px 12px; display: flex; flex-direction: column; position: fixed;
+  top: 0; bottom: 0; left: 0; z-index: 100;
+}
+.brand-title {
+  font-size: 16px; font-weight: 800; color: var(--primary); padding: 0 12px 20px;
+  border-bottom: 1px solid var(--border); margin-bottom: 20px;
+  letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px;
+}
+.sidebar-menu { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.nav-item {
+  padding: 10px 14px; color: var(--text-muted); font-weight: 500; font-size: 14px;
+  border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+  display: flex; align-items: center; gap: 12px;
+}
+.nav-item i { width: 18px; height: 18px; }
+.nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+.nav-item.active { background: var(--primary); color: #fff; }
+
+.btn-logout {
+  background: rgba(239, 68, 68, 0.1); color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2); padding: 10px 14px;
+  border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none;
+  font-size: 13px; display: flex; align-items: center; justify-content: center;
+  gap: 8px; width: 100%; margin-top: auto; transition: all 0.2s;
+}
+.btn-logout:hover { background: #ef4444; color: #fff; }
+
+/* Main Content Area */
+.admin-main { flex: 1; margin-left: var(--sidebar-width); display: flex; flex-direction: column; min-height: 100vh; }
+header {
+  background: rgba(15, 23, 42, 0.9); border-bottom: 1px solid var(--border);
+  padding: 18px 24px; position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-title { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+.header-title i { width: 20px; height: 20px; color: var(--primary); }
+
+.admin-content { padding: 24px; flex: 1; }
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+
+.section-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; margin-bottom: 24px;
+}
+.section-card h2 {
+  font-size: 16px; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--border);
+  padding-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+
+/* Footer Styling */
+footer {
+  margin-top: auto;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.8);
+  color: var(--text-muted);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Grid System Layout */
+.desktop-grid-2 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.desktop-grid-3 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+
+@media (min-width: 1024px) {
+  .desktop-grid-2 { grid-template-columns: 2fr 1fr; }
+  .desktop-grid-equal { grid-template-columns: 1fr 1fr; }
+  .desktop-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* Stats Grid Layout */
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+.stat-box {
+  background: rgba(15, 23, 42, 0.6); border-left: 4px solid var(--primary);
+  border-radius: 8px; padding: 16px;
+}
+.stat-box.success { border-left-color: var(--success); }
+.stat-box.accent { border-left-color: var(--accent); }
+.stat-box.warning { border-left-color: var(--warning); }
+.stat-box.danger { border-left-color: var(--danger); }
+.stat-box label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-box .amount { font-size: 20px; font-weight: 800; color: #fff; margin-top: 6px; }
+
+/* Chart & List Styling */
+.chart-container { position: relative; width: 100%; height: 260px; margin-top: 10px; }
+
+.activity-list { display: flex; flex-direction: column; gap: 12px; }
+.activity-item { display: flex; align-items: center; gap: 12px; font-size: 13px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+.activity-item:last-child { border-bottom: none; padding-bottom: 0; }
+.activity-icon { width: 32px; height: 32px; border-radius: 50%; background: rgba(99,102,241,0.15); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* Form & Table Styles */
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+.form-group input, .form-group select {
+  width: 100%; padding: 10px 14px; background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border); border-radius: 8px; color: white; outline: none; font-size: 14px;
+}
+.form-group input:focus, .form-group select:focus { border-color: var(--primary); }
 .btn-submit {
-  display: flex; justify-content: center; align-items: center;
-  width: 100%; padding: 12px; border-radius: 10px; border: none;
-  background: var(--primary); color: white; font-weight: 700; font-size: 15px;
-  text-decoration: none; transition: background 0.2s;
+  width: 100%; padding: 12px; background: var(--primary); color: white;
+  border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .btn-submit:hover { background: var(--primary-hover); }
 
-.login-footer { margin-top: 24px; text-align: center; font-size: 13px; color: var(--text-muted); }
-.login-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.table-responsive { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 600; }
+
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; }
+.badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+.badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+.badge-info { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
+.badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+.btn-icon { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.2s; }
+.btn-icon:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+/* Quick Action & Audit Log Extra Styles */
+.btn-action-small {
+  padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: #fff; border-radius: 6px; cursor: pointer; font-size: 12px; display: inline-flex;
+  align-items: center; gap: 6px; transition: all 0.2s;
+}
+.btn-action-small:hover { background: var(--primary); border-color: var(--primary); }
+
+/* Upload Area UI */
+.upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.upload-area:hover { border-color: var(--primary); background: rgba(99, 102, 241, 0.05); }
+
+@media (max-width: 600px) {
+  :root { --sidebar-width: 70px; }
+  .brand-title { font-size: 12px; padding: 0 0 16px; justify-content: center; }
+  .brand-title span { display: none; }
+  .nav-item { padding: 12px; justify-content: center; }
+  .nav-item span { display: none; }
+  .btn-logout { padding: 10px; justify-content: center; }
+  .btn-logout span { display: none; }
+  .stats-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <a href="index.html" class="brand">NEXA</a>
-  <a href="index.html" class="btn-back">← Kembali ke Toko</a>
-</header>
+<div id="toast-container"></div>
 
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-      <h2>Selamat Datang</h2>
-      <p id="sub-title">Masuk ke akun Pelanggan Anda</p>
+<!-- Sidebar Navigasi -->
+<aside class="admin-sidebar">
+  <div class="brand-title">
+    <i data-lucide="store"></i>
+    <span>NEXA ADMIN</span>
+  </div>
+  <div class="sidebar-menu">
+    <div class="nav-item active" onclick="switchAdminTab('overview', this, 'layout-dashboard', 'Ringkasan Dashboard')">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Ringkasan</span>
+    </div>
+    <div class="nav-item" onclick="switchAdminTab('input-barang', this, 'plus-circle', 'Input Barang Baru')">
+      <i data-lucide="plus-circle"></i>
+      <span>Input Barang</span>
+    </div>
+    <div class="nav-item" onclick="switchAdminTab('daftar-barang', this, 'package', 'Daftar Barang')">
+      <i data-lucide="package"></i>
+      <span>Daftar Barang</span>
+    </div>
+    <div class="nav-item" onclick="switchAdminTab('laporan-keuangan', this, 'bar-chart-3', 'Laporan Keuangan & Stok')">
+      <i data-lucide="bar-chart-3"></i>
+      <span>Laporan</span>
+    </div>
+  </div>
+  <button class="btn-logout" onclick="handleLogout()">
+    <i data-lucide="log-out"></i>
+    <span>Logout</span>
+  </button>
+</aside>
+
+<!-- Konten Utama -->
+<div class="admin-main">
+  <header>
+    <div class="header-title">
+      <i data-lucide="layout-dashboard" id="header-icon"></i>
+      <span id="header-text">Ringkasan Dashboard</span>
+    </div>
+  </header>
+
+  <main class="admin-content">
+    
+    <!-- PAGE 1: RINGKASAN UTAMA -->
+    <div id="page-overview" class="admin-section active">
+      <div class="section-card">
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="user-check" style="color:var(--primary)"></i> Selamat Datang, Admin</span></h2>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <label>Total Produk</label>
+            <div class="amount" id="stat-total-produk">4 Pcs</div>
+          </div>
+          <div class="stat-box success">
+            <label>Penjualan Hari Ini</label>
+            <div class="amount" id="stat-sales-today">Rp 3.250.000</div>
+          </div>
+          <div class="stat-box accent">
+            <label>Omset Bulan Ini</label>
+            <div class="amount" id="stat-sales-month">Rp 85.000.000</div>
+          </div>
+          <div class="stat-box warning">
+            <label>Omset Tahun Ini</label>
+            <div class="amount" id="stat-sales-year">Rp 980.000.000</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="desktop-grid-2">
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="line-chart" style="color:var(--primary)"></i> Grafik Pemasukan (2026)</span></h2>
+          <div class="chart-container">
+            <canvas id="incomeChart"></canvas>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="pie-chart" style="color:var(--primary)"></i> Kategori Produk</span></h2>
+          <div class="chart-container" style="height:220px;">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="desktop-grid-2">
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="shopping-cart" style="color:var(--primary)"></i> Transaksi Terbaru</span></h2>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr><th>ID</th><th>Pelanggan</th><th>Total</th><th>Status</th></tr>
+              </thead>
+              <tbody id="overview-trx-table">
+                <tr><td>#TRX-9081</td><td>Budi Santoso</td><td>Rp 2.199.000</td><td><span class="badge badge-success">Selesai</span></td></tr>
+                <tr><td>#TRX-9080</td><td>Siti Rahma</td><td>Rp 899.000</td><td><span class="badge badge-warning">Proses</span></td></tr>
+                <tr><td>#TRX-9079</td><td>Andi Wijaya</td><td>Rp 12.500.000</td><td><span class="badge badge-success">Selesai</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="activity" style="color:var(--primary)"></i> Aktivitas Sistem</span></h2>
+          <div class="activity-list" id="activity-log-container">
+            <div class="activity-item">
+              <div class="activity-icon"><i data-lucide="plus" style="width:16px;"></i></div>
+              <div><b>Produk Ditambahkan</b><br><span style="color:var(--text-muted);font-size:11px;">10 menit yang lalu</span></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon"><i data-lucide="check" style="width:16px;"></i></div>
+              <div><b>Pesanan #TRX-9081 Selesai</b><br><span style="color:var(--text-muted);font-size:11px;">45 menit yang lalu</span></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon"><i data-lucide="refresh-cw" style="width:16px;"></i></div>
+              <div><b>Stok Diperbarui</b><br><span style="color:var(--text-muted);font-size:11px;">2 jam yang lalu</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="role-selector">
-      <button type="button" class="role-btn active" id="btn-customer" onclick="setRole('customer')">👤 Pelanggan</button>
-      <button type="button" class="role-btn" id="btn-admin" onclick="setRole('admin')">🛠️ Admin Store</button>
+    <!-- PAGE 2: INPUT BARANG BARU -->
+    <div id="page-input-barang" class="admin-section">
+      <div class="desktop-grid-2">
+        <!-- Form Utama Input Barang -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</span></h2>
+          <form id="form-add-product" onsubmit="handleAddNewProduct(event)">
+            
+            <!-- Upload Foto & SKU Generator -->
+            <div style="display: grid; grid-template-columns: 120px 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="upload-area" onclick="document.getElementById('product-image-input').click()">
+                <input type="file" id="product-image-input" accept="image/*" style="display:none" onchange="previewProductImage(event)">
+                <div id="image-preview-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                  <i data-lucide="image" style="width:24px; height:24px; color:var(--text-muted); margin-bottom:4px;"></i>
+                  <span style="font-size:10px; color:var(--text-muted);">Foto Produk</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="form-group" style="margin-bottom:8px;">
+                  <label>Kode Unik SKU</label>
+                  <div style="display:flex; gap:8px;">
+                    <input type="text" id="admin-sku" placeholder="NX-88219" style="font-family:monospace; font-weight:bold;">
+                    <button type="button" onclick="generateSKU()" class="btn-action-small" style="white-space:nowrap;"><i data-lucide="refresh-cw" style="width:14px;"></i> Generate</button>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label>Nama Barang</label>
+                  <input type="text" id="admin-name" required placeholder="Contoh: Nexa Watch">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Kategori</label>
+              <select id="admin-category" required>
+                <option value="Gadget">Gadget</option>
+                <option value="Audio">Audio</option>
+                <option value="Sepatu">Sepatu</option>
+                <option value="Laptop">Laptop</option>
+              </select>
+            </div>
+
+            <!-- Harga Modal vs Harga Jual & Margin Calculator -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label>Harga Modal / HPP (Rp)</label>
+                <input type="number" id="admin-cost" placeholder="1000000" oninput="calculateMargin()">
+              </div>
+              <div class="form-group">
+                <label>Harga Jual (Rp)</label>
+                <input type="number" id="admin-price" required placeholder="1500000" oninput="calculateMargin()">
+              </div>
+            </div>
+
+            <!-- Widget Kalkulator Margin -->
+            <div id="margin-badge-box" style="margin-bottom: 16px; padding: 10px; background: rgba(15,23,42,0.6); border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 12px; color: var(--text-muted);">Estimasi Margin Keuntungan:</span>
+              <span id="margin-value" style="font-size: 13px; font-weight: 700; color: var(--success);">0% (Rp 0)</span>
+            </div>
+
+            <div class="form-group">
+              <label>Stok Awal</label>
+              <input type="number" id="admin-stock" required placeholder="10">
+            </div>
+
+            <button type="submit" class="btn-submit">
+              <i data-lucide="save"></i> Simpan Barang
+            </button>
+          </form>
+        </div>
+
+        <div>
+          <!-- Panduan Input -->
+          <div class="section-card">
+            <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="info" style="color:var(--primary)"></i> Panduan Input</span></h2>
+            <ul style="color: var(--text-muted); font-size: 13px; line-height: 1.8; padding-left: 20px;">
+              <li>Pastikan nama produk spesifik dan unik.</li>
+              <li>Unggah foto produk berukuran transparan/persegi untuk tampilan maksimal.</li>
+              <li>Input harga modal dan jual untuk kalkulasi estimasi margin keuntungan otomatis.</li>
+              <li>Sistem akan otomatis memperbarui kalkulasi laporan stok secara real-time.</li>
+            </ul>
+          </div>
+
+          <!-- Input Terakhir -->
+          <div class="section-card">
+            <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="clock" style="color:var(--primary)"></i> Input Terakhir</span></h2>
+            <div style="font-size:13px; color:var(--text-muted);" id="last-product-box">
+              <p><b style="color:#fff;">Laptop Gaming Nexa Pro</b></p>
+              <p style="font-size:12px; margin-top:4px;">Kategori: Laptop | Stok: 10 Pcs</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Riwayat Input & Statistik Tambahan Penambahan -->
+      <div class="section-card">
+        <h2>
+          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="file-spreadsheet" style="color:var(--primary)"></i> Riwayat Penambahan Barang (Terbaru)</span>
+          <button class="btn-action-small" onclick="triggerImportCSV()"><i data-lucide="file-up" style="width:14px;"></i> Import Massal (CSV)</button>
+        </h2>
+        
+        <!-- Statistik Ringkasan Penambahan Cepat -->
+        <div class="stats-grid" style="margin-bottom: 16px;">
+          <div class="stat-box success">
+            <label>Penambahan Hari Ini</label>
+            <div class="amount" id="stat-added-today" style="font-size:16px;">1 Produk (10 Pcs)</div>
+          </div>
+          <div class="stat-box accent">
+            <label>Estimasi Nilai Tambah Aset</label>
+            <div class="amount" id="stat-added-value" style="font-size:16px;">Rp 125.000.000</div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr><th>Waktu</th><th>SKU</th><th>Nama Barang</th><th>Kategori</th><th>Harga Unit</th><th>Jumlah Stok</th></tr>
+            </thead>
+            <tbody id="input-history-table">
+              <tr><td>Hari ini, 08:10</td><td><code>NX-9912</code></td><td>Laptop Gaming Nexa Pro</td><td>Laptop</td><td>Rp 12.500.000</td><td>10 Pcs</td></tr>
+              <tr><td>Kemarin, 16:45</td><td><code>NX-3341</code></td><td>Runner Pro V2</td><td>Sepatu</td><td>Rp 899.000</td><td>12 Pcs</td></tr>
+              <tr><td>05 Ags 2026</td><td><code>NX-1092</code></td><td>NexaWatch Series X</td><td>Gadget</td><td>Rp 2.199.000</td><td>15 Pcs</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <form>
-      <div class="form-group">
-        <label for="identity" id="label-identity">Alamat Email / No. HP</label>
-        <input type="text" id="identity" class="input-field" required>
+    <!-- PAGE 3: DAFTAR BARANG -->
+    <div id="page-daftar-barang" class="admin-section">
+      <div class="section-card">
+        <h2>
+          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="package" style="color:var(--primary)"></i> Kelola Daftar Barang</span>
+        </h2>
+        
+        <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+          <input type="text" id="search-input" placeholder="Cari nama barang atau kategori..." onkeyup="filterProducts()" style="padding:10px 14px; background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:8px; color:#fff; flex:1; min-width:200px;">
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Barang</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="admin-product-table"></tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="password">Kata Sandi</label>
-        <input type="password" id="password" class="input-field" required>
+      <div class="desktop-grid-2">
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="layers" style="color:var(--primary)"></i> Ringkasan Stok Produk</span></h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <label>Kategori Aktif</label>
+              <div class="amount" id="stat-active-categories" style="font-size:18px;">4 Jenis</div>
+            </div>
+            <div class="stat-box success">
+              <label>Kapasitas Gudang</label>
+              <div class="amount" id="stat-warehouse-capacity" style="font-size:18px;">45 / 100 Pcs</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="filter" style="color:var(--primary)"></i> Akses Cepat Filter</span></h2>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button onclick="applyQuickFilter('Audio')" style="padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Kategori Audio</button>
+            <button onclick="applyQuickFilter('Gadget')" style="padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Kategori Gadget</button>
+            <button onclick="applyQuickFilter('Laptop')" style="padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Kategori Laptop</button>
+            <button onclick="applyQuickFilter('')" style="padding:8px 12px; background:var(--primary); border:none; color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Reset</button>
+          </div>
+        </div>
       </div>
 
-      <div class="form-actions">
-        <label class="remember-me">
-          <input type="checkbox"> Ingat Saya
-        </label>
-        <a href="#" class="forgot-pass">Lupa kata sandi?</a>
+      <!-- SECTION FITUR PENDUKUNG DI AREA KOSONG -->
+      <div class="desktop-grid-2">
+        <!-- Widget 1: Low Stock Alert -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="alert-triangle" style="color:var(--warning)"></i> Peringatan Stok Menipis (&lt; 10 Pcs)</span></h2>
+          <div id="low-stock-alert-container"></div>
+        </div>
+
+        <!-- Widget 2: Best Seller -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="flame" style="color:var(--accent)"></i> Top 3 Produk Terlaris</span></h2>
+          <div class="activity-list" id="best-seller-container"></div>
+        </div>
       </div>
 
-      <!-- DIPASANG DI SINI: Tag <a> dengan atribut href -->
-      <a href="index.html" id="link-login" class="btn-submit">Masuk Sebagai Pelanggan</a>
-    </form>
+      <div class="desktop-grid-2">
+        <!-- Widget 3: Stock Audit Log -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="history" style="color:var(--primary)"></i> Riwayat Perubahan Stok (Audit Log)</span></h2>
+          <div class="activity-list" id="stock-audit-log-container"></div>
+        </div>
 
-    <div class="login-footer" id="signup-prompt">
-      Belum punya akun? <a href="#">Daftar Sekarang</a>
+        <!-- Widget 4: Quick Actions & Utilities -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="wrench" style="color:var(--primary)"></i> Utilitas & Aksi Masal</span></h2>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="btn-action-small" onclick="exportProductsCSV()"><i data-lucide="file-spreadsheet" style="width:16px;"></i> Export Data Produk (CSV)</button>
+            <button class="btn-action-small" onclick="triggerImportCSV()"><i data-lucide="upload" style="width:16px;"></i> Import Stok dari File</button>
+            <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleImportCSV(event)">
+            <button class="btn-action-small" onclick="printBarcodes()"><i data-lucide="qr-code" style="width:16px;"></i> Cetak Barcode / Label Harga</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: LAPORAN PENJUALAN & STOK -->
+    <div id="page-laporan-keuangan" class="admin-section">
+      <div class="desktop-grid-2">
+        <div class="section-card">
+          <h2>
+            <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="trending-up" style="color:var(--primary)"></i> Laporan Ringkasan Keuangan</span>
+            <button onclick="exportToPDF()" style="background:var(--primary); border:none; color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; display:flex; align-items:center; gap:5px;"><i data-lucide="download" style="width:14px;"></i> Export PDF</button>
+          </h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <label>Laporan Harian</label>
+              <div class="amount" style="color: var(--success);">Rp 3.250.000</div>
+            </div>
+            <div class="stat-box success">
+              <label>Laporan Bulanan</label>
+              <div class="amount" style="color: var(--success);">Rp 85.000.000</div>
+            </div>
+            <div class="stat-box warning" style="grid-column: span 2;">
+              <label>Laporan Tahunan</label>
+              <div class="amount" style="color: var(--primary);">Rp 980.000.000</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="shield-check" style="color:var(--primary)"></i> Performansi Stok</span></h2>
+          <div style="font-size:13px; color:var(--text-muted); display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span>Ketersediaan Stok</span>
+                <span style="color:#fff; font-weight:700;">85%</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; overflow:hidden;">
+                <div style="background:var(--success); width:85%; height:100%;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span>Perputaran Produk</span>
+                <span style="color:#fff; font-weight:700;">72%</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; overflow:hidden;">
+                <div style="background:var(--primary); width:72%; height:100%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FITUR BARU: RIWAYAT ARUS KAS (PENDAPATAN & PENGELUARAN) -->
+      <div class="section-card">
+        <h2>
+          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="arrow-left-right" style="color:var(--primary)"></i> Riwayat Pengeluaran & Pendapatan</span>
+          <div style="display:flex; gap:8px;">
+            <button onclick="filterCashflow('semua')" style="padding:4px 8px; font-size:11px; background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:4px; cursor:pointer;">Semua</button>
+            <button onclick="filterCashflow('Pendapatan')" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:var(--success); border:none; border-radius:4px; cursor:pointer;">Pendapatan</button>
+            <button onclick="filterCashflow('Pengeluaran')" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:var(--danger); border:none; border-radius:4px; cursor:pointer;">Pengeluaran</button>
+          </div>
+        </h2>
+        
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; background: rgba(15,23,42,0.5); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <p style="margin-bottom: 4px;"><strong style="color: var(--success);">Pendapatan:</strong> Arus uang masuk dari transaksi penjualan produk kepada pembeli/pelanggan.</p>
+          <p><strong style="color: var(--danger);">Pengeluaran:</strong> Arus uang keluar untuk biaya operasional, restock persediaan barang, serta pemeliharaan sistem/gudang.</p>
+        </div>
+
+        <!-- Form Tambah Catatan Keuangan -->
+        <form onsubmit="handleAddCashflow(event)" style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+          <select id="cf-type" style="padding: 8px 12px; background: rgba(15,23,42,0.8); border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px;" required>
+            <option value="Pendapatan">Pendapatan</option>
+            <option value="Pengeluaran">Pengeluaran</option>
+          </select>
+          <input type="text" id="cf-desc" placeholder="Keterangan (contoh: Biaya Listrik, Penjualan Audio)" style="flex: 2; min-width: 180px; padding: 8px 12px; background: rgba(15,23,42,0.8); border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px;" required>
+          <input type="number" id="cf-amount" placeholder="Nominal (Rp)" style="flex: 1; min-width: 120px; padding: 8px 12px; background: rgba(15,23,42,0.8); border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px;" required>
+          <button type="submit" style="padding: 8px 16px; background: var(--primary); border: none; color: #fff; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 13px;">+ Catat</button>
+        </form>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Jenis Arus</th>
+                <th>Keterangan / Sumber</th>
+                <th>Nominal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="cashflow-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="boxes" style="color:var(--primary)"></i> Laporan Detail Stok Barang</span></h2>
+        
+        <div class="stats-grid" style="margin-bottom: 24px;">
+          <div class="stat-box">
+            <label>Total Unit Stok</label>
+            <div class="amount" id="stat-laporan-total-unit">45 Pcs</div>
+          </div>
+          <div class="stat-box warning">
+            <label>Stok Menipis (&lt; 10 Pcs)</label>
+            <div class="amount" id="stat-laporan-stok-menipis" style="color: var(--warning);">1 Item</div>
+          </div>
+          <div class="stat-box accent" style="grid-column: span 2;">
+            <label>Total Nilai Aset Stok</label>
+            <div class="amount" id="stat-laporan-nilai-aset" style="color: var(--accent);">Rp 180.373.000</div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Produk</th>
+                <th>Sisa Stok</th>
+                <th>Total Nilai Stok</th>
+                <th>Status Stok</th>
+              </tr>
+            </thead>
+            <tbody id="laporan-stok-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="bar-chart-2" style="color:var(--primary)"></i> Visualisasi Nilai Aset per Kategori</span></h2>
+        <div class="chart-container" style="height:220px;">
+          <canvas id="assetChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>&copy; 2026 NexaStore Admin Management System. All rights reserved.</span>
+    <span>Version 2.5.0</span>
+  </footer>
+</div>
+
+<!-- Custom Modal Pop-Up Confirmation Logout -->
+<div id="logoutModal" class="custom-modal-overlay">
+  <div class="custom-modal-content">
+    <div class="custom-modal-icon">
+      <i data-lucide="log-out"></i>
+    </div>
+    <h3>Konfirmasi Logout</h3>
+    <p>Apakah Anda yakin ingin keluar dari sistem admin NexaStore?</p>
+    <div class="custom-modal-actions">
+      <button class="btn-modal-cancel" onclick="closeLogoutModal()">Batal</button>
+      <button class="btn-modal-confirm" onclick="confirmLogoutProcess()">Ya, Keluar</button>
     </div>
   </div>
 </div>
 
 <script>
-let currentRole = 'customer';
+// Data State Global
+let adminProducts = [
+  { name: 'Studio ANC Wireless', sku: 'NX-1022', category: 'Audio', price: 1450000, cost: 950000, stock: 8, sold: 142 },
+  { name: 'NexaWatch Series X', sku: 'NX-1092', category: 'Gadget', price: 2199000, cost: 1500000, stock: 15, sold: 98 },
+  { name: 'Runner Pro V2', sku: 'NX-3341', category: 'Sepatu', price: 899000, cost: 500000, stock: 12, sold: 64 },
+  { name: 'Laptop Gaming Nexa Pro', sku: 'NX-9912', category: 'Laptop', price: 12500000, cost: 9800000, stock: 10, sold: 35 }
+];
 
-function setRole(role) {
-  currentRole = role;
-  const btnCustomer = document.getElementById('btn-customer');
-  const btnAdmin = document.getElementById('btn-admin');
-  const subTitle = document.getElementById('sub-title');
-  const labelIdentity = document.getElementById('label-identity');
-  const inputIdentity = document.getElementById('identity');
-  const inputPassword = document.getElementById('password');
-  const linkLogin = document.getElementById('link-login');
-  const signupPrompt = document.getElementById('signup-prompt');
+let inputHistory = [
+  { time: 'Hari ini, 08:10', sku: 'NX-9912', name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10 },
+  { time: 'Kemarin, 16:45', sku: 'NX-3341', name: 'Runner Pro V2', category: 'Sepatu', price: 899000, stock: 12 },
+  { time: '05 Ags 2026', sku: 'NX-1092', name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15 }
+];
 
-  if (role === 'admin') {
-    btnAdmin.classList.add('active');
-    btnCustomer.classList.remove('active');
-    subTitle.textContent = 'Portal Manajemen Admin NexaStore';
-    labelIdentity.textContent = 'ID Admin / Email Staf';
-    
-    inputIdentity.value = 'admin@nexastore.com';
-    inputPassword.value = 'admin123';
-    
-    linkLogin.textContent = 'Masuk ke Dashboard Admin';
-    // MENGUBAH HREF SECARA OTOMATIS KE ADMIN.HTML
-    linkLogin.href = 'admin.html';
-    
-    if (signupPrompt) signupPrompt.style.display = 'none';
-  } else {
-    btnCustomer.classList.add('active');
-    btnAdmin.classList.remove('active');
-    subTitle.textContent = 'Masuk ke akun Pelanggan Anda';
-    labelIdentity.textContent = 'Alamat Email / No. HP';
-    
-    inputIdentity.value = 'pelanggan123@gmail.com';
-    inputPassword.value = 'pelanggan123';
-    
-    linkLogin.textContent = 'Masuk Sebagai Pelanggan';
-    // MENGUBAH HREF SECARA OTOMATIS KE INDEX.HTML
-    linkLogin.href = 'index.html';
-    
-    if (signupPrompt) signupPrompt.style.display = 'block';
+let cashflowRecords = [
+  { date: '07 Ags 2026', type: 'Pendapatan', desc: 'Penjualan TRX-9081 (Budi Santoso)', amount: 2199000 },
+  { date: '07 Ags 2026', type: 'Pengeluaran', desc: 'Restock Produk Audio (Studio ANC)', amount: 8000000 },
+  { date: '06 Ags 2026', type: 'Pendapatan', desc: 'Penjualan TRX-9079 (Andi Wijaya)', amount: 12500000 },
+  { date: '05 Ags 2026', type: 'Pengeluaran', desc: 'Bayar Tagihan Listrik & Internet Server Gudang', amount: 1200000 }
+];
+
+let auditLogs = [
+  { time: '08:10 WIB', user: 'Admin Main', action: '+10 Pcs Laptop Gaming Nexa Pro' },
+  { time: 'Kemarin', user: 'Admin Main', action: '-2 Pcs Studio ANC Wireless (Penjualan)' },
+  { time: '05 Ags 2026', user: 'Admin Gudang', action: 'Penyesuaian Stok NexaWatch Series X (+15 Pcs)' }
+];
+
+let currentImageBase64 = null;
+let incomeChartInstance = null;
+let categoryChartInstance = null;
+let assetChartInstance = null;
+
+// Generate SKU Random
+function generateSKU() {
+  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  document.getElementById('admin-sku').value = `NX-${randomNum}`;
+}
+
+// Preview Upload Gambar
+function previewProductImage(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      currentImageBase64 = evt.target.result;
+      const container = document.getElementById('image-preview-container');
+      container.innerHTML = `<img src="${currentImageBase64}" style="width:100%; height:100%; object-fit:cover; border-radius:6px;">`;
+    };
+    reader.readAsDataURL(file);
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  setRole('customer');
+// Kalkulator Margin Keuntungan
+function calculateMargin() {
+  const cost = parseFloat(document.getElementById('admin-cost').value) || 0;
+  const price = parseFloat(document.getElementById('admin-price').value) || 0;
+  const marginBadge = document.getElementById('margin-value');
+
+  if (price > 0 && cost > 0) {
+    const profit = price - cost;
+    const marginPercent = ((profit / price) * 100).toFixed(1);
+    
+    if (profit >= 0) {
+      marginBadge.style.color = 'var(--success)';
+      marginBadge.textContent = `+${marginPercent}% (Untung Rp ${profit.toLocaleString('id-ID')})`;
+    } else {
+      marginBadge.style.color = 'var(--danger)';
+      marginBadge.textContent = `${marginPercent}% (Rugi Rp ${Math.abs(profit).toLocaleString('id-ID')})`;
+    }
+  } else {
+    marginBadge.style.color = 'var(--text-muted)';
+    marginBadge.textContent = '0% (Rp 0)';
+  }
+}
+
+// Toast Notification UI
+function showToast(message) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <div class="toast-icon"><i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i></div>
+    <div class="toast-message">${message}</div>
+  `;
+  container.appendChild(toast);
+  lucide.createIcons();
+  setTimeout(() => toast.classList.add('show'), 100);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// Switch Tab Menu
+function switchAdminTab(tabName, element, iconName, titleText) {
+  document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+  const targetPage = document.getElementById('page-' + tabName);
+  if (targetPage) targetPage.classList.add('active');
+
+  if (element) {
+    element.classList.add('active');
+  } else {
+    const items = document.querySelectorAll('.sidebar-menu .nav-item');
+    if (tabName === 'overview') items[0]?.classList.add('active');
+    if (tabName === 'input-barang') items[1]?.classList.add('active');
+    if (tabName === 'daftar-barang') items[2]?.classList.add('active');
+    if (tabName === 'laporan-keuangan') items[3]?.classList.add('active');
+  }
+
+  document.getElementById('header-text').textContent = titleText;
+  document.getElementById('header-icon').setAttribute('data-lucide', iconName);
+  lucide.createIcons();
+}
+
+// Buka Modal Logout Estetik
+function handleLogout() {
+  const modal = document.getElementById('logoutModal');
+  if (modal) {
+    modal.classList.add('active');
+    lucide.createIcons();
+  }
+}
+
+// Tutup Modal Logout
+function closeLogoutModal() {
+  const modal = document.getElementById('logoutModal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+// Eksekusi Logout
+function confirmLogoutProcess() {
+  closeLogoutModal();
+  showToast('Berhasil logout!');
+  setTimeout(() => {
+    window.location.reload();
+  }, 1000);
+}
+
+function filterProducts() {
+  const query = document.getElementById('search-input').value.toLowerCase();
+  const filtered = adminProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query) || (p.sku && p.sku.toLowerCase().includes(query)));
+  renderTablesAndReports(filtered);
+}
+
+function applyQuickFilter(catName) {
+  const input = document.getElementById('search-input');
+  if(input) {
+    input.value = catName;
+    filterProducts();
+  }
+}
+
+function deleteProduct(index) {
+  const deletedName = adminProducts[index].name;
+  
+  auditLogs.unshift({
+    time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + ' WIB',
+    user: 'Admin Main',
+    action: `Menghapus produk "${deletedName}"`
+  });
+
+  adminProducts.splice(index, 1);
+  renderTablesAndReports();
+  showToast(`Barang "${deletedName}" telah dihapus!`);
+}
+
+function quickAddStock(index, amount) {
+  adminProducts[index].stock += amount;
+  
+  auditLogs.unshift({
+    time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + ' WIB',
+    user: 'Admin Main',
+    action: `Restock +${amount} Pcs ${adminProducts[index].name}`
+  });
+
+  renderTablesAndReports();
+  showToast(`Stok ${adminProducts[index].name} berhasil ditambah +${amount}!`);
+}
+
+// Tambah Produk Baru via Form
+function handleAddNewProduct(e) {
+  e.preventDefault();
+  const sku = document.getElementById('admin-sku').value || 'NX-' + Math.floor(1000 + Math.random() * 9000);
+  const name = document.getElementById('admin-name').value;
+  const category = document.getElementById('admin-category').value;
+  const cost = parseFloat(document.getElementById('admin-cost').value) || 0;
+  const price = parseFloat(document.getElementById('admin-price').value);
+  const stock = parseInt(document.getElementById('admin-stock').value);
+
+  const newProduct = { sku, name, category, cost, price, stock, sold: 0, image: currentImageBase64 };
+  adminProducts.push(newProduct);
+  
+  const now = new Date();
+  const timeStr = `Hari ini, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  inputHistory.unshift({ time: timeStr, sku, name, category, price, stock });
+
+  auditLogs.unshift({
+    time: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ' WIB',
+    user: 'Admin Main',
+    action: `Menambahkan produk baru "${name}" (+${stock} Pcs)`
+  });
+
+  renderTablesAndReports();
+  renderInputHistory();
+  
+  document.getElementById('last-product-box').innerHTML = `
+    <p><b style="color:#fff;">${name}</b> <code style="font-size:11px;">(${sku})</code></p>
+    <p style="font-size:12px; margin-top:4px;">Kategori: ${category} | Stok: ${stock} Pcs</p>
+  `;
+
+  document.getElementById('form-add-product').reset();
+  document.getElementById('image-preview-container').innerHTML = `
+    <i data-lucide="image" style="width:24px; height:24px; color:var(--text-muted); margin-bottom:4px;"></i>
+    <span style="font-size:10px; color:var(--text-muted);">Foto Produk</span>
+  `;
+  document.getElementById('margin-value').textContent = '0% (Rp 0)';
+  currentImageBase64 = null;
+  generateSKU();
+
+  showToast('Barang baru berhasil disimpan!');
+  switchAdminTab('daftar-barang', null, 'package', 'Daftar Barang');
+}
+
+// Render Tabel Riwayat Input Barang
+function renderInputHistory() {
+  const tbody = document.getElementById('input-history-table');
+  if(!tbody) return;
+  tbody.innerHTML = inputHistory.map(item => `
+    <tr>
+      <td>${item.time}</td>
+      <td><code style="color:var(--accent);">${item.sku || 'NX-AUTO'}</code></td>
+      <td style="font-weight:600; color:#fff;">${item.name}</td>
+      <td>${item.category}</td>
+      <td>Rp ${item.price.toLocaleString('id-ID')}</td>
+      <td>${item.stock} Pcs</td>
+    </tr>
+  `).join('');
+
+  // Update Statistik Tambahan Penambahan
+  const totalValueAdded = inputHistory.reduce((acc, item) => acc + (item.price * item.stock), 0);
+  document.getElementById('stat-added-today').textContent = `${inputHistory.length} Transaksi`;
+  document.getElementById('stat-added-value').textContent = `Rp ${totalValueAdded.toLocaleString('id-ID')}`;
+}
+
+// Render Fitur Tambahan
+function renderDaftarBarangWidgets() {
+  // Low Stock Alert
+  const lowStockContainer = document.getElementById('low-stock-alert-container');
+  if (lowStockContainer) {
+    const lowStockItems = adminProducts
+      .map((p, idx) => ({ ...p, originalIndex: idx }))
+      .filter(p => p.stock < 10);
+
+    if (lowStockItems.length === 0) {
+      lowStockContainer.innerHTML = `<p style="font-size:13px; color:var(--text-muted);">Semua produk berada dalam kondisi stok aman (≥ 10 Pcs).</p>`;
+    } else {
+      lowStockContainer.innerHTML = lowStockItems.map(item => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.3); padding:10px 14px; border-radius:8px; margin-bottom:10px;">
+          <div>
+            <p style="color:#fff; font-weight:600; font-size:13px;">${item.name}</p>
+            <span style="color:var(--warning); font-size:12px;">Sisa Stok: <b>${item.stock} Pcs</b></span>
+          </div>
+          <button class="btn-action-small" onclick="quickAddStock(${item.originalIndex}, 10)" style="background:var(--warning); color:#000; font-weight:700;">
+            +10 Stok
+          </button>
+        </div>
+      `).join('');
+    }
+  }
+
+  // Best Seller
+  const bestSellerContainer = document.getElementById('best-seller-container');
+  if (bestSellerContainer) {
+    const sortedBest = [...adminProducts].sort((a, b) => b.sold - a.sold).slice(0, 3);
+    bestSellerContainer.innerHTML = sortedBest.map((item, idx) => `
+      <div class="activity-item">
+        <div class="activity-icon" style="background:rgba(236,72,153,0.15); color:var(--accent); font-weight:bold;">#${idx + 1}</div>
+        <div style="flex:1;">
+          <b style="color:#fff;">${item.name}</b>
+          <br><span style="color:var(--text-muted); font-size:11px;">Terjual: <strong style="color:var(--success);">${item.sold || 0} unit</strong></span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Stock Audit Log
+  const auditContainer = document.getElementById('stock-audit-log-container');
+  if (auditContainer) {
+    auditContainer.innerHTML = auditLogs.slice(0, 4).map(log => `
+      <div class="activity-item">
+        <div class="activity-icon"><i data-lucide="shield-check" style="width:16px;"></i></div>
+        <div>
+          <b style="color:#fff;">${log.action}</b>
+          <br><span style="color:var(--text-muted); font-size:11px;">Oleh ${log.user} • ${log.time}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// Utilitas Import/Export
+function exportProductsCSV() {
+  let csv = "SKU,Nama Barang,Kategori,Harga Modal,Harga Jual,Stok,Terjual\n";
+  adminProducts.forEach(p => {
+    csv += `"${p.sku || ''}","${p.name}","${p.category}",${p.cost || 0},${p.price},${p.stock},${p.sold || 0}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.setAttribute('href', url);
+  a.setAttribute('download', `Daftar_Barang_NexaStore.csv`);
+  a.click();
+  showToast("Data barang berhasil diexport ke CSV!");
+}
+
+function triggerImportCSV() {
+  document.getElementById('csv-file-input').click();
+}
+
+function handleImportCSV(event) {
+  const file = event.target.files[0];
+  if (file) {
+    showToast(`File ${file.name} berhasil di-import! (Simulasi Data Masuk)`);
+  }
+}
+
+function printBarcodes() {
+  showToast("Membuka dialog cetak barcode...");
+  window.print();
+}
+
+// Render Semua Tabel
+function renderTablesAndReports(productsToRender = adminProducts) {
+  const tbody = document.getElementById('admin-product-table');
+  const laporanTbody = document.getElementById('laporan-stok-table');
+  const totalStat = document.getElementById('stat-total-produk');
+  
+  if (tbody) {
+    tbody.innerHTML = productsToRender.map((p, idx) => `
+      <tr>
+        <td style="font-weight: 600; color: #fff;">
+          ${p.name}
+          <br><code style="font-size:10px; color:var(--text-muted);">${p.sku || 'NX-AUTO'}</code>
+        </td>
+        <td><span style="font-size: 11px; padding: 2px 8px; background: rgba(99,102,241,0.2); color: var(--primary); border-radius: 4px; font-weight: 700;">${p.category}</span></td>
+        <td>Rp ${p.price.toLocaleString('id-ID')}</td>
+        <td>${p.stock} pcs</td>
+        <td><button class="btn-icon" onclick="deleteProduct(${idx})" title="Hapus Barang"><i data-lucide="trash-2" style="width:16px; color:var(--danger)"></i></button></td>
+      </tr>
+    `).join('');
+  }
+
+  if (totalStat) totalStat.textContent = adminProducts.length + ' Pcs';
+
+  const activeCategories = new Set(adminProducts.map(p => p.category)).size;
+  let totalUnits = 0;
+  let totalAssetValue = 0;
+  let lowStockCount = 0;
+
+  if (document.getElementById('stat-active-categories')) {
+    document.getElementById('stat-active-categories').textContent = activeCategories + ' Jenis';
+  }
+
+  if (laporanTbody) {
+    laporanTbody.innerHTML = adminProducts.map(p => {
+      const assetValue = p.price * p.stock;
+      totalUnits += p.stock;
+      totalAssetValue += assetValue;
+      
+      const isLow = p.stock < 10;
+      if (isLow) lowStockCount++;
+
+      return `
+        <tr>
+          <td style="font-weight: 600; color: #fff;">${p.name}</td>
+          <td>${p.stock} Pcs</td>
+          <td>Rp ${assetValue.toLocaleString('id-ID')}</td>
+          <td>
+            ${isLow 
+              ? `<span class="badge badge-warning">Menipis</span>` 
+              : `<span class="badge badge-success">Aman</span>`
+            }
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    document.getElementById('stat-laporan-total-unit').textContent = totalUnits + ' Pcs';
+    document.getElementById('stat-laporan-stok-menipis').textContent = lowStockCount + ' Item';
+    document.getElementById('stat-laporan-nilai-aset').textContent = 'Rp ' + totalAssetValue.toLocaleString('id-ID');
+    if(document.getElementById('stat-warehouse-capacity')) {
+      document.getElementById('stat-warehouse-capacity').textContent = `${totalUnits} / 100 Pcs`;
+    }
+  }
+
+  renderDaftarBarangWidgets();
+  lucide.createIcons();
+  updateAssetChart();
+}
+
+function handleAddCashflow(e) {
+  e.preventDefault();
+  const type = document.getElementById('cf-type').value;
+  const desc = document.getElementById('cf-desc').value;
+  const amount = parseFloat(document.getElementById('cf-amount').value);
+
+  const now = new Date();
+  const dateStr = `${String(now.getDate()).padStart(2,'0')} Ags 2026`;
+
+  cashflowRecords.unshift({ date: dateStr, type, desc, amount });
+  renderCashflowTable();
+
+  document.getElementById('cf-desc').value = '';
+  document.getElementById('cf-amount').value = '';
+  showToast(`Berhasil mencatat ${type.toLowerCase()}!`);
+}
+
+function deleteCashflow(index) {
+  cashflowRecords.splice(index, 1);
+  renderCashflowTable();
+  showToast('Catatan transaksi dihapus!');
+}
+
+function filterCashflow(filterType) {
+  if (filterType === 'semua') {
+    renderCashflowTable(cashflowRecords);
+  } else {
+    const filtered = cashflowRecords.filter(item => item.type === filterType);
+    renderCashflowTable(filtered);
+  }
+}
+
+function renderCashflowTable(recordsToRender = cashflowRecords) {
+  const tbody = document.getElementById('cashflow-table-body');
+  if(!tbody) return;
+
+  tbody.innerHTML = recordsToRender.map((cf, idx) => `
+    <tr>
+      <td>${cf.date}</td>
+      <td>
+        <span class="badge ${cf.type === 'Pendapatan' ? 'badge-success' : 'badge-danger'}">
+          ${cf.type}
+        </span>
+      </td>
+      <td style="color: #fff; font-weight: 500;">${cf.desc}</td>
+      <td style="font-weight: 700; color: ${cf.type === 'Pendapatan' ? 'var(--success)' : 'var(--danger)'}">
+        ${cf.type === 'Pendapatan' ? '+' : '-'} Rp ${cf.amount.toLocaleString('id-ID')}
+      </td>
+      <td>
+        <button class="btn-icon" onclick="deleteCashflow(${idx})" title="Hapus Catatan"><i data-lucide="trash-2" style="width:16px; color:var(--danger)"></i></button>
+      </td>
+    </tr>
+  `).join('');
+  lucide.createIcons();
+}
+
+function exportToPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(16);
+  doc.text("Laporan Keuangan & Stok NexaStore", 14, 20);
+  doc.setFontSize(10);
+  doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 28);
+  doc.text("--------------------------------------------------------------------------------", 14, 34);
+  
+  let y = 42;
+  doc.setFontSize(12);
+  doc.text("Ringkasan Nilai Aset Produk:", 14, y);
+  y += 8;
+
+  doc.setFontSize(10);
+  adminProducts.forEach((p, idx) => {
+    doc.text(`${idx + 1}. ${p.name} (${p.category}) - ${p.stock} Pcs - Rp ${(p.price * p.stock).toLocaleString('id-ID')}`, 14, y);
+    y += 6;
+  });
+
+  y += 10;
+  doc.setFontSize(12);
+  doc.text("Ringkasan Riwayat Arus Kas:", 14, y);
+  y += 8;
+
+  doc.setFontSize(10);
+  cashflowRecords.slice(0, 5).forEach((cf, idx) => {
+    doc.text(`${idx + 1}. [${cf.type}] ${cf.desc} - Rp ${cf.amount.toLocaleString('id-ID')}`, 14, y);
+    y += 6;
+  });
+
+  doc.save("Laporan_Keuangan_NexaStore.pdf");
+  showToast("Laporan berhasil diunduh sebagai PDF!");
+}
+
+function initCharts() {
+  const ctxIncome = document.getElementById('incomeChart').getContext('2d');
+  const gradient = ctxIncome.createLinearGradient(0, 0, 0, 250);
+  gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+  gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+
+  incomeChartInstance = new Chart(ctxIncome, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu'],
+      datasets: [{
+        label: 'Pemasukan (Rp)',
+        data: [45000000, 52000000, 68000000, 74000000, 61000000, 89000000, 95000000, 85000000],
+        borderColor: '#6366f1',
+        borderWidth: 3,
+        backgroundColor: gradient,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#6366f1',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', callback: v => 'Rp ' + (v/1000000) + 'Jt' } }
+      }
+    }
+  });
+
+  const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+  categoryChartInstance = new Chart(ctxCategory, {
+    type: 'doughnut',
+    data: {
+      labels: ['Audio', 'Gadget', 'Sepatu', 'Laptop'],
+      datasets: [{
+        data: [25, 35, 15, 25],
+        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ec4899'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } }
+      }
+    }
+  });
+
+  const ctxAsset = document.getElementById('assetChart').getContext('2d');
+  assetChartInstance = new Chart(ctxAsset, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Nilai Aset (Rp)',
+        data: [],
+        backgroundColor: ['#ec4899', '#10b981', '#6366f1', '#f59e0b', '#8b5cf6'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', callback: v => 'Rp ' + (v/1000000) + 'Jt' } }
+      }
+    }
+  });
+
+  updateAssetChart();
+}
+
+function updateAssetChart() {
+  if (!assetChartInstance) return;
+
+  const categories = {};
+  adminProducts.forEach(p => {
+    const assetVal = p.price * p.stock;
+    categories[p.category] = (categories[p.category] || 0) + assetVal;
+  });
+
+  assetChartInstance.data.labels = Object.keys(categories);
+  assetChartInstance.data.datasets[0].data = Object.values(categories);
+  assetChartInstance.update();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  generateSKU();
+  renderTablesAndReports();
+  renderInputHistory();
+  renderCashflowTable();
+  lucide.createIcons();
+  initCharts();
+
+  // Menutup Modal jika klik di luar area modal
+  window.addEventListener('click', (e) => {
+    const modal = document.getElementById('logoutModal');
+    if (e.target === modal) {
+      closeLogoutModal();
+    }
+  });
 });
 </script>
 </body>
