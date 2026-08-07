@@ -48,117 +48,6 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
 }
 .toast-message { font-size: 13px; font-weight: 600; }
 
-/* Custom Modal Pop-Up Logout Styling */
-.custom-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.custom-modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.custom-modal-content {
-  background: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  width: 90%;
-  max-width: 380px;
-  padding: 24px;
-  text-align: center;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-  transform: scale(0.9);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.custom-modal-overlay.active .custom-modal-content {
-  transform: scale(1);
-}
-
-.custom-modal-icon {
-  width: 52px;
-  height: 52px;
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--danger);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-  border: 1px solid rgba(239, 68, 68, 0.25);
-}
-
-.custom-modal-content h3 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 8px;
-}
-
-.custom-modal-content p {
-  font-size: 13px;
-  color: var(--text-muted);
-  line-height: 1.5;
-  margin-bottom: 24px;
-}
-
-.custom-modal-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.btn-modal-cancel {
-  flex: 1;
-  padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  color: var(--text-main);
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-modal-cancel:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.btn-modal-confirm {
-  flex: 1;
-  padding: 10px 16px;
-  background: var(--danger);
-  border: none;
-  color: #fff;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  transition: all 0.2s;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-modal-confirm:hover {
-  background: #dc2626;
-}
-
 /* Sidebar Navigasi */
 .admin-sidebar {
   width: var(--sidebar-width); background: #111827; border-right: 1px solid var(--border);
@@ -346,12 +235,10 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
       <span>Laporan</span>
     </div>
   </div>
-  
-  <!-- Tombol Logout Sidebar Berbasis Href -->
-  <a href="javascript:void(0)" class="btn-logout" onclick="handleLogout()">
+  <button class="btn-logout" onclick="handleLogout()">
     <i data-lucide="log-out"></i>
     <span>Logout</span>
-  </a>
+  </button>
 </aside>
 
 <!-- Konten Utama -->
@@ -445,10 +332,12 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 2: INPUT BARANG BARU -->
     <div id="page-input-barang" class="admin-section">
       <div class="desktop-grid-2">
+        <!-- Form Utama Input Barang -->
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</span></h2>
           <form id="form-add-product" onsubmit="handleAddNewProduct(event)">
             
+            <!-- Upload Foto & SKU Generator -->
             <div style="display: grid; grid-template-columns: 120px 1fr; gap: 16px; margin-bottom: 16px;">
               <div class="upload-area" onclick="document.getElementById('product-image-input').click()">
                 <input type="file" id="product-image-input" accept="image/*" style="display:none" onchange="previewProductImage(event)">
@@ -483,6 +372,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
               </select>
             </div>
 
+            <!-- Harga Modal vs Harga Jual & Margin Calculator -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
               <div class="form-group">
                 <label>Harga Modal / HPP (Rp)</label>
@@ -494,6 +384,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
               </div>
             </div>
 
+            <!-- Widget Kalkulator Margin -->
             <div id="margin-badge-box" style="margin-bottom: 16px; padding: 10px; background: rgba(15,23,42,0.6); border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
               <span style="font-size: 12px; color: var(--text-muted);">Estimasi Margin Keuntungan:</span>
               <span id="margin-value" style="font-size: 13px; font-weight: 700; color: var(--success);">0% (Rp 0)</span>
@@ -511,6 +402,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
 
         <div>
+          <!-- Panduan Input -->
           <div class="section-card">
             <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="info" style="color:var(--primary)"></i> Panduan Input</span></h2>
             <ul style="color: var(--text-muted); font-size: 13px; line-height: 1.8; padding-left: 20px;">
@@ -521,6 +413,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
             </ul>
           </div>
 
+          <!-- Input Terakhir -->
           <div class="section-card">
             <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="clock" style="color:var(--primary)"></i> Input Terakhir</span></h2>
             <div style="font-size:13px; color:var(--text-muted);" id="last-product-box">
@@ -531,12 +424,14 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
+      <!-- Riwayat Input & Statistik Tambahan Penambahan -->
       <div class="section-card">
         <h2>
           <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="file-spreadsheet" style="color:var(--primary)"></i> Riwayat Penambahan Barang (Terbaru)</span>
           <button class="btn-action-small" onclick="triggerImportCSV()"><i data-lucide="file-up" style="width:14px;"></i> Import Massal (CSV)</button>
         </h2>
         
+        <!-- Statistik Ringkasan Penambahan Cepat -->
         <div class="stats-grid" style="margin-bottom: 16px;">
           <div class="stat-box success">
             <label>Penambahan Hari Ini</label>
@@ -616,12 +511,15 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
+      <!-- SECTION FITUR PENDUKUNG DI AREA KOSONG -->
       <div class="desktop-grid-2">
+        <!-- Widget 1: Low Stock Alert -->
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="alert-triangle" style="color:var(--warning)"></i> Peringatan Stok Menipis (&lt; 10 Pcs)</span></h2>
           <div id="low-stock-alert-container"></div>
         </div>
 
+        <!-- Widget 2: Best Seller -->
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="flame" style="color:var(--accent)"></i> Top 3 Produk Terlaris</span></h2>
           <div class="activity-list" id="best-seller-container"></div>
@@ -629,11 +527,13 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
       </div>
 
       <div class="desktop-grid-2">
+        <!-- Widget 3: Stock Audit Log -->
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="history" style="color:var(--primary)"></i> Riwayat Perubahan Stok (Audit Log)</span></h2>
           <div class="activity-list" id="stock-audit-log-container"></div>
         </div>
 
+        <!-- Widget 4: Quick Actions & Utilities -->
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="wrench" style="color:var(--primary)"></i> Utilitas & Aksi Masal</span></h2>
           <div style="display:flex; flex-direction:column; gap:10px;">
@@ -695,6 +595,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
+      <!-- FITUR BARU: RIWAYAT ARUS KAS (PENDAPATAN & PENGELUARAN) -->
       <div class="section-card">
         <h2>
           <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="arrow-left-right" style="color:var(--primary)"></i> Riwayat Pengeluaran & Pendapatan</span>
@@ -710,6 +611,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           <p><strong style="color: var(--danger);">Pengeluaran:</strong> Arus uang keluar untuk biaya operasional, restock persediaan barang, serta pemeliharaan sistem/gudang.</p>
         </div>
 
+        <!-- Form Tambah Catatan Keuangan -->
         <form onsubmit="handleAddCashflow(event)" style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
           <select id="cf-type" style="padding: 8px 12px; background: rgba(15,23,42,0.8); border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px;" required>
             <option value="Pendapatan">Pendapatan</option>
@@ -783,22 +685,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <span>&copy; 2026 NexaStore Admin Management System. All rights reserved.</span>
     <span>Version 2.5.0</span>
   </footer>
-</div>
-
-<!-- Custom Modal Pop-Up Confirmation Logout -->
-<div id="logoutModal" class="custom-modal-overlay">
-  <div class="custom-modal-content">
-    <div class="custom-modal-icon">
-      <i data-lucide="log-out"></i>
-    </div>
-    <h3>Konfirmasi Logout</h3>
-    <p>Apakah Anda yakin ingin keluar dari sistem admin NexaStore?</p>
-    <div class="custom-modal-actions">
-      <button class="btn-modal-cancel" onclick="closeLogoutModal()">Batal</button>
-      <!-- Tombol Konfirmasi Logout Berbasis Href ke login.html -->
-      <a href="login.html" class="btn-modal-confirm">Ya, Keluar</a>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -918,20 +804,12 @@ function switchAdminTab(tabName, element, iconName, titleText) {
   lucide.createIcons();
 }
 
-// Buka Modal Logout
 function handleLogout() {
-  const modal = document.getElementById('logoutModal');
-  if (modal) {
-    modal.classList.add('active');
-    lucide.createIcons();
-  }
-}
-
-// Tutup Modal Logout
-function closeLogoutModal() {
-  const modal = document.getElementById('logoutModal');
-  if (modal) {
-    modal.classList.remove('active');
+  if (confirm("Apakah Anda yakin ingin keluar dari sistem admin?")) {
+    showToast('Berhasil logout!');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   }
 }
 
@@ -1035,6 +913,7 @@ function renderInputHistory() {
     </tr>
   `).join('');
 
+  // Update Statistik Tambahan Penambahan
   const totalValueAdded = inputHistory.reduce((acc, item) => acc + (item.price * item.stock), 0);
   document.getElementById('stat-added-today').textContent = `${inputHistory.length} Transaksi`;
   document.getElementById('stat-added-value').textContent = `Rp ${totalValueAdded.toLocaleString('id-ID')}`;
@@ -1042,6 +921,7 @@ function renderInputHistory() {
 
 // Render Fitur Tambahan
 function renderDaftarBarangWidgets() {
+  // Low Stock Alert
   const lowStockContainer = document.getElementById('low-stock-alert-container');
   if (lowStockContainer) {
     const lowStockItems = adminProducts
@@ -1065,6 +945,7 @@ function renderDaftarBarangWidgets() {
     }
   }
 
+  // Best Seller
   const bestSellerContainer = document.getElementById('best-seller-container');
   if (bestSellerContainer) {
     const sortedBest = [...adminProducts].sort((a, b) => b.sold - a.sold).slice(0, 3);
@@ -1079,6 +960,7 @@ function renderDaftarBarangWidgets() {
     `).join('');
   }
 
+  // Stock Audit Log
   const auditContainer = document.getElementById('stock-audit-log-container');
   if (auditContainer) {
     auditContainer.innerHTML = auditLogs.slice(0, 4).map(log => `
@@ -1386,14 +1268,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCashflowTable();
   lucide.createIcons();
   initCharts();
-
-  // Menutup Modal jika klik di luar area modal
-  window.addEventListener('click', (e) => {
-    const modal = document.getElementById('logoutModal');
-    if (e.target === modal) {
-      closeLogoutModal();
-    }
-  });
 });
 </script>
 </body>
