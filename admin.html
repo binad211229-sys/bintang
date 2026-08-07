@@ -78,7 +78,13 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
 .btn-logout:hover { background: #ef4444; color: #fff; }
 
 /* Main Content Area */
-.admin-main { flex: 1; margin-left: var(--sidebar-width); display: flex; flex-direction: column; min-height: 100vh; }
+.admin-main { 
+  flex: 1; 
+  margin-left: var(--sidebar-width); 
+  display: flex; 
+  flex-direction: column; 
+  min-height: 100vh; 
+}
 header {
   background: rgba(15, 23, 42, 0.9); border-bottom: 1px solid var(--border);
   padding: 18px 24px; position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px);
@@ -100,30 +106,30 @@ header {
   padding-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
 
-/* Grid System untuk Desktop Layout */
-.desktop-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
+/* Footer Styling untuk Menutup Space Bawah */
+footer {
+  margin-top: auto;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.8);
+  color: var(--text-muted);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.desktop-grid-3 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
+
+/* Grid System Layout */
+.desktop-grid-2 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.desktop-grid-3 { display: grid; grid-template-columns: 1fr; gap: 24px; }
 
 @media (min-width: 1024px) {
   .desktop-grid-2 { grid-template-columns: 2fr 1fr; }
   .desktop-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-  .desktop-grid-equal { grid-template-columns: 1fr 1fr; }
 }
 
 /* Stats Grid Layout */
-.stats-grid { 
-  display: grid; 
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 16px; 
-}
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 
 .stat-box {
   background: rgba(15, 23, 42, 0.6); border-left: 4px solid var(--primary);
@@ -164,26 +170,17 @@ table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
 th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 600; }
 
-.badge {
-  padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block;
-}
+.badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block; }
 .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
 .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-.badge-info { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
 
-.btn-icon {
-  background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.2s;
-}
+.btn-icon { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; }
 .btn-icon:hover { color: #fff; background: rgba(255,255,255,0.1); }
 
 @media (max-width: 600px) {
   :root { --sidebar-width: 70px; }
-  .brand-title { font-size: 12px; padding: 0 0 16px; justify-content: center; }
-  .brand-title span { display: none; }
-  .nav-item { padding: 12px; justify-content: center; }
-  .nav-item span { display: none; }
-  .btn-logout { padding: 10px; justify-content: center; }
-  .btn-logout span { display: none; }
+  .brand-title span, .nav-item span, .btn-logout span { display: none; }
+  .nav-item, .btn-logout { justify-content: center; padding: 12px; }
   .stats-grid { grid-template-columns: 1fr; }
 }
 </style>
@@ -216,7 +213,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
       <span>Laporan</span>
     </div>
   </div>
-  <a href="login.html" class="btn-logout">
+  <a href="#" class="btn-logout">
     <i data-lucide="log-out"></i>
     <span>Logout</span>
   </a>
@@ -257,7 +254,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
-      <!-- Layout 2 Kolom untuk Desktop -->
       <div class="desktop-grid-2">
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="line-chart" style="color:var(--primary)"></i> Grafik Pemasukan (2026)</span></h2>
@@ -288,24 +284,9 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>#TRX-9081</td>
-                  <td>Budi Santoso</td>
-                  <td>Rp 2.199.000</td>
-                  <td><span class="badge badge-success">Selesai</span></td>
-                </tr>
-                <tr>
-                  <td>#TRX-9080</td>
-                  <td>Siti Rahma</td>
-                  <td>Rp 899.000</td>
-                  <td><span class="badge badge-warning">Proses</span></td>
-                </tr>
-                <tr>
-                  <td>#TRX-9079</td>
-                  <td>Andi Wijaya</td>
-                  <td>Rp 12.500.000</td>
-                  <td><span class="badge badge-success">Selesai</span></td>
-                </tr>
+                <tr><td>#TRX-9081</td><td>Budi Santoso</td><td>Rp 2.199.000</td><td><span class="badge badge-success">Selesai</span></td></tr>
+                <tr><td>#TRX-9080</td><td>Siti Rahma</td><td>Rp 899.000</td><td><span class="badge badge-warning">Proses</span></td></tr>
+                <tr><td>#TRX-9079</td><td>Andi Wijaya</td><td>Rp 12.500.000</td><td><span class="badge badge-success">Selesai</span></td></tr>
               </tbody>
             </table>
           </div>
@@ -335,7 +316,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <div id="page-input-barang" class="admin-section">
       <div class="desktop-grid-2">
         <div class="section-card">
-          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</span></h2>
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="plus-circle" style="color:var(--primary)"></i> Form Input Barang</span></h2>
           <form id="form-add-product" onsubmit="handleAddNewProduct(event)">
             <div class="form-group">
               <label>Nama Barang</label>
@@ -377,10 +358,41 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           <div class="section-card">
             <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="clock" style="color:var(--primary)"></i> Input Terakhir</span></h2>
             <div style="font-size:13px; color:var(--text-muted);">
-              <p><b>Laptop Gaming Nexa Pro</b></p>
+              <p><b style="color:#fff;">Laptop Gaming Nexa Pro</b></p>
               <p style="font-size:12px; margin-top:4px;">Kategori: Laptop | Stok: 10 Pcs</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- KONTEN TAMBAHAN HALAMAN INPUT BARANG AGAR TIDAK KOSONG -->
+      <div class="desktop-grid-2">
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="history" style="color:var(--primary)"></i> Riwayat Penambahan Barang Terbaru</span></h2>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Nama Barang</th>
+                  <th>Kategori</th>
+                  <th>Jumlah Stok</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>07 Ags 2026</td><td>Laptop Gaming Nexa Pro</td><td>Laptop</td><td>10 Pcs</td></tr>
+                <tr><td>06 Ags 2026</td><td>Runner Pro V2</td><td>Sepatu</td><td>12 Pcs</td></tr>
+                <tr><td>05 Ags 2026</td><td>NexaWatch Series X</td><td>Gadget</td><td>15 Pcs</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="file-text" style="color:var(--primary)"></i> Catatan Manajemen Stok</span></h2>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">
+            Barang yang baru diinput akan langsung muncul di katalog publik dan laporan persediaan aset toko secara otomatis.
+          </p>
         </div>
       </div>
     </div>
@@ -409,6 +421,30 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
             </thead>
             <tbody id="admin-product-table"></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- KONTEN TAMBAHAN HALAMAN DAFTAR BARANG AGAR TIDAK KOSONG -->
+      <div class="desktop-grid-2">
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="bar-chart-2" style="color:var(--primary)"></i> Distribusi Stok per Kategori</span></h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <label>Gadget & Laptop</label>
+              <div class="amount" style="font-size:16px;">25 Unit</div>
+            </div>
+            <div class="stat-box success">
+              <label>Audio & Aksesoris</label>
+              <div class="amount" style="font-size:16px;">20 Unit</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="alert-triangle" style="color:var(--warning)"></i> Perhatian Stok</span></h2>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6;">
+            Produk dengan stok di bawah 10 unit ditandai dengan badge peringatan kuning di menu laporan.
+          </p>
         </div>
       </div>
     </div>
@@ -441,7 +477,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="shield-check" style="color:var(--primary)"></i> Performansi Stok</span></h2>
           <div style="font-size:13px; color:var(--text-muted); display:flex; flex-direction:column; gap:12px;">
             <div>
-              <div style="display:flex; justify-shadow:space-between; justify-content:space-between; margin-bottom:4px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                 <span>Ketersediaan Stok</span>
                 <span style="color:#fff; font-weight:700;">85%</span>
               </div>
@@ -471,7 +507,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
             <div class="amount" id="stat-laporan-total-unit">45 Pcs</div>
           </div>
           <div class="stat-box warning">
-            <label>Stok Menipis (< 10 Pcs)</label>
+            <label>Stok Menipis (&lt; 10 Pcs)</label>
             <div class="amount" id="stat-laporan-stok-menipis" style="color: var(--warning);">1 Item</div>
           </div>
           <div class="stat-box accent" style="grid-column: span 2;">
@@ -494,9 +530,23 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           </table>
         </div>
       </div>
+
+      <!-- KONTEN TAMBAHAN HALAMAN LAPORAN AGAR TIDAK KOSONG -->
+      <div class="section-card">
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="bar-chart-3" style="color:var(--primary)"></i> Visualisasi Aset Stok per Kategori</span></h2>
+        <div class="chart-container" style="height:220px;">
+          <canvas id="assetChart"></canvas>
+        </div>
+      </div>
     </div>
 
   </main>
+
+  <!-- Footer Menutup Bagian Bawah Layar -->
+  <footer>
+    <span>&copy; 2026 NexaStore Admin System. All rights reserved.</span>
+    <span>v2.4.0</span>
+  </footer>
 </div>
 
 <script>
@@ -669,8 +719,29 @@ function initCharts() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } }
+      plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12 } } }
+    }
+  });
+
+  const ctxAsset = document.getElementById('assetChart').getContext('2d');
+  new Chart(ctxAsset, {
+    type: 'bar',
+    data: {
+      labels: ['Laptop', 'Gadget', 'Audio', 'Sepatu'],
+      datasets: [{
+        label: 'Nilai Aset (Rp)',
+        data: [125000000, 32985000, 11600000, 10788000],
+        backgroundColor: ['#ec4899', '#10b981', '#6366f1', '#f59e0b'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', callback: v => 'Rp ' + (v/1000000) + 'Jt' } }
       }
     }
   });
