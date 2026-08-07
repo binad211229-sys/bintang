@@ -82,7 +82,7 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
 header {
   background: rgba(15, 23, 42, 0.9); border-bottom: 1px solid var(--border);
   padding: 18px 24px; position: sticky; top: 0; z-index: 90; backdrop-filter: blur(8px);
-  display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: space-between;
 }
 .header-title { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
 .header-title i { width: 20px; height: 20px; color: var(--primary); }
@@ -97,10 +97,10 @@ header {
 }
 .section-card h2 {
   font-size: 18px; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--border);
-  padding-bottom: 12px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
 
-/* Stats Grid Layout: 2 Baris x 2 Kolom */
+/* Stats Grid Layout */
 .stats-grid { 
   display: grid; 
   grid-template-columns: repeat(2, 1fr); 
@@ -146,6 +146,12 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 }
 .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
 .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+.badge-info { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
+
+.btn-icon {
+  background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.2s;
+}
+.btn-icon:hover { color: #fff; background: rgba(255,255,255,0.1); }
 
 @media (max-width: 600px) {
   :root { --sidebar-width: 70px; }
@@ -207,7 +213,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 1: RINGKASAN UTAMA -->
     <div id="page-overview" class="admin-section active">
       <div class="section-card">
-        <h2><i data-lucide="user-check" style="color:var(--primary)"></i> Selamat Datang, Admin</h2>
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="user-check" style="color:var(--primary)"></i> Selamat Datang, Admin</span></h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Pilih menu di sidebar sebelah kiri untuk mengelola toko online Anda.</p>
         
         <div class="stats-grid">
@@ -232,9 +238,40 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 
       <!-- Card Grafik Pemasukan -->
       <div class="section-card">
-        <h2><i data-lucide="line-chart" style="color:var(--primary)"></i> Grafik Pemasukan (2026)</h2>
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="line-chart" style="color:var(--primary)"></i> Grafik Pemasukan (2026)</span></h2>
         <div class="chart-container">
           <canvas id="incomeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- FITUR TAMBAHAN HALAMAN 1: Transaksi Terakhir -->
+      <div class="section-card">
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="shopping-cart" style="color:var(--primary)"></i> Transaksi Terbaru</span></h2>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Transaksi</th>
+                <th>Pelanggan</th>
+                <th>Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#TRX-9081</td>
+                <td>Budi Santoso</td>
+                <td>Rp 2.199.000</td>
+                <td><span class="badge badge-success">Selesai</span></td>
+              </tr>
+              <tr>
+                <td>#TRX-9080</td>
+                <td>Siti Rahma</td>
+                <td>Rp 899.000</td>
+                <td><span class="badge badge-warning">Proses</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -242,7 +279,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 2: INPUT BARANG BARU -->
     <div id="page-input-barang" class="admin-section">
       <div class="section-card">
-        <h2><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</h2>
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</span></h2>
         <form id="form-add-product" onsubmit="handleAddNewProduct(event)">
           <div class="form-group">
             <label>Nama Barang</label>
@@ -270,12 +307,30 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           </button>
         </form>
       </div>
+
+      <!-- FITUR TAMBAHAN HALAMAN 2: Panduan & Ketentuan -->
+      <div class="section-card">
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="info" style="color:var(--primary)"></i> Ketentuan Input Barang</span></h2>
+        <ul style="color: var(--text-muted); font-size: 13px; line-height: 1.8; padding-left: 20px;">
+          <li>Nama barang tidak boleh duplikat dengan produk yang aktif.</li>
+          <li>Harga diinput dalam mata uang Rupiah tanpa tanda titik/koma.</li>
+          <li>Stok awal minimal 1 pcs saat penginputan baru.</li>
+        </ul>
+      </div>
     </div>
 
     <!-- PAGE 3: DAFTAR BARANG -->
     <div id="page-daftar-barang" class="admin-section">
       <div class="section-card">
-        <h2><i data-lucide="package" style="color:var(--primary)"></i> Daftar Barang (View)</h2>
+        <h2>
+          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="package" style="color:var(--primary)"></i> Daftar Barang (View)</span>
+        </h2>
+        
+        <!-- FITUR TAMBAHAN HALAMAN 3: Filter & Cari -->
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+          <input type="text" id="search-input" placeholder="Cari barang..." onkeyup="filterProducts()" style="padding:8px 12px; background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:6px; color:#fff; flex:1;">
+        </div>
+
         <div class="table-responsive">
           <table>
             <thead>
@@ -284,6 +339,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
                 <th>Kategori</th>
                 <th>Harga</th>
                 <th>Stok</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="admin-product-table"></tbody>
@@ -294,9 +350,12 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 
     <!-- PAGE 4: LAPORAN PENJUALAN & LAPORAN STOK BARANG -->
     <div id="page-laporan-keuangan" class="admin-section">
-      <!-- Laporan Keuangan Card -->
       <div class="section-card">
-        <h2><i data-lucide="trending-up" style="color:var(--primary)"></i> Laporan Penjualan & Keuangan</h2>
+        <h2>
+          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="trending-up" style="color:var(--primary)"></i> Laporan Penjualan & Keuangan</span>
+          <!-- FITUR TAMBAHAN HALAMAN 4: Export Button -->
+          <button onclick="showToast('Laporan berhasil diunduh!')" style="background:var(--primary); border:none; color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; display:flex; align-items:center; gap:5px;"><i data-lucide="download" style="width:14px;"></i> Export</button>
+        </h2>
         <div class="stats-grid">
           <div class="stat-box">
             <label>Laporan Harian</label>
@@ -313,11 +372,9 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
-      <!-- Laporan Stok Card -->
       <div class="section-card">
-        <h2><i data-lucide="boxes" style="color:var(--primary)"></i> Laporan Stok Barang</h2>
+        <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="boxes" style="color:var(--primary)"></i> Laporan Stok Barang</span></h2>
         
-        <!-- Summary Cards Stok -->
         <div class="stats-grid" style="margin-bottom: 24px;">
           <div class="stat-box">
             <label>Total Unit Stok</label>
@@ -333,7 +390,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           </div>
         </div>
 
-        <!-- Tabel Rincian Stok -->
         <div class="table-responsive">
           <table>
             <thead>
@@ -393,24 +449,36 @@ function switchAdminTab(tabName, element, iconName, titleText) {
   }
 }
 
-function renderTablesAndReports() {
+function filterProducts() {
+  const query = document.getElementById('search-input').value.toLowerCase();
+  const filtered = adminProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+  renderTablesAndReports(filtered);
+}
+
+function deleteProduct(index) {
+  adminProducts.splice(index, 1);
+  renderTablesAndReports();
+  showToast('Barang berhasil dihapus!');
+}
+
+function renderTablesAndReports(productsToRender = adminProducts) {
   const tbody = document.getElementById('admin-product-table');
   const laporanTbody = document.getElementById('laporan-stok-table');
   const totalStat = document.getElementById('stat-total-produk');
   
   if (tbody) {
-    tbody.innerHTML = adminProducts.map(p => `
+    tbody.innerHTML = productsToRender.map((p, idx) => `
       <tr>
         <td style="font-weight: 600; color: #fff;">${p.name}</td>
         <td><span style="font-size: 11px; padding: 2px 8px; background: rgba(99,102,241,0.2); color: var(--primary); border-radius: 4px; font-weight: 700;">${p.category}</span></td>
         <td>Rp ${p.price.toLocaleString('id-ID')}</td>
         <td>${p.stock} pcs</td>
+        <td><button class="btn-icon" onclick="deleteProduct(${idx})"><i data-lucide="trash-2" style="width:16px; color:var(--danger)"></i></button></td>
       </tr>
     `).join('');
   }
   if (totalStat) totalStat.textContent = adminProducts.length + ' Pcs';
 
-  // Kalkulasi & Render Laporan Stok
   let totalUnits = 0;
   let totalAssetValue = 0;
   let lowStockCount = 0;
@@ -443,6 +511,7 @@ function renderTablesAndReports() {
     document.getElementById('stat-laporan-stok-menipis').textContent = lowStockCount + ' Item';
     document.getElementById('stat-laporan-nilai-aset').textContent = 'Rp ' + totalAssetValue.toLocaleString('id-ID');
   }
+  lucide.createIcons();
 }
 
 function handleAddNewProduct(e) {
