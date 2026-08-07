@@ -15,56 +15,41 @@
   --accent: #ec4899;
   --success: #10b981;
   --border: rgba(255, 255, 255, 0.1);
+  --sidebar-width: 240px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; }
 
-/* Header Admin */
-header {
-  background: rgba(15, 23, 42, 0.9);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 24px;
+/* Sidebar Navigasi - Pinggir Kiri (Fixed Left) */
+.admin-sidebar {
+  width: var(--sidebar-width);
+  background: #111827;
+  border-right: 1px solid var(--border);
+  padding: 20px 12px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
+  flex-direction: column;
+  position: fixed;
   top: 0;
+  bottom: 0;
+  left: 0;
   z-index: 100;
 }
-.header-title { font-size: 20px; font-weight: 800; color: var(--primary); }
-.btn-logout {
-  background: #ef4444; color: white; border: none; padding: 8px 16px;
-  border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px;
-}
-.btn-logout:hover { background: #dc2626; }
 
-/* Layout Utama Admin */
-.admin-wrapper { display: flex; flex: 1; flex-direction: column; }
-
-@media (min-width: 768px) {
-  .admin-wrapper { flex-direction: row; }
-}
-
-/* Navigation Menu / Sidebar */
-.admin-sidebar {
-  width: 100%;
-  background: #111827;
+.brand-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary);
+  padding: 0 12px 20px;
   border-bottom: 1px solid var(--border);
-  padding: 12px;
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
+  margin-bottom: 20px;
 }
 
-@media (min-width: 768px) {
-  .admin-sidebar {
-    width: 240px;
-    flex-direction: column;
-    border-bottom: none;
-    border-right: 1px solid var(--border);
-    padding: 20px 12px;
-  }
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
 }
 
 .nav-item {
@@ -74,7 +59,6 @@ header {
   font-size: 14px;
   border-radius: 8px;
   cursor: pointer;
-  white-space: nowrap;
   transition: all 0.2s;
   display: flex;
   align-items: center;
@@ -83,8 +67,36 @@ header {
 .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
 .nav-item.active { background: var(--primary); color: #fff; }
 
-/* Main Content Area */
-.admin-content { flex: 1; padding: 24px 5%; overflow-y: auto; }
+.btn-logout {
+  background: #ef4444; color: white; border: none; padding: 12px;
+  border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; 
+  font-size: 13px; text-align: center; width: 100%; display: block; margin-top: auto;
+}
+.btn-logout:hover { background: #dc2626; }
+
+/* Main Area - Berada di Sebelah Kanan Sidebar */
+.admin-main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header Topbar */
+header {
+  background: rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  backdrop-filter: blur(8px);
+}
+.header-title { font-size: 18px; font-weight: 700; color: #fff; }
+
+/* Area Konten Utama */
+.admin-content { padding: 24px; flex: 1; }
 
 /* Section Page */
 .admin-section { display: none; }
@@ -131,32 +143,46 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 .stat-box.accent { border-left-color: var(--accent); }
 .stat-box label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .stat-box .amount { font-size: 22px; font-weight: 800; color: #fff; margin-top: 6px; }
+
+/* Penyesuaian Ponsel / Mobile */
+@media (max-width: 600px) {
+  :root { --sidebar-width: 70px; }
+  .brand-title { font-size: 12px; padding: 0 0 16px; text-align: center; }
+  .nav-item { padding: 12px; justify-content: center; font-size: 18px; }
+  .nav-item span { display: none; }
+  .btn-logout { font-size: 11px; padding: 8px 4px; }
+  .btn-logout span { display: none; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-title">Dashboard Admin NexaStore</div>
-  <a href="login.html" class="btn-logout">Logout</a>
-</header>
+<!-- Sidebar Navigasi Pinggir Kiri -->
+<aside class="admin-sidebar">
+  <div class="brand-title">NEXA ADMIN</div>
+  <div class="sidebar-menu">
+    <div class="nav-item active" onclick="switchAdminTab('overview', this)">📊 <span>Ringkasan</span></div>
+    <div class="nav-item" onclick="switchAdminTab('input-barang', this)">➕ <span>Input Barang</span></div>
+    <div class="nav-item" onclick="switchAdminTab('daftar-barang', this)">📦 <span>Daftar Barang</span></div>
+    <div class="nav-item" onclick="switchAdminTab('laporan-keuangan', this)">💰 <span>Laporan</span></div>
+  </div>
+  <a href="login.html" class="btn-logout">🚪 <span>Logout</span></a>
+</aside>
 
-<div class="admin-wrapper">
-  <!-- Navigasi Menu / Sidebar -->
-  <aside class="admin-sidebar">
-    <div class="nav-item active" onclick="switchAdminTab('overview')">📊 Ringkasan</div>
-    <div class="nav-item" onclick="switchAdminTab('input-barang')">➕ Input Barang Baru</div>
-    <div class="nav-item" onclick="switchAdminTab('daftar-barang')">📦 Daftar Barang</div>
-    <div class="nav-item" onclick="switchAdminTab('laporan-keuangan')">💰 Laporan Keuangan</div>
-  </aside>
+<!-- Konten Utama (Sebelah Kanan Sidebar) -->
+<div class="admin-main">
+  
+  <header>
+    <div class="header-title" id="page-header-title">📊 Ringkasan Dashboard</div>
+  </header>
 
-  <!-- Area Konten Utama -->
   <main class="admin-content">
     
     <!-- PAGE 1: RINGKASAN UTAMA -->
     <div id="page-overview" class="admin-section active">
       <div class="section-card">
         <h2>📊 Selamat Datang, Admin</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Pilih menu di samping/atas untuk mengelola data toko online Anda.</p>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Pilih menu di sidebar sebelah kiri untuk mengelola toko online Anda.</p>
         <div class="stats-grid">
           <div class="stat-box">
             <label>Total Produk</label>
@@ -252,7 +278,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 </div>
 
 <script>
-// Data Barang Sementara
+// Data Barang
 let adminProducts = [
   { name: 'Studio ANC Wireless', category: 'Audio', price: 1450000, stock: 8 },
   { name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15 },
@@ -260,19 +286,22 @@ let adminProducts = [
   { name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10 }
 ];
 
-// Fungsi untuk berpindah tab / halaman
-function switchAdminTab(tabName) {
+// Switch Tab Menu Sidebar
+function switchAdminTab(tabName, element) {
   // Sembunyikan semua section
   document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
-  // Nonaktifkan semua style tombol menu
+  // Hapus status active dari menu sidebar
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
-  // Tampilkan section yang dipilih
+  // Tampilkan halaman target
   const targetPage = document.getElementById('page-' + tabName);
   if (targetPage) targetPage.classList.add('active');
 
-  // Beri warna aktif pada menu yang ditekan
-  event.currentTarget.classList.add('active');
+  // Set menu terpilih
+  if (element) {
+    element.classList.add('active');
+    document.getElementById('page-header-title').textContent = element.textContent.trim();
+  }
 }
 
 // Render data tabel barang
@@ -296,7 +325,7 @@ function renderTable() {
   }
 }
 
-// Handle Form Input Barang Baru
+// Form Input Barang Baru
 function handleAddNewProduct(e) {
   e.preventDefault();
   
@@ -305,23 +334,19 @@ function handleAddNewProduct(e) {
   const price = parseFloat(document.getElementById('admin-price').value);
   const stock = parseInt(document.getElementById('admin-stock').value);
 
-  // Tambah ke array
   adminProducts.push({ name, category, price, stock });
-  
-  // Render ulang tabel & reset form
   renderTable();
   document.getElementById('form-add-product').reset();
 
   alert('Barang berhasil disimpan!');
   
-  // Pindah otomatis ke tab daftar barang
-  const daftarBarangNav = document.querySelectorAll('.nav-item')[2];
-  if (daftarBarangNav) {
-    daftarBarangNav.click();
+  // Berpindah ke menu Daftar Barang
+  const daftarBarangBtn = document.querySelectorAll('.nav-item')[2];
+  if (daftarBarangBtn) {
+    switchAdminTab('daftar-barang', daftarBarangBtn);
   }
 }
 
-// Inisialisasi saat pertama kali dimuat
 document.addEventListener('DOMContentLoaded', () => {
   renderTable();
 });
