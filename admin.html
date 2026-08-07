@@ -346,7 +346,8 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
       <span>Laporan</span>
     </div>
   </div>
-  <!-- Tombol Sidebar Logout Membuka Modal Konfirmasi -->
+  
+  <!-- Tombol Logout Sidebar Berbasis Href -->
   <a href="javascript:void(0)" class="btn-logout" onclick="handleLogout()">
     <i data-lucide="log-out"></i>
     <span>Logout</span>
@@ -794,8 +795,8 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <p>Apakah Anda yakin ingin keluar dari sistem admin NexaStore?</p>
     <div class="custom-modal-actions">
       <button class="btn-modal-cancel" onclick="closeLogoutModal()">Batal</button>
-      <!-- Tag <a> tersambung langsung ke admin.html -->
-      <a href="admin.html" class="btn-modal-confirm">Ya, Keluar</a>
+      <!-- Tombol Konfirmasi Logout Berbasis Href ke login.html -->
+      <a href="login.html" class="btn-modal-confirm">Ya, Keluar</a>
     </div>
   </div>
 </div>
@@ -917,7 +918,7 @@ function switchAdminTab(tabName, element, iconName, titleText) {
   lucide.createIcons();
 }
 
-// Buka Modal Logout Estetik
+// Buka Modal Logout
 function handleLogout() {
   const modal = document.getElementById('logoutModal');
   if (modal) {
