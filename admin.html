@@ -175,6 +175,14 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 .btn-icon { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.2s; }
 .btn-icon:hover { color: #fff; background: rgba(255,255,255,0.1); }
 
+/* Quick Action & Audit Log Extra Styles */
+.btn-action-small {
+  padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: #fff; border-radius: 6px; cursor: pointer; font-size: 12px; display: inline-flex;
+  align-items: center; gap: 6px; transition: all 0.2s;
+}
+.btn-action-small:hover { background: var(--primary); border-color: var(--primary); }
+
 @media (max-width: 600px) {
   :root { --sidebar-width: 70px; }
   .brand-title { font-size: 12px; padding: 0 0 16px; justify-content: center; }
@@ -431,6 +439,40 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           </div>
         </div>
       </div>
+
+      <!-- BARU: SECTION FITUR PENDUKUNG DI AREA KOSONG -->
+      <div class="desktop-grid-2">
+        <!-- Widget 1: Low Stock Alert -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="alert-triangle" style="color:var(--warning)"></i> Peringatan Stok Menipis (&lt; 10 Pcs)</span></h2>
+          <div id="low-stock-alert-container"></div>
+        </div>
+
+        <!-- Widget 2: Best Seller -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="flame" style="color:var(--accent)"></i> Top 3 Produk Terlaris</span></h2>
+          <div class="activity-list" id="best-seller-container"></div>
+        </div>
+      </div>
+
+      <div class="desktop-grid-2">
+        <!-- Widget 3: Stock Audit Log -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="history" style="color:var(--primary)"></i> Riwayat Perubahan Stok (Audit Log)</span></h2>
+          <div class="activity-list" id="stock-audit-log-container"></div>
+        </div>
+
+        <!-- Widget 4: Quick Actions & Utilities -->
+        <div class="section-card">
+          <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="wrench" style="color:var(--primary)"></i> Utilitas & Aksi Masal</span></h2>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="btn-action-small" onclick="exportProductsCSV()"><i data-lucide="file-spreadsheet" style="width:16px;"></i> Export Data Produk (CSV)</button>
+            <button class="btn-action-small" onclick="triggerImportCSV()"><i data-lucide="upload" style="width:16px;"></i> Import Stok dari File</button>
+            <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleImportCSV(event)">
+            <button class="btn-action-small" onclick="printBarcodes()"><i data-lucide="qr-code" style="width:16px;"></i> Cetak Barcode / Label Harga</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- PAGE 4: LAPORAN PENJUALAN & STOK -->
@@ -577,10 +619,10 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 <script>
 // Data State Global
 let adminProducts = [
-  { name: 'Studio ANC Wireless', category: 'Audio', price: 1450000, stock: 8 },
-  { name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15 },
-  { name: 'Runner Pro V2', category: 'Sepatu', price: 899000, stock: 12 },
-  { name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10 }
+  { name: 'Studio ANC Wireless', category: 'Audio', price: 1450000, stock: 8, sold: 142 },
+  { name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15, sold: 98 },
+  { name: 'Runner Pro V2', category: 'Sepatu', price: 899000, stock: 12, sold: 64 },
+  { name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10, sold: 35 }
 ];
 
 let inputHistory = [
@@ -594,6 +636,12 @@ let cashflowRecords = [
   { date: '07 Ags 2026', type: 'Pengeluaran', desc: 'Restock Produk Audio (Studio ANC)', amount: 8000000 },
   { date: '06 Ags 2026', type: 'Pendapatan', desc: 'Penjualan TRX-9079 (Andi Wijaya)', amount: 12500000 },
   { date: '05 Ags 2026', type: 'Pengeluaran', desc: 'Bayar Tagihan Listrik & Internet Server Gudang', amount: 1200000 }
+];
+
+let auditLogs = [
+  { time: '08:10 WIB', user: 'Admin Main', action: '+10 Pcs Laptop Gaming Nexa Pro' },
+  { time: 'Kemarin', user: 'Admin Main', action: '-2 Pcs Studio ANC Wireless (Penjualan)' },
+  { time: '05 Ags 2026', user: 'Admin Gudang', action: 'Penyesuaian Stok NexaWatch Series X (+15 Pcs)' }
 ];
 
 let incomeChartInstance = null;
@@ -629,7 +677,6 @@ function switchAdminTab(tabName, element, iconName, titleText) {
   if (element) {
     element.classList.add('active');
   } else {
-    // Apabila dipanggil dari script tanpa kirim 'this'
     const items = document.querySelectorAll('.sidebar-menu .nav-item');
     if (tabName === 'overview') items[0]?.classList.add('active');
     if (tabName === 'input-barang') items[1]?.classList.add('active');
@@ -670,9 +717,31 @@ function applyQuickFilter(catName) {
 // Hapus Produk
 function deleteProduct(index) {
   const deletedName = adminProducts[index].name;
+  
+  // Log Perubahan
+  auditLogs.unshift({
+    time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + ' WIB',
+    user: 'Admin Main',
+    action: `Menghapus produk "${deletedName}"`
+  });
+
   adminProducts.splice(index, 1);
   renderTablesAndReports();
   showToast(`Barang "${deletedName}" telah dihapus!`);
+}
+
+// Tambah Cepat Stok dari Widget Alert
+function quickAddStock(index, amount) {
+  adminProducts[index].stock += amount;
+  
+  auditLogs.unshift({
+    time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + ' WIB',
+    user: 'Admin Main',
+    action: `Restock +${amount} Pcs ${adminProducts[index].name}`
+  });
+
+  renderTablesAndReports();
+  showToast(`Stok ${adminProducts[index].name} berhasil ditambah +${amount}!`);
 }
 
 // Tambah Produk Baru via Form
@@ -683,18 +752,22 @@ function handleAddNewProduct(e) {
   const price = parseFloat(document.getElementById('admin-price').value);
   const stock = parseInt(document.getElementById('admin-stock').value);
 
-  const newProduct = { name, category, price, stock };
+  const newProduct = { name, category, price, stock, sold: 0 };
   adminProducts.push(newProduct);
   
-  // Catat Ke Riwayat Input
   const now = new Date();
   const timeStr = `Hari ini, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   inputHistory.unshift({ time: timeStr, name, category, price, stock });
 
+  auditLogs.unshift({
+    time: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ' WIB',
+    user: 'Admin Main',
+    action: `Menambahkan produk baru "${name}" (+${stock} Pcs)`
+  });
+
   renderTablesAndReports();
   renderInputHistory();
   
-  // Update Tampilan Kotak "Input Terakhir"
   document.getElementById('last-product-box').innerHTML = `
     <p><b style="color:#fff;">${name}</b></p>
     <p style="font-size:12px; margin-top:4px;">Kategori: ${category} | Stok: ${stock} Pcs</p>
@@ -703,7 +776,6 @@ function handleAddNewProduct(e) {
   document.getElementById('form-add-product').reset();
   showToast('Barang baru berhasil disimpan!');
   
-  // Auto Switch ke Daftar Barang
   switchAdminTab('daftar-barang', null, 'package', 'Daftar Barang');
 }
 
@@ -720,6 +792,94 @@ function renderInputHistory() {
       <td>${item.stock} Pcs</td>
     </tr>
   `).join('');
+}
+
+// Render Fitur Tambahan di Area Kosong
+function renderDaftarBarangWidgets() {
+  // 1. Low Stock Alert
+  const lowStockContainer = document.getElementById('low-stock-alert-container');
+  if (lowStockContainer) {
+    const lowStockItems = adminProducts
+      .map((p, idx) => ({ ...p, originalIndex: idx }))
+      .filter(p => p.stock < 10);
+
+    if (lowStockItems.length === 0) {
+      lowStockContainer.innerHTML = `<p style="font-size:13px; color:var(--text-muted);">Semua produk berada dalam kondisi stok aman (≥ 10 Pcs).</p>`;
+    } else {
+      lowStockContainer.innerHTML = lowStockItems.map(item => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.3); padding:10px 14px; border-radius:8px; margin-bottom:10px;">
+          <div>
+            <p style="color:#fff; font-weight:600; font-size:13px;">${item.name}</p>
+            <span style="color:var(--warning); font-size:12px;">Sisa Stok: <b>${item.stock} Pcs</b></span>
+          </div>
+          <button class="btn-action-small" onclick="quickAddStock(${item.originalIndex}, 10)" style="background:var(--warning); color:#000; font-weight:700;">
+            +10 Stok
+          </button>
+        </div>
+      `).join('');
+    }
+  }
+
+  // 2. Best Seller
+  const bestSellerContainer = document.getElementById('best-seller-container');
+  if (bestSellerContainer) {
+    const sortedBest = [...adminProducts].sort((a, b) => b.sold - a.sold).slice(0, 3);
+    bestSellerContainer.innerHTML = sortedBest.map((item, idx) => `
+      <div class="activity-item">
+        <div class="activity-icon" style="background:rgba(236,72,153,0.15); color:var(--accent); font-weight:bold;">#${idx + 1}</div>
+        <div style="flex:1;">
+          <b style="color:#fff;">${item.name}</b>
+          <br><span style="color:var(--text-muted); font-size:11px;">Terjual: <strong style="color:var(--success);">${item.sold || 0} unit</strong></span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 3. Stock Audit Log
+  const auditContainer = document.getElementById('stock-audit-log-container');
+  if (auditContainer) {
+    auditContainer.innerHTML = auditLogs.slice(0, 4).map(log => `
+      <div class="activity-item">
+        <div class="activity-icon"><i data-lucide="shield-check" style="width:16px;"></i></div>
+        <div>
+          <b style="color:#fff;">${log.action}</b>
+          <br><span style="color:var(--text-muted); font-size:11px;">Oleh ${log.user} • ${log.time}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// Utilitas Aksi Masal
+function exportProductsCSV() {
+  let csv = "Nama Barang,Kategori,Harga,Stok,Terjual\n";
+  adminProducts.forEach(p => {
+    csv += `"${p.name}","${p.category}",${p.price},${p.stock},${p.sold || 0}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.setAttribute('href', url);
+  a.setAttribute('download', `Daftar_Barang_NexaStore.csv`);
+  a.click();
+  showToast("Data barang berhasil diexport ke CSV!");
+}
+
+function triggerImportCSV() {
+  document.getElementById('csv-file-input').click();
+}
+
+function handleImportCSV(event) {
+  const file = event.target.files[0];
+  if (file) {
+    showToast(`File ${file.name} berhasil di-import! (Simulasi)`);
+  }
+}
+
+function printBarcodes() {
+  showToast("Membuka dialog cetak barcode...");
+  window.print();
 }
 
 // Render Semua Tabel Utama & Widget
@@ -785,6 +945,7 @@ function renderTablesAndReports(productsToRender = adminProducts) {
     }
   }
 
+  renderDaftarBarangWidgets();
   lucide.createIcons();
   updateAssetChart();
 }
