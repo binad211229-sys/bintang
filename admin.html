@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Admin NexaStore</title>
+<!-- Google Fonts & Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 :root {
   --primary: #6366f1;
@@ -18,7 +20,7 @@
   --sidebar-width: 240px;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
 body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; }
 
 /* Sidebar Navigasi - Pinggir Kiri (Fixed Left) */
@@ -37,42 +39,60 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
 }
 
 .brand-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--primary);
   padding: 0 12px 20px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 20px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
 }
 
 .nav-item {
-  padding: 12px 16px;
+  padding: 10px 14px;
   color: var(--text-muted);
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
+.nav-item i { width: 18px; height: 18px; stroke-width: 2; }
 .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
 .nav-item.active { background: var(--primary); color: #fff; }
 
 .btn-logout {
-  background: #ef4444; color: white; border: none; padding: 12px;
-  border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; 
-  font-size: 13px; text-align: center; width: 100%; display: block; margin-top: auto;
+  background: rgba(239, 68, 68, 0.1); 
+  color: #ef4444; 
+  border: 1px solid rgba(239, 68, 68, 0.2); 
+  padding: 10px 14px;
+  border-radius: 8px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  text-decoration: none; 
+  font-size: 13px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  gap: 8px; 
+  width: 100%; 
+  margin-top: auto;
+  transition: all 0.2s;
 }
-.btn-logout:hover { background: #dc2626; }
+.btn-logout:hover { background: #ef4444; color: #fff; }
 
 /* Main Area - Berada di Sebelah Kanan Sidebar */
 .admin-main {
@@ -92,8 +112,11 @@ header {
   top: 0;
   z-index: 90;
   backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
 }
-.header-title { font-size: 18px; font-weight: 700; color: #fff; }
+.header-title { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+.header-title i { width: 20px; height: 20px; color: var(--primary); }
 
 /* Area Konten Utama */
 .admin-content { padding: 24px; flex: 1; }
@@ -109,7 +132,16 @@ header {
   padding: 24px;
   margin-bottom: 24px;
 }
-.section-card h2 { font-size: 18px; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+.section-card h2 { 
+  font-size: 18px; 
+  margin-bottom: 20px; 
+  color: #fff; 
+  border-bottom: 1px solid var(--border); 
+  padding-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
 /* Form Styles */
 .form-group { margin-bottom: 16px; }
@@ -122,6 +154,7 @@ header {
 .btn-submit {
   width: 100%; padding: 12px; background: var(--primary); color: white;
   border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .btn-submit:hover { background: var(--primary-hover); }
 
@@ -147,10 +180,11 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 /* Penyesuaian Ponsel / Mobile */
 @media (max-width: 600px) {
   :root { --sidebar-width: 70px; }
-  .brand-title { font-size: 12px; padding: 0 0 16px; text-align: center; }
-  .nav-item { padding: 12px; justify-content: center; font-size: 18px; }
+  .brand-title { font-size: 12px; padding: 0 0 16px; justify-content: center; }
+  .brand-title span { display: none; }
+  .nav-item { padding: 12px; justify-content: center; }
   .nav-item span { display: none; }
-  .btn-logout { font-size: 11px; padding: 8px 4px; }
+  .btn-logout { padding: 10px; justify-content: center; }
   .btn-logout span { display: none; }
 }
 </style>
@@ -159,21 +193,42 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 
 <!-- Sidebar Navigasi Pinggir Kiri -->
 <aside class="admin-sidebar">
-  <div class="brand-title">NEXA ADMIN</div>
-  <div class="sidebar-menu">
-    <div class="nav-item active" onclick="switchAdminTab('overview', this)">📊 <span>Ringkasan</span></div>
-    <div class="nav-item" onclick="switchAdminTab('input-barang', this)">➕ <span>Input Barang</span></div>
-    <div class="nav-item" onclick="switchAdminTab('daftar-barang', this)">📦 <span>Daftar Barang</span></div>
-    <div class="nav-item" onclick="switchAdminTab('laporan-keuangan', this)">💰 <span>Laporan</span></div>
+  <div class="brand-title">
+    <i data-lucide="store"></i>
+    <span>NEXA ADMIN</span>
   </div>
-  <a href="login.html" class="btn-logout">🚪 <span>Logout</span></a>
+  <div class="sidebar-menu">
+    <div class="nav-item active" onclick="switchAdminTab('overview', this, 'layout-dashboard', 'Ringkasan Dashboard')">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Ringkasan</span>
+    </div>
+    <div class="nav-item" onclick="switchAdminTab('input-barang', this, 'plus-circle', 'Input Barang Baru')">
+      <i data-lucide="plus-circle"></i>
+      <span>Input Barang</span>
+    </div>
+    <div class="nav-item" onclick="switchAdminTab('daftar-barang', this, 'package', 'Daftar Barang')">
+      <i data-lucide="package"></i>
+      <span>Daftar Barang</span>
+    </div>
+    <div class="nav-item" onclick="switchAdminTab('laporan-keuangan', this, 'bar-chart-3', 'Laporan Keuangan')">
+      <i data-lucide="bar-chart-3"></i>
+      <span>Laporan</span>
+    </div>
+  </div>
+  <a href="login.html" class="btn-logout">
+    <i data-lucide="log-out"></i>
+    <span>Logout</span>
+  </a>
 </aside>
 
 <!-- Konten Utama (Sebelah Kanan Sidebar) -->
 <div class="admin-main">
   
   <header>
-    <div class="header-title" id="page-header-title">📊 Ringkasan Dashboard</div>
+    <div class="header-title" id="page-header-title">
+      <i data-lucide="layout-dashboard" id="header-icon"></i>
+      <span id="header-text">Ringkasan Dashboard</span>
+    </div>
   </header>
 
   <main class="admin-content">
@@ -181,7 +236,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 1: RINGKASAN UTAMA -->
     <div id="page-overview" class="admin-section active">
       <div class="section-card">
-        <h2>📊 Selamat Datang, Admin</h2>
+        <h2><i data-lucide="user-check" style="color:var(--primary)"></i> Selamat Datang, Admin</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Pilih menu di sidebar sebelah kiri untuk mengelola toko online Anda.</p>
         <div class="stats-grid">
           <div class="stat-box">
@@ -203,7 +258,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 2: INPUT BARANG BARU -->
     <div id="page-input-barang" class="admin-section">
       <div class="section-card">
-        <h2>➕ Input Barang Baru</h2>
+        <h2><i data-lucide="plus-circle" style="color:var(--primary)"></i> Input Barang Baru</h2>
         <form id="form-add-product" onsubmit="handleAddNewProduct(event)">
           <div class="form-group">
             <label>Nama Barang</label>
@@ -226,7 +281,9 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
             <label>Stok</label>
             <input type="number" id="admin-stock" required placeholder="10">
           </div>
-          <button type="submit" class="btn-submit">Simpan Barang</button>
+          <button type="submit" class="btn-submit">
+            <i data-lucide="save"></i> Simpan Barang
+          </button>
         </form>
       </div>
     </div>
@@ -234,7 +291,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 3: DAFTAR BARANG (VIEW) -->
     <div id="page-daftar-barang" class="admin-section">
       <div class="section-card">
-        <h2>📦 Daftar Barang (View)</h2>
+        <h2><i data-lucide="package" style="color:var(--primary)"></i> Daftar Barang (View)</h2>
         <div class="table-responsive">
           <table>
             <thead>
@@ -256,7 +313,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <!-- PAGE 4: LAPORAN PENJUALAN & KEUANGAN -->
     <div id="page-laporan-keuangan" class="admin-section">
       <div class="section-card">
-        <h2>💰 Laporan Penjualan & Keuangan</h2>
+        <h2><i data-lucide="trending-up" style="color:var(--primary)"></i> Laporan Penjualan & Keuangan</h2>
         <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
           <div class="stat-box">
             <label>Laporan Harian</label>
@@ -287,7 +344,7 @@ let adminProducts = [
 ];
 
 // Switch Tab Menu Sidebar
-function switchAdminTab(tabName, element) {
+function switchAdminTab(tabName, element, iconName, titleText) {
   // Sembunyikan semua section
   document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
   // Hapus status active dari menu sidebar
@@ -297,10 +354,12 @@ function switchAdminTab(tabName, element) {
   const targetPage = document.getElementById('page-' + tabName);
   if (targetPage) targetPage.classList.add('active');
 
-  // Set menu terpilih
+  // Set menu terpilih & update header
   if (element) {
     element.classList.add('active');
-    document.getElementById('page-header-title').textContent = element.textContent.trim();
+    document.getElementById('header-text').textContent = titleText;
+    document.getElementById('header-icon').setAttribute('data-lucide', iconName);
+    lucide.createIcons(); // Re-render icon
   }
 }
 
@@ -343,12 +402,13 @@ function handleAddNewProduct(e) {
   // Berpindah ke menu Daftar Barang
   const daftarBarangBtn = document.querySelectorAll('.nav-item')[2];
   if (daftarBarangBtn) {
-    switchAdminTab('daftar-barang', daftarBarangBtn);
+    switchAdminTab('daftar-barang', daftarBarangBtn, 'package', 'Daftar Barang');
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   renderTable();
+  lucide.createIcons();
 });
 </script>
 </body>
