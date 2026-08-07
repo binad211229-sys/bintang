@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Admin NexaStore</title>
-<!-- Lucide Icons & Chart.js -->
+<!-- Lucide Icons, Chart.js & jsPDF -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --primary: #6366f1;
@@ -169,6 +170,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
 .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
 .badge-info { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
+.badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
 
 .btn-icon { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.2s; }
 .btn-icon:hover { color: #fff; background: rgba(255,255,255,0.1); }
@@ -213,10 +215,10 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
       <span>Laporan</span>
     </div>
   </div>
-  <a href="login.html" class="btn-logout">
+  <button class="btn-logout" onclick="handleLogout()">
     <i data-lucide="log-out"></i>
     <span>Logout</span>
-  </a>
+  </button>
 </aside>
 
 <!-- Konten Utama -->
@@ -241,15 +243,15 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
           </div>
           <div class="stat-box success">
             <label>Penjualan Hari Ini</label>
-            <div class="amount">Rp 3.250.000</div>
+            <div class="amount" id="stat-sales-today">Rp 3.250.000</div>
           </div>
           <div class="stat-box accent">
             <label>Omset Bulan Ini</label>
-            <div class="amount">Rp 85.000.000</div>
+            <div class="amount" id="stat-sales-month">Rp 85.000.000</div>
           </div>
           <div class="stat-box warning">
             <label>Omset Tahun Ini</label>
-            <div class="amount">Rp 980.000.000</div>
+            <div class="amount" id="stat-sales-year">Rp 980.000.000</div>
           </div>
         </div>
       </div>
@@ -278,7 +280,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
               <thead>
                 <tr><th>ID</th><th>Pelanggan</th><th>Total</th><th>Status</th></tr>
               </thead>
-              <tbody>
+              <tbody id="overview-trx-table">
                 <tr><td>#TRX-9081</td><td>Budi Santoso</td><td>Rp 2.199.000</td><td><span class="badge badge-success">Selesai</span></td></tr>
                 <tr><td>#TRX-9080</td><td>Siti Rahma</td><td>Rp 899.000</td><td><span class="badge badge-warning">Proses</span></td></tr>
                 <tr><td>#TRX-9079</td><td>Andi Wijaya</td><td>Rp 12.500.000</td><td><span class="badge badge-success">Selesai</span></td></tr>
@@ -289,7 +291,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="activity" style="color:var(--primary)"></i> Aktivitas Sistem</span></h2>
-          <div class="activity-list">
+          <div class="activity-list" id="activity-log-container">
             <div class="activity-item">
               <div class="activity-icon"><i data-lucide="plus" style="width:16px;"></i></div>
               <div><b>Produk Ditambahkan</b><br><span style="color:var(--text-muted);font-size:11px;">10 menit yang lalu</span></div>
@@ -352,7 +354,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 
           <div class="section-card">
             <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="clock" style="color:var(--primary)"></i> Input Terakhir</span></h2>
-            <div style="font-size:13px; color:var(--text-muted);">
+            <div style="font-size:13px; color:var(--text-muted);" id="last-product-box">
               <p><b style="color:#fff;">Laptop Gaming Nexa Pro</b></p>
               <p style="font-size:12px; margin-top:4px;">Kategori: Laptop | Stok: 10 Pcs</p>
             </div>
@@ -360,7 +362,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
-      <!-- Tambahan Konten Bawah Halaman Input -->
       <div class="section-card">
         <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="file-spreadsheet" style="color:var(--primary)"></i> Riwayat Penambahan Barang (Terbaru)</span></h2>
         <div class="table-responsive">
@@ -368,7 +369,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
             <thead>
               <tr><th>Waktu</th><th>Nama Barang</th><th>Kategori</th><th>Harga Unit</th><th>Jumlah Stok</th></tr>
             </thead>
-            <tbody>
+            <tbody id="input-history-table">
               <tr><td>Hari ini, 08:10</td><td>Laptop Gaming Nexa Pro</td><td>Laptop</td><td>Rp 12.500.000</td><td>10 Pcs</td></tr>
               <tr><td>Kemarin, 16:45</td><td>Runner Pro V2</td><td>Sepatu</td><td>Rp 899.000</td><td>12 Pcs</td></tr>
               <tr><td>05 Ags 2026</td><td>NexaWatch Series X</td><td>Gadget</td><td>Rp 2.199.000</td><td>15 Pcs</td></tr>
@@ -405,18 +406,17 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
-      <!-- Tambahan Konten Bawah Halaman Daftar Barang -->
       <div class="desktop-grid-2">
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="layers" style="color:var(--primary)"></i> Ringkasan Stok Produk</span></h2>
           <div class="stats-grid">
             <div class="stat-box">
               <label>Kategori Aktif</label>
-              <div class="amount" style="font-size:18px;">4 Jenis</div>
+              <div class="amount" id="stat-active-categories" style="font-size:18px;">4 Jenis</div>
             </div>
             <div class="stat-box success">
               <label>Kapasitas Gudang</label>
-              <div class="amount" style="font-size:18px;">45 / 100 Pcs</div>
+              <div class="amount" id="stat-warehouse-capacity" style="font-size:18px;">45 / 100 Pcs</div>
             </div>
           </div>
         </div>
@@ -424,9 +424,10 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         <div class="section-card">
           <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="filter" style="color:var(--primary)"></i> Akses Cepat Filter</span></h2>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button onclick="document.getElementById('search-input').value='Audio'; filterProducts();" style="padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Kategori Audio</button>
-            <button onclick="document.getElementById('search-input').value='Gadget'; filterProducts();" style="padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Kategori Gadget</button>
-            <button onclick="document.getElementById('search-input').value=''; filterProducts();" style="padding:8px 12px; background:var(--primary); border:none; color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Reset</button>
+            <button onclick="applyQuickFilter('Audio')" style="padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Kategori Audio</button>
+            <button onclick="applyQuickFilter('Gadget')" style="padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Kategori Gadget</button>
+            <button onclick="applyQuickFilter('Laptop')" style="padding:8px 12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Kategori Laptop</button>
+            <button onclick="applyQuickFilter('')" style="padding:8px 12px; background:var(--primary); border:none; color:#fff; border-radius:6px; cursor:pointer; font-size:12px;">Reset</button>
           </div>
         </div>
       </div>
@@ -438,7 +439,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         <div class="section-card">
           <h2>
             <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="trending-up" style="color:var(--primary)"></i> Laporan Ringkasan Keuangan</span>
-            <button onclick="showToast('Laporan berhasil diunduh!')" style="background:var(--primary); border:none; color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; display:flex; align-items:center; gap:5px;"><i data-lucide="download" style="width:14px;"></i> Export PDF</button>
+            <button onclick="exportToPDF()" style="background:var(--primary); border:none; color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; display:flex; align-items:center; gap:5px;"><i data-lucide="download" style="width:14px;"></i> Export PDF</button>
           </h2>
           <div class="stats-grid">
             <div class="stat-box">
@@ -481,6 +482,49 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
+      <!-- FITUR BARU: RIWAYAT ARUS KAS (PENDAPATAN & PENGELUARAN) -->
+      <div class="section-card">
+        <h2>
+          <span style="display:flex;align-items:center;gap:10px;"><i data-lucide="arrow-left-right" style="color:var(--primary)"></i> Riwayat Pengeluaran & Pendapatan</span>
+          <div style="display:flex; gap:8px;">
+            <button onclick="filterCashflow('semua')" style="padding:4px 8px; font-size:11px; background:rgba(255,255,255,0.1); color:#fff; border:none; border-radius:4px; cursor:pointer;">Semua</button>
+            <button onclick="filterCashflow('Pendapatan')" style="padding:4px 8px; font-size:11px; background:rgba(16,185,129,0.2); color:var(--success); border:none; border-radius:4px; cursor:pointer;">Pendapatan</button>
+            <button onclick="filterCashflow('Pengeluaran')" style="padding:4px 8px; font-size:11px; background:rgba(239,68,68,0.2); color:var(--danger); border:none; border-radius:4px; cursor:pointer;">Pengeluaran</button>
+          </div>
+        </h2>
+        
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; background: rgba(15,23,42,0.5); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <p style="margin-bottom: 4px;"><strong style="color: var(--success);">Pendapatan:</strong> Arus uang masuk dari transaksi penjualan produk kepada pembeli/pelanggan.</p>
+          <p><strong style="color: var(--danger);">Pengeluaran:</strong> Arus uang keluar untuk biaya operasional, restock persediaan barang, serta pemeliharaan sistem/gudang.</p>
+        </div>
+
+        <!-- Form Tambah Catatan Keuangan -->
+        <form onsubmit="handleAddCashflow(event)" style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+          <select id="cf-type" style="padding: 8px 12px; background: rgba(15,23,42,0.8); border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px;" required>
+            <option value="Pendapatan">Pendapatan</option>
+            <option value="Pengeluaran">Pengeluaran</option>
+          </select>
+          <input type="text" id="cf-desc" placeholder="Keterangan (contoh: Biaya Listrik, Penjualan Audio)" style="flex: 2; min-width: 180px; padding: 8px 12px; background: rgba(15,23,42,0.8); border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px;" required>
+          <input type="number" id="cf-amount" placeholder="Nominal (Rp)" style="flex: 1; min-width: 120px; padding: 8px 12px; background: rgba(15,23,42,0.8); border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px;" required>
+          <button type="submit" style="padding: 8px 16px; background: var(--primary); border: none; color: #fff; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 13px;">+ Catat</button>
+        </form>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Jenis Arus</th>
+                <th>Keterangan / Sumber</th>
+                <th>Nominal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="cashflow-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="section-card">
         <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="boxes" style="color:var(--primary)"></i> Laporan Detail Stok Barang</span></h2>
         
@@ -514,7 +558,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         </div>
       </div>
 
-      <!-- Tambahan Konten Bawah Halaman Laporan -->
       <div class="section-card">
         <h2><span style="display:flex;align-items:center;gap:10px;"><i data-lucide="bar-chart-2" style="color:var(--primary)"></i> Visualisasi Nilai Aset per Kategori</span></h2>
         <div class="chart-container" style="height:220px;">
@@ -525,7 +568,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 
   </main>
 
-  <!-- Footer Pengunci Tampilan Bawah -->
   <footer>
     <span>&copy; 2026 NexaStore Admin Management System. All rights reserved.</span>
     <span>Version 2.4.0</span>
@@ -533,6 +575,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 </div>
 
 <script>
+// Data State Global
 let adminProducts = [
   { name: 'Studio ANC Wireless', category: 'Audio', price: 1450000, stock: 8 },
   { name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15 },
@@ -540,6 +583,24 @@ let adminProducts = [
   { name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10 }
 ];
 
+let inputHistory = [
+  { time: 'Hari ini, 08:10', name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10 },
+  { time: 'Kemarin, 16:45', name: 'Runner Pro V2', category: 'Sepatu', price: 899000, stock: 12 },
+  { time: '05 Ags 2026', name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15 }
+];
+
+let cashflowRecords = [
+  { date: '07 Ags 2026', type: 'Pendapatan', desc: 'Penjualan TRX-9081 (Budi Santoso)', amount: 2199000 },
+  { date: '07 Ags 2026', type: 'Pengeluaran', desc: 'Restock Produk Audio (Studio ANC)', amount: 8000000 },
+  { date: '06 Ags 2026', type: 'Pendapatan', desc: 'Penjualan TRX-9079 (Andi Wijaya)', amount: 12500000 },
+  { date: '05 Ags 2026', type: 'Pengeluaran', desc: 'Bayar Tagihan Listrik & Internet Server Gudang', amount: 1200000 }
+];
+
+let incomeChartInstance = null;
+let categoryChartInstance = null;
+let assetChartInstance = null;
+
+// Fungsi Menampilkan Notification Toast
 function showToast(message) {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
@@ -557,6 +618,7 @@ function showToast(message) {
   }, 3000);
 }
 
+// Fungsi Perpindahan Tab Navigation
 function switchAdminTab(tabName, element, iconName, titleText) {
   document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -566,29 +628,107 @@ function switchAdminTab(tabName, element, iconName, titleText) {
 
   if (element) {
     element.classList.add('active');
-    document.getElementById('header-text').textContent = titleText;
-    document.getElementById('header-icon').setAttribute('data-lucide', iconName);
-    lucide.createIcons();
+  } else {
+    // Apabila dipanggil dari script tanpa kirim 'this'
+    const items = document.querySelectorAll('.sidebar-menu .nav-item');
+    if (tabName === 'overview') items[0]?.classList.add('active');
+    if (tabName === 'input-barang') items[1]?.classList.add('active');
+    if (tabName === 'daftar-barang') items[2]?.classList.add('active');
+    if (tabName === 'laporan-keuangan') items[3]?.classList.add('active');
+  }
+
+  document.getElementById('header-text').textContent = titleText;
+  document.getElementById('header-icon').setAttribute('data-lucide', iconName);
+  lucide.createIcons();
+}
+
+// Handler Logout Tombol
+function handleLogout() {
+  if (confirm("Apakah Anda yakin ingin keluar dari sistem admin?")) {
+    showToast('Berhasil logout!');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   }
 }
 
+// Pencarian dan Filter Produk
 function filterProducts() {
   const query = document.getElementById('search-input').value.toLowerCase();
   const filtered = adminProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
   renderTablesAndReports(filtered);
 }
 
-function deleteProduct(index) {
-  adminProducts.splice(index, 1);
-  renderTablesAndReports();
-  showToast('Barang berhasil dihapus!');
+function applyQuickFilter(catName) {
+  const input = document.getElementById('search-input');
+  if(input) {
+    input.value = catName;
+    filterProducts();
+  }
 }
 
+// Hapus Produk
+function deleteProduct(index) {
+  const deletedName = adminProducts[index].name;
+  adminProducts.splice(index, 1);
+  renderTablesAndReports();
+  showToast(`Barang "${deletedName}" telah dihapus!`);
+}
+
+// Tambah Produk Baru via Form
+function handleAddNewProduct(e) {
+  e.preventDefault();
+  const name = document.getElementById('admin-name').value;
+  const category = document.getElementById('admin-category').value;
+  const price = parseFloat(document.getElementById('admin-price').value);
+  const stock = parseInt(document.getElementById('admin-stock').value);
+
+  const newProduct = { name, category, price, stock };
+  adminProducts.push(newProduct);
+  
+  // Catat Ke Riwayat Input
+  const now = new Date();
+  const timeStr = `Hari ini, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  inputHistory.unshift({ time: timeStr, name, category, price, stock });
+
+  renderTablesAndReports();
+  renderInputHistory();
+  
+  // Update Tampilan Kotak "Input Terakhir"
+  document.getElementById('last-product-box').innerHTML = `
+    <p><b style="color:#fff;">${name}</b></p>
+    <p style="font-size:12px; margin-top:4px;">Kategori: ${category} | Stok: ${stock} Pcs</p>
+  `;
+
+  document.getElementById('form-add-product').reset();
+  showToast('Barang baru berhasil disimpan!');
+  
+  // Auto Switch ke Daftar Barang
+  switchAdminTab('daftar-barang', null, 'package', 'Daftar Barang');
+}
+
+// Render Tabel Riwayat Input Barang
+function renderInputHistory() {
+  const tbody = document.getElementById('input-history-table');
+  if(!tbody) return;
+  tbody.innerHTML = inputHistory.map(item => `
+    <tr>
+      <td>${item.time}</td>
+      <td style="font-weight:600; color:#fff;">${item.name}</td>
+      <td>${item.category}</td>
+      <td>Rp ${item.price.toLocaleString('id-ID')}</td>
+      <td>${item.stock} Pcs</td>
+    </tr>
+  `).join('');
+}
+
+// Render Semua Tabel Utama & Widget
 function renderTablesAndReports(productsToRender = adminProducts) {
   const tbody = document.getElementById('admin-product-table');
   const laporanTbody = document.getElementById('laporan-stok-table');
   const totalStat = document.getElementById('stat-total-produk');
   
+  // Render Tabel Daftar Barang
   if (tbody) {
     tbody.innerHTML = productsToRender.map((p, idx) => `
       <tr>
@@ -596,15 +736,22 @@ function renderTablesAndReports(productsToRender = adminProducts) {
         <td><span style="font-size: 11px; padding: 2px 8px; background: rgba(99,102,241,0.2); color: var(--primary); border-radius: 4px; font-weight: 700;">${p.category}</span></td>
         <td>Rp ${p.price.toLocaleString('id-ID')}</td>
         <td>${p.stock} pcs</td>
-        <td><button class="btn-icon" onclick="deleteProduct(${idx})"><i data-lucide="trash-2" style="width:16px; color:var(--danger)"></i></button></td>
+        <td><button class="btn-icon" onclick="deleteProduct(${idx})" title="Hapus Barang"><i data-lucide="trash-2" style="width:16px; color:var(--danger)"></i></button></td>
       </tr>
     `).join('');
   }
+
   if (totalStat) totalStat.textContent = adminProducts.length + ' Pcs';
 
+  // Render Kategori Aktif & Kapasitas Gudang
+  const activeCategories = new Set(adminProducts.map(p => p.category)).size;
   let totalUnits = 0;
   let totalAssetValue = 0;
   let lowStockCount = 0;
+
+  if (document.getElementById('stat-active-categories')) {
+    document.getElementById('stat-active-categories').textContent = activeCategories + ' Jenis';
+  }
 
   if (laporanTbody) {
     laporanTbody.innerHTML = adminProducts.map(p => {
@@ -633,35 +780,118 @@ function renderTablesAndReports(productsToRender = adminProducts) {
     document.getElementById('stat-laporan-total-unit').textContent = totalUnits + ' Pcs';
     document.getElementById('stat-laporan-stok-menipis').textContent = lowStockCount + ' Item';
     document.getElementById('stat-laporan-nilai-aset').textContent = 'Rp ' + totalAssetValue.toLocaleString('id-ID');
+    if(document.getElementById('stat-warehouse-capacity')) {
+      document.getElementById('stat-warehouse-capacity').textContent = `${totalUnits} / 100 Pcs`;
+    }
   }
+
+  lucide.createIcons();
+  updateAssetChart();
+}
+
+// FITUR KEUANGAN: Catat Arus Kas
+function handleAddCashflow(e) {
+  e.preventDefault();
+  const type = document.getElementById('cf-type').value;
+  const desc = document.getElementById('cf-desc').value;
+  const amount = parseFloat(document.getElementById('cf-amount').value);
+
+  const now = new Date();
+  const dateStr = `${String(now.getDate()).padStart(2,'0')} Ags 2026`;
+
+  cashflowRecords.unshift({ date: dateStr, type, desc, amount });
+  renderCashflowTable();
+
+  document.getElementById('cf-desc').value = '';
+  document.getElementById('cf-amount').value = '';
+  showToast(`Berhasil mencatat ${type.toLowerCase()}!`);
+}
+
+function deleteCashflow(index) {
+  cashflowRecords.splice(index, 1);
+  renderCashflowTable();
+  showToast('Catatan transaksi dihapus!');
+}
+
+function filterCashflow(filterType) {
+  if (filterType === 'semua') {
+    renderCashflowTable(cashflowRecords);
+  } else {
+    const filtered = cashflowRecords.filter(item => item.type === filterType);
+    renderCashflowTable(filtered);
+  }
+}
+
+function renderCashflowTable(recordsToRender = cashflowRecords) {
+  const tbody = document.getElementById('cashflow-table-body');
+  if(!tbody) return;
+
+  tbody.innerHTML = recordsToRender.map((cf, idx) => `
+    <tr>
+      <td>${cf.date}</td>
+      <td>
+        <span class="badge ${cf.type === 'Pendapatan' ? 'badge-success' : 'badge-danger'}">
+          ${cf.type}
+        </span>
+      </td>
+      <td style="color: #fff; font-weight: 500;">${cf.desc}</td>
+      <td style="font-weight: 700; color: ${cf.type === 'Pendapatan' ? 'var(--success)' : 'var(--danger)'}">
+        ${cf.type === 'Pendapatan' ? '+' : '-'} Rp ${cf.amount.toLocaleString('id-ID')}
+      </td>
+      <td>
+        <button class="btn-icon" onclick="deleteCashflow(${idx})" title="Hapus Catatan"><i data-lucide="trash-2" style="width:16px; color:var(--danger)"></i></button>
+      </td>
+    </tr>
+  `).join('');
   lucide.createIcons();
 }
 
-function handleAddNewProduct(e) {
-  e.preventDefault();
-  const name = document.getElementById('admin-name').value;
-  const category = document.getElementById('admin-category').value;
-  const price = parseFloat(document.getElementById('admin-price').value);
-  const stock = parseInt(document.getElementById('admin-stock').value);
+// Eksport Laporan PDF
+function exportToPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-  adminProducts.push({ name, category, price, stock });
-  renderTablesAndReports();
-  document.getElementById('form-add-product').reset();
-  showToast('Barang berhasil disimpan!');
+  doc.setFontSize(16);
+  doc.text("Laporan Keuangan & Stok NexaStore", 14, 20);
+  doc.setFontSize(10);
+  doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 28);
   
-  const daftarBarangBtn = document.querySelectorAll('.nav-item')[2];
-  if (daftarBarangBtn) {
-    switchAdminTab('daftar-barang', daftarBarangBtn, 'package', 'Daftar Barang');
-  }
+  doc.text("--------------------------------------------------------------------------------", 14, 34);
+  
+  let y = 42;
+  doc.setFontSize(12);
+  doc.text("Ringkasan Nilai Aset Produk:", 14, y);
+  y += 8;
+
+  doc.setFontSize(10);
+  adminProducts.forEach((p, idx) => {
+    doc.text(`${idx + 1}. ${p.name} (${p.category}) - ${p.stock} Pcs - Rp ${(p.price * p.stock).toLocaleString('id-ID')}`, 14, y);
+    y += 6;
+  });
+
+  y += 10;
+  doc.setFontSize(12);
+  doc.text("Ringkasan Riwayat Arus Kas:", 14, y);
+  y += 8;
+
+  doc.setFontSize(10);
+  cashflowRecords.slice(0, 5).forEach((cf, idx) => {
+    doc.text(`${idx + 1}. [${cf.type}] ${cf.desc} - Rp ${cf.amount.toLocaleString('id-ID')}`, 14, y);
+    y += 6;
+  });
+
+  doc.save("Laporan_Keuangan_NexaStore.pdf");
+  showToast("Laporan berhasil diunduh sebagai PDF!");
 }
 
+// Inisialisasi Chart.js Grafik
 function initCharts() {
   const ctxIncome = document.getElementById('incomeChart').getContext('2d');
   const gradient = ctxIncome.createLinearGradient(0, 0, 0, 250);
   gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
   gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
 
-  new Chart(ctxIncome, {
+  incomeChartInstance = new Chart(ctxIncome, {
     type: 'line',
     data: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu'],
@@ -689,7 +919,7 @@ function initCharts() {
   });
 
   const ctxCategory = document.getElementById('categoryChart').getContext('2d');
-  new Chart(ctxCategory, {
+  categoryChartInstance = new Chart(ctxCategory, {
     type: 'doughnut',
     data: {
       labels: ['Audio', 'Gadget', 'Sepatu', 'Laptop'],
@@ -709,14 +939,14 @@ function initCharts() {
   });
 
   const ctxAsset = document.getElementById('assetChart').getContext('2d');
-  new Chart(ctxAsset, {
+  assetChartInstance = new Chart(ctxAsset, {
     type: 'bar',
     data: {
-      labels: ['Laptop', 'Gadget', 'Audio', 'Sepatu'],
+      labels: [],
       datasets: [{
         label: 'Nilai Aset (Rp)',
-        data: [125000000, 32985000, 11600000, 10788000],
-        backgroundColor: ['#ec4899', '#10b981', '#6366f1', '#f59e0b'],
+        data: [],
+        backgroundColor: ['#ec4899', '#10b981', '#6366f1', '#f59e0b', '#8b5cf6'],
         borderRadius: 6
       }]
     },
@@ -730,10 +960,30 @@ function initCharts() {
       }
     }
   });
+
+  updateAssetChart();
 }
 
+// Update Dinamis Grafik Nilai Aset berdasarkan Data Produk
+function updateAssetChart() {
+  if (!assetChartInstance) return;
+
+  const categories = {};
+  adminProducts.forEach(p => {
+    const assetVal = p.price * p.stock;
+    categories[p.category] = (categories[p.category] || 0) + assetVal;
+  });
+
+  assetChartInstance.data.labels = Object.keys(categories);
+  assetChartInstance.data.datasets[0].data = Object.values(categories);
+  assetChartInstance.update();
+}
+
+// Event saat DOM siap
 document.addEventListener('DOMContentLoaded', () => {
   renderTablesAndReports();
+  renderInputHistory();
+  renderCashflowTable();
   lucide.createIcons();
   initCharts();
 });
