@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Admin NexaStore</title>
-<!-- Google Fonts & Lucide Icons -->
+<!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
 :root {
@@ -21,9 +21,59 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
-body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; }
+body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; overflow-x: hidden; }
 
-/* Sidebar Navigasi - Pinggir Kiri (Fixed Left) */
+/* Toast Notification UI Modern */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 280px;
+  background: #1e293b;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-left: 4px solid var(--success);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(120%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.show {
+  transform: translateX(0);
+}
+
+.toast-icon {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Sidebar Navigasi - Pinggir Kiri */
 .admin-sidebar {
   width: var(--sidebar-width);
   background: #111827;
@@ -51,12 +101,7 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
   gap: 10px;
 }
 
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-}
+.sidebar-menu { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 
 .nav-item {
   padding: 10px 14px;
@@ -70,7 +115,7 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
   align-items: center;
   gap: 12px;
 }
-.nav-item i { width: 18px; height: 18px; stroke-width: 2; }
+.nav-item i { width: 18px; height: 18px; }
 .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
 .nav-item.active { background: var(--primary); color: #fff; }
 
@@ -94,7 +139,7 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
 }
 .btn-logout:hover { background: #ef4444; color: #fff; }
 
-/* Main Area - Berada di Sebelah Kanan Sidebar */
+/* Main Content Area */
 .admin-main {
   flex: 1;
   margin-left: var(--sidebar-width);
@@ -103,7 +148,6 @@ body { background: var(--bg-main); color: var(--text-main); min-height: 100vh; d
   min-height: 100vh;
 }
 
-/* Header Topbar */
 header {
   background: rgba(15, 23, 42, 0.9);
   border-bottom: 1px solid var(--border);
@@ -118,10 +162,7 @@ header {
 .header-title { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
 .header-title i { width: 20px; height: 20px; color: var(--primary); }
 
-/* Area Konten Utama */
 .admin-content { padding: 24px; flex: 1; }
-
-/* Section Page */
 .admin-section { display: none; }
 .admin-section.active { display: block; }
 
@@ -164,7 +205,6 @@ table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
 th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 600; }
 
-/* Laporan Stats Cards */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
 .stat-box {
   background: rgba(15, 23, 42, 0.6);
@@ -177,7 +217,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 .stat-box label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .stat-box .amount { font-size: 22px; font-weight: 800; color: #fff; margin-top: 6px; }
 
-/* Penyesuaian Ponsel / Mobile */
 @media (max-width: 600px) {
   :root { --sidebar-width: 70px; }
   .brand-title { font-size: 12px; padding: 0 0 16px; justify-content: center; }
@@ -191,7 +230,10 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 </head>
 <body>
 
-<!-- Sidebar Navigasi Pinggir Kiri -->
+<!-- Container Notification Toast -->
+<div id="toast-container"></div>
+
+<!-- Sidebar Navigasi -->
 <aside class="admin-sidebar">
   <div class="brand-title">
     <i data-lucide="store"></i>
@@ -221,11 +263,10 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
   </a>
 </aside>
 
-<!-- Konten Utama (Sebelah Kanan Sidebar) -->
+<!-- Konten Utama -->
 <div class="admin-main">
-  
   <header>
-    <div class="header-title" id="page-header-title">
+    <div class="header-title">
       <i data-lucide="layout-dashboard" id="header-icon"></i>
       <span id="header-text">Ringkasan Dashboard</span>
     </div>
@@ -302,9 +343,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
                 <th>Stok</th>
               </tr>
             </thead>
-            <tbody id="admin-product-table">
-              <!-- Data dimasukkan secara dinamis via JavaScript -->
-            </tbody>
+            <tbody id="admin-product-table"></tbody>
           </table>
         </div>
       </div>
@@ -335,7 +374,6 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
 </div>
 
 <script>
-// Data Barang
 let adminProducts = [
   { name: 'Studio ANC Wireless', category: 'Audio', price: 1450000, stock: 8 },
   { name: 'NexaWatch Series X', category: 'Gadget', price: 2199000, stock: 15 },
@@ -343,27 +381,47 @@ let adminProducts = [
   { name: 'Laptop Gaming Nexa Pro', category: 'Laptop', price: 12500000, stock: 10 }
 ];
 
-// Switch Tab Menu Sidebar
+// Custom Toast Function
+function showToast(message) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  
+  toast.innerHTML = `
+    <div class="toast-icon">
+      <i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i>
+    </div>
+    <div class="toast-message">${message}</div>
+  `;
+
+  container.appendChild(toast);
+  lucide.createIcons();
+
+  // Trigger animasi slide in
+  setTimeout(() => toast.classList.add('show'), 100);
+
+  // Otomatis hilang setelah 3 detik
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
 function switchAdminTab(tabName, element, iconName, titleText) {
-  // Sembunyikan semua section
   document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
-  // Hapus status active dari menu sidebar
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
-  // Tampilkan halaman target
   const targetPage = document.getElementById('page-' + tabName);
   if (targetPage) targetPage.classList.add('active');
 
-  // Set menu terpilih & update header
   if (element) {
     element.classList.add('active');
     document.getElementById('header-text').textContent = titleText;
     document.getElementById('header-icon').setAttribute('data-lucide', iconName);
-    lucide.createIcons(); // Re-render icon
+    lucide.createIcons();
   }
 }
 
-// Render data tabel barang
 function renderTable() {
   const tbody = document.getElementById('admin-product-table');
   const totalStat = document.getElementById('stat-total-produk');
@@ -379,12 +437,9 @@ function renderTable() {
     `).join('');
   }
 
-  if (totalStat) {
-    totalStat.textContent = adminProducts.length + ' Pcs';
-  }
+  if (totalStat) totalStat.textContent = adminProducts.length + ' Pcs';
 }
 
-// Form Input Barang Baru
 function handleAddNewProduct(e) {
   e.preventDefault();
   
@@ -397,9 +452,10 @@ function handleAddNewProduct(e) {
   renderTable();
   document.getElementById('form-add-product').reset();
 
-  alert('Barang berhasil disimpan!');
+  // Menampilkan Toast Notifikasi Modern (Bukan alert lagi)
+  showToast('Barang berhasil disimpan!');
   
-  // Berpindah ke menu Daftar Barang
+  // Pindah ke tab Daftar Barang secara mulus
   const daftarBarangBtn = document.querySelectorAll('.nav-item')[2];
   if (daftarBarangBtn) {
     switchAdminTab('daftar-barang', daftarBarangBtn, 'package', 'Daftar Barang');
