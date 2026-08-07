@@ -99,8 +99,13 @@ header {
   padding-bottom: 12px; display: flex; align-items: center; gap: 10px;
 }
 
-/* Stats Cards */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+/* Stats Grid Layout: Dibuat 2 Kolom (2 Baris x 2 Kolom di Desktop) */
+.stats-grid { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 16px; 
+}
+
 .stat-box {
   background: rgba(15, 23, 42, 0.6); border-left: 4px solid var(--primary);
   border-radius: 8px; padding: 16px;
@@ -142,6 +147,9 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
   .nav-item span { display: none; }
   .btn-logout { padding: 10px; justify-content: center; }
   .btn-logout span { display: none; }
+  
+  /* Pada Layar Ponsel Sangat Kecil Kembali ke 1 Kolom agar Tidak Sempit */
+  .stats-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -196,7 +204,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
         <h2><i data-lucide="user-check" style="color:var(--primary)"></i> Selamat Datang, Admin</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Pilih menu di sidebar sebelah kiri untuk mengelola toko online Anda.</p>
         
-        <!-- Stats Grid (Menambahkan Omset Tahun Ini) -->
+        <!-- Stats Grid Format 2x2 Baris & Kolom -->
         <div class="stats-grid">
           <div class="stat-box">
             <label>Total Produk</label>
@@ -283,7 +291,7 @@ th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); font-weight: 6
     <div id="page-laporan-keuangan" class="admin-section">
       <div class="section-card">
         <h2><i data-lucide="trending-up" style="color:var(--primary)"></i> Laporan Penjualan & Keuangan</h2>
-        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <div class="stats-grid">
           <div class="stat-box">
             <label>Laporan Harian</label>
             <div class="amount" style="color: var(--success);">Rp 3.250.000</div>
@@ -377,11 +385,9 @@ function handleAddNewProduct(e) {
   }
 }
 
-// Inisialisasi Chart.js untuk Grafik Pemasukan
 function initIncomeChart() {
   const ctx = document.getElementById('incomeChart').getContext('2d');
   
-  // Gradien warna background garis
   const gradient = ctx.createLinearGradient(0, 0, 0, 300);
   gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
   gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
